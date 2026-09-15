@@ -118,13 +118,22 @@ export function RecordTurn({
       ) : (
         <div className="mt-5 flex flex-wrap items-center gap-3">
           {state === "idle" ? (
-            <button
-              type="button"
-              onClick={begin}
-              className="tap-target inline-flex items-center gap-2 rounded-full bg-accent px-6 font-display text-lg text-accent-foreground shadow-[var(--shadow-pop)] active:translate-y-1 active:shadow-none"
-            >
-              <Mic className="size-6" aria-hidden /> Grabar
-            </button>
+            <>
+              <button
+                type="button"
+                onClick={begin}
+                className="tap-target inline-flex items-center gap-2 rounded-full bg-accent px-6 font-display text-lg text-accent-foreground shadow-[var(--shadow-pop)] active:translate-y-1 active:shadow-none"
+              >
+                <Mic className="size-6" aria-hidden /> Grabar
+              </button>
+              <button
+                type="button"
+                onClick={() => onDone("pending")}
+                className="tap-target inline-flex items-center gap-2 rounded-full bg-secondary px-5 font-display text-secondary-foreground"
+              >
+                Seguir sin grabar
+              </button>
+            </>
           ) : null}
 
           {state === "recording" ? (
