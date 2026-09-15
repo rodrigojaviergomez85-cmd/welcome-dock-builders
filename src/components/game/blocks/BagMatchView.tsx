@@ -5,6 +5,7 @@ import { SpeechBubble } from "../SpeechBubble";
 import { CHARACTERS, BAGS } from "@/content/characters";
 import type { BagMatchBlock } from "@/content/missions/types";
 import { cn } from "@/lib/utils";
+import { playSuccess, playTryAgain } from "@/lib/feedback-sounds";
 
 type Props = {
   block: BagMatchBlock;
@@ -66,10 +67,12 @@ export function BagMatchView({
     if (phase !== "deliver") return;
     onComprehension(target.isAnswer);
     if (!target.isAnswer) {
+      playTryAgain();
       setWrongKey(target.key);
       window.setTimeout(() => setWrongKey(null), 700);
       return;
     }
+    playSuccess();
     setBagPicked(false);
     setPhase(item.reply ? "reply" : "done");
   }

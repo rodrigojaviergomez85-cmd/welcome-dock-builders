@@ -5,6 +5,7 @@ import { CharacterFigure } from "../CharacterFigure";
 import { TIME_LABEL_ES } from "@/content/backgrounds";
 import type { CharacterId } from "@/content/characters";
 import type { ListenPickBlock } from "@/content/missions/types";
+import { playSuccess, playTryAgain } from "@/lib/feedback-sounds";
 
 type Props = {
   block: ListenPickBlock;
@@ -29,6 +30,8 @@ export function ListenPickView({
   function pick(id: CharacterId) {
     if (solved) return;
     setPicked(id);
+    if (id === round.answer) playSuccess();
+    else playTryAgain();
     onComprehension(id === round.answer);
   }
 
