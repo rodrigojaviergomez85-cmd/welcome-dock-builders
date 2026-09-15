@@ -50,7 +50,7 @@ export function StoryView({ block, alias, onComprehension, onFinish }: Props) {
             {block.choice.options.map((option, i) => {
               const text = option.en.replace("{alias}", alias);
               const isChosen = chosen === i;
-              const meaning = gloss(option.en)?.es;
+              const meaning = gloss(option.en)?.es.split("{alias}").join(alias);
               return (
                 <button
                   key={option.en}
