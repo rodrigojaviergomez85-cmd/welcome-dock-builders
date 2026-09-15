@@ -14,6 +14,10 @@ type Props = {
 };
 
 export function MissionComplete({ mission, progress, alias, avatarImage, onReplay }: Props) {
+  useEffect(() => {
+    playFanfare();
+  }, []);
+
   const oralLabel =
     progress.oral.recordings > 0
       ? `Frases dichas: ${progress.oral.recordings}. El juego entendió ${progress.oral.understood}`
