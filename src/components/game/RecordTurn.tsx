@@ -121,6 +121,51 @@ export function RecordTurn({
   }
 
   const heard = match?.kind === "heard";
+  const g = gloss(targetEn, alias);
+
+  // Paso "repetí conmigo": primero en español, después en inglés, y recién ahí se habla.
+  if (state === "learn") {
+    return (
+      <div className="w-full max-w-xl rounded-3xl bg-card/95 p-5 text-card-foreground shadow-[var(--shadow-soft)]">
+        <p className="text-sm text-muted-foreground">{promptEs}</p>
+
+        <div className="mt-3 rounded-2xl bg-sun/30 p-4">
+          <p className="text-sm text-muted-foreground">Vos querés decir:</p>
+          <p className="font-display text-2xl">{g?.es ?? promptEs}</p>
+          {g?.esClip ? (
+            <AudioButton
+              clipId={g.esClip}
+              autoPlayKey={`${turnId}-es`}
+              label="Escuchar en español"
+              size="sm"
+              className="mt-3"
+            />
+          ) : null}
+        </div>
+
+        <p className="mt-4 font-display text-lg">En inglés se dice:</p>
+        <BilingualLine
+          en={targetEn}
+          alias={alias}
+          clip={modelClip}
+          className="mt-2 bg-secondary/40"
+        />
+
+        <button
+          type="button"
+          onClick={() => {
+            stopClip();
+            void playClip(BRIDGE.repeat);
+            setTextVisible(true);
+            setState(noMic ? "nomic" : "idle");
+          }}
+          className="tap-target mt-5 inline-flex items-center gap-2 rounded-full bg-accent px-6 font-display text-lg text-accent-foreground shadow-[var(--shadow-pop)] active:translate-y-1 active:shadow-none"
+        >
+          <Mic className="size-6" aria-hidden /> ¡Ahora yo! Repeat
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full max-w-xl rounded-3xl bg-card/95 p-5 text-card-foreground shadow-[var(--shadow-soft)]">
@@ -143,12 +188,11 @@ export function RecordTurn({
       </div>
 
       {textVisible ? (
-        <p lang="en" className="mt-4 font-display text-2xl leading-snug sm:text-3xl">
-          {targetEn}
-        </p>
+        <BilingualLine en={targetEn} alias={alias} className="mt-4" onHelpUsed={onHelpUsed} />
       ) : (
         <p className="mt-4 font-display text-2xl text-muted-foreground">• • •</p>
       )}
+
 
       {state === "nomic" ? (
         <div className="mt-5 rounded-2xl bg-muted p-4">
