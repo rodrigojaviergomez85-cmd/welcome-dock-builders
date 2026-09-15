@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { ArrowRight, Moon } from "lucide-react";
-import { AudioButton } from "../AudioButton";
 import { CharacterFigure } from "../CharacterFigure";
-import { SpeechBubble } from "../SpeechBubble";
+import { BilingualLine } from "../BilingualLine";
 import { TurnsView } from "./TurnsView";
 import type { FinaleBlock } from "@/content/missions/types";
 
@@ -69,8 +68,12 @@ export function FinaleView({
       <div className="flex items-end justify-center gap-3">
         <CharacterFigure id={block.goodNight.speaker} size="lg" />
         <div className="flex flex-col items-start gap-3 pb-6">
-          <SpeechBubble en={block.goodNight.en} es={block.goodNight.es} />
-          <AudioButton clipId={block.goodNight.clip} autoPlayKey="goodnight" label="Escuchar" />
+          <BilingualLine
+            en={block.goodNight.en}
+            clip={block.goodNight.clip}
+            autoPlayKey="goodnight"
+            es={block.goodNight.es}
+          />
         </div>
       </div>
       <p className="flex items-center gap-2 rounded-2xl bg-card/95 px-4 py-2 text-sm text-muted-foreground">

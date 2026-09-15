@@ -2,6 +2,7 @@ import { useState } from "react";
 import { ArrowRight, Hand } from "lucide-react";
 import { AudioButton } from "../AudioButton";
 import { SpeechBubble } from "../SpeechBubble";
+import { BilingualLine } from "../BilingualLine";
 import { CHARACTERS, BAGS } from "@/content/characters";
 import type { BagMatchBlock } from "@/content/missions/types";
 import { cn } from "@/lib/utils";
@@ -32,6 +33,7 @@ export function BagMatchView({
   const [phase, setPhase] = useState<"deliver" | "reply" | "done">("deliver");
   const [wrongKey, setWrongKey] = useState<string | null>(null);
   const [bagPicked, setBagPicked] = useState(false);
+  const [showMeaning, setShowMeaning] = useState(false);
 
   const item = block.items[index]!;
   const bag = BAGS[item.bag];
@@ -69,11 +71,13 @@ export function BagMatchView({
     if (!target.isAnswer) {
       playTryAgain();
       setWrongKey(target.key);
+      setShowMeaning(true);
       window.setTimeout(() => setWrongKey(null), 700);
       return;
     }
     playSuccess();
     setBagPicked(false);
+    setShowMeaning(false);
     setPhase(item.reply ? "reply" : "done");
   }
 
@@ -86,19 +90,23 @@ export function BagMatchView({
     setIndex(nextIndex);
     setPhase("deliver");
     setBagPicked(false);
+    setShowMeaning(false);
     onItemChange(nextIndex);
   }
 
   return (
     <div className="flex w-full max-w-4xl flex-col items-center gap-4">
-      <div className="flex flex-col items-center gap-3 rounded-3xl bg-card/95 px-5 py-4 shadow-[var(--shadow-soft)]">
+      <div className="flex w-full max-w-xl flex-col items-center gap-3 rounded-3xl bg-card/95 px-5 py-4 shadow-[var(--shadow-soft)]">
         <span className="rounded-full bg-secondary px-4 py-1 text-sm text-secondary-foreground">
           Mochila {index + 1} de {block.items.length}
         </span>
         <AudioButton clipId={item.clip} autoPlayKey={item.id} label="Escuchar al dueño" />
-        {phase !== "deliver" ? (
-          <p lang="en" className="animate-pop font-display text-xl">
-            {item.en}
+        {phase !== "deliver" || showMeaning ? (
+          <BilingualLine en={item.en} clip={item.clip} className="bg-secondary/30" />
+        ) : null}
+        {phase === "deliver" && showMeaning ? (
+          <p className="text-sm text-muted-foreground">
+            Escuchá el nombre otra vez y probá de nuevo.
           </p>
         ) : null}
       </div>
@@ -165,11 +173,13 @@ export function BagMatchView({
       {phase === "reply" && item.reply ? (
         <div className="w-full max-w-xl rounded-3xl bg-card/95 p-5 shadow-[var(--shadow-soft)]">
           <p className="text-sm text-muted-foreground">Saludá y presentate.</p>
-          <p lang="en" className="mt-2 font-display text-2xl">
-            {item.reply.en.replace("{alias}", alias)}
-          </p>
+          <BilingualLine
+            en={item.reply.en.replace("{alias}", alias)}
+            alias={alias}
+            clip={item.reply.modelClip}
+            className="mt-2"
+          />
           <div className="mt-4 flex flex-wrap items-center gap-3">
-            <AudioButton clipId={item.reply.modelClip} label="Escuchar el modelo" size="sm" />
             <button
               type="button"
               onClick={() => setPhase("done")}
@@ -184,10 +194,12 @@ export function BagMatchView({
       {phase === "done" ? (
         <div className="flex flex-col items-center gap-3">
           {item.thanks ? (
-            <>
-              <SpeechBubble en={item.thanks.en} />
-              <AudioButton clipId={item.thanks.clip} autoPlayKey={`${item.id}-thanks`} label="Escuchar" size="sm" />
-            </>
+            <BilingualLine
+              en={item.thanks.en}
+              clip={item.thanks.clip}
+              autoPlayKey={`${item.id}-thanks`}
+              es={item.thanks.es}
+            />
           ) : null}
           <button
             type="button"

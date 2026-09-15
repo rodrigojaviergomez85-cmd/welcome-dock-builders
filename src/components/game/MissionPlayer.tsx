@@ -11,6 +11,8 @@ import { BagMatchView } from "./blocks/BagMatchView";
 import { DialogueView } from "./blocks/DialogueView";
 import { FinaleView } from "./blocks/FinaleView";
 import { MissionComplete } from "./MissionComplete";
+import { BlockIntro } from "./BlockIntro";
+import { BLOCK_INTROS } from "@/content/glossary";
 
 type Props = {
   mission: Mission;
@@ -24,6 +26,8 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
   const [stepIndex, setStepIndex] = useState(0);
   const [finished, setFinished] = useState(false);
   const [restored, setRestored] = useState(false);
+  /** Id del bloque cuya explicación en español ya se vio. */
+  const [introFor, setIntroFor] = useState<string | null>(null);
 
   // Recuperar dónde quedó el alumno, una sola vez.
   useEffect(() => {
@@ -161,6 +165,9 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
     time = block.conversations[Math.min(stepIndex, block.conversations.length - 1)]!.time;
   if (block.kind === "finale") time = block.time;
 
+  const showingIntro = BLOCK_INTROS[block.id] !== undefined && introFor !== block.id;
+
+
   return (
     <SceneShell
       background={BACKGROUNDS[time]}
@@ -169,7 +176,11 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
       onHelpUsed={onHelpUsed}
       steps={{ total: mission.blocks.length, current: blockIndex }}
     >
-      {block.kind === "story" ? (
+      {showingIntro ? (
+        <BlockIntro blockId={block.id} onStart={() => setIntroFor(block.id)} />
+      ) : null}
+
+      {!showingIntro && block.kind === "story" ? (
         <StoryView
           block={block}
           alias={alias}
@@ -178,7 +189,7 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
         />
       ) : null}
 
-      {block.kind === "listenPick" ? (
+      {!showingIntro && block.kind === "listenPick" ? (
         <ListenPickView
           block={block}
           startIndex={stepIndex}
@@ -188,7 +199,7 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
         />
       ) : null}
 
-      {block.kind === "bagMatch" ? (
+      {!showingIntro && block.kind === "bagMatch" ? (
         <BagMatchView
           block={block}
           alias={alias}
@@ -200,7 +211,7 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
         />
       ) : null}
 
-      {block.kind === "dialogue" ? (
+      {!showingIntro && block.kind === "dialogue" ? (
         <DialogueView
           missionId={mission.id}
           block={block}
@@ -213,7 +224,7 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
         />
       ) : null}
 
-      {block.kind === "finale" ? (
+      {!showingIntro && block.kind === "finale" ? (
         <FinaleView
           missionId={mission.id}
           block={block}
