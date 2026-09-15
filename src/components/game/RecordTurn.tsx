@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Mic, Square, Play, RotateCcw, ArrowRight, MicOff, Ear, Loader2 } from "lucide-react";
+import { Mic, Square, RotateCcw, ArrowRight, MicOff, Ear, Loader2 } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import { AudioButton } from "./AudioButton";
 import { micSupported, startRecording } from "@/lib/recorder";
@@ -27,7 +27,7 @@ type Props = {
   onDone: (status: "heard" | "practiced" | "pending") => void;
 };
 
-type State = "learn" | "idle" | "recording" | "checking" | "result" | "nomic";
+type State = "learn-es" | "learn-en" | "idle" | "recording" | "checking" | "result" | "nomic";
 
 export function RecordTurn({
   missionId,
@@ -42,7 +42,10 @@ export function RecordTurn({
 }: Props) {
   const { state: progress } = useProgress();
   const [textVisible, setTextVisible] = useState(support === "full");
-  const [state, setState] = useState<State>("learn");
+  const [state, setState] = useState<State>("learn-es");
+  const [spanishPlayed, setSpanishPlayed] = useState(false);
+  const [englishPlayed, setEnglishPlayed] = useState(false);
+  const [micAvailable, setMicAvailable] = useState(true);
   const [url, setUrl] = useState<string | null>(null);
   const [match, setMatch] = useState<MatchResult | null>(null);
   const [serviceNote, setServiceNote] = useState<string | null>(null);
@@ -52,10 +55,8 @@ export function RecordTurn({
   const listenEnabled = progress.listenEnabled !== false;
 
   useEffect(() => {
-    if (!micSupported() && !wavRecordingSupported()) setState("nomic");
+    setMicAvailable(micSupported() || wavRecordingSupported());
   }, []);
-
-  const noMic = state === "nomic";
 
   useEffect(() => () => { if (url) URL.revokeObjectURL(url); }, [url]);
 
@@ -125,12 +126,10 @@ export function RecordTurn({
   const heard = match?.kind === "heard";
   const g = gloss(targetEn, alias);
 
-  // Paso "repetí conmigo": primero en español, después en inglés, y recién ahí se habla.
-  if (state === "learn") {
+  if (state === "learn-es") {
     return (
       <div className="w-full max-w-xl rounded-3xl bg-card/95 p-5 text-card-foreground shadow-[var(--shadow-soft)]">
         <p className="text-sm text-muted-foreground">{promptEs}</p>
-
         <div className="mt-3 rounded-2xl bg-sun/30 p-4">
           <p className="text-sm text-muted-foreground">Vos querés decir:</p>
           <p className="font-display text-2xl">
@@ -139,34 +138,59 @@ export function RecordTurn({
           {g?.esClip ? (
             <AudioButton
               clipId={g.esClip}
-              autoPlayKey={`${turnId}-es`}
-              label="Escuchar en español"
-              size="sm"
+              label="Escuchar"
+              onEnded={() => setSpanishPlayed(true)}
               className="mt-3"
             />
           ) : null}
         </div>
+        {spanishPlayed ? (
+          <button
+            type="button"
+            onClick={() => setState("learn-en")}
+            className="tap-target mt-5 inline-flex items-center gap-2 rounded-full bg-primary px-6 font-display text-lg text-primary-foreground shadow-[var(--shadow-pop)] active:translate-y-1 active:shadow-none"
+          >
+            Seguir <ArrowRight className="size-5" aria-hidden />
+          </button>
+        ) : null}
+      </div>
+    );
+  }
 
-        <p className="mt-4 font-display text-lg">En inglés se dice:</p>
+  if (state === "learn-en") {
+    const slowClip = g?.slowClip ?? modelClip;
+    return (
+      <div className="w-full max-w-xl rounded-3xl bg-card/95 p-5 text-card-foreground shadow-[var(--shadow-soft)]">
+        <p className="font-display text-lg">En inglés se dice:</p>
         <BilingualLine
           en={targetEn}
           alias={alias}
           clip={modelClip}
+          autoPlayKey={`${turnId}-en`}
+          showAudio={false}
           className="mt-2 bg-secondary/40"
         />
-
-        <button
-          type="button"
-          onClick={() => {
-            stopClip();
-            void playClip(BRIDGE.repeat);
-            setTextVisible(true);
-            setState(noMic ? "nomic" : "idle");
-          }}
-          className="tap-target mt-5 inline-flex items-center gap-2 rounded-full bg-accent px-6 font-display text-lg text-accent-foreground shadow-[var(--shadow-pop)] active:translate-y-1 active:shadow-none"
-        >
-          <Mic className="size-6" aria-hidden /> ¡Ahora yo! Repeat
-        </button>
+        {!englishPlayed ? (
+          <AudioButton
+            clipId={slowClip}
+            label="Escuchar otra vez"
+            onEnded={() => setEnglishPlayed(true)}
+            className="mt-5"
+          />
+        ) : (
+          <button
+            type="button"
+            onClick={() => {
+              stopClip();
+              void playClip(BRIDGE.repeat);
+              setTextVisible(true);
+              setState(micAvailable ? "idle" : "nomic");
+            }}
+            className="tap-target mt-5 inline-flex items-center gap-2 rounded-full bg-accent px-6 font-display text-lg text-accent-foreground shadow-[var(--shadow-pop)] active:translate-y-1 active:shadow-none"
+          >
+            <Mic className="size-6" aria-hidden /> Ahora decilo vos
+          </button>
+        )}
       </div>
     );
   }
@@ -175,24 +199,8 @@ export function RecordTurn({
     <div className="w-full max-w-xl rounded-3xl bg-card/95 p-5 text-card-foreground shadow-[var(--shadow-soft)]">
       <p className="text-sm text-muted-foreground">{promptEs}</p>
 
-      <div className="mt-3 flex flex-wrap items-center gap-3">
-        <AudioButton clipId={modelClip} label="Escuchar modelo" size="sm" />
-        {!textVisible ? (
-          <button
-            type="button"
-            onClick={() => {
-              setTextVisible(true);
-              onHelpUsed?.();
-            }}
-            className="tap-target rounded-full bg-secondary px-5 font-display text-secondary-foreground"
-          >
-            Ver el texto
-          </button>
-        ) : null}
-      </div>
-
       {textVisible ? (
-        <BilingualLine en={targetEn} alias={alias} className="mt-4" onHelpUsed={onHelpUsed} />
+        <BilingualLine en={targetEn} alias={alias} className="mt-4" showAudio={false} />
       ) : (
         <p className="mt-4 font-display text-2xl text-muted-foreground">• • •</p>
       )}
@@ -217,7 +225,7 @@ export function RecordTurn({
       ) : (
         <div className="mt-5 flex flex-wrap items-center gap-3">
           {state === "idle" ? (
-            <>
+            <div className="flex flex-col items-start gap-3">
               <button
                 type="button"
                 onClick={begin}
@@ -228,11 +236,11 @@ export function RecordTurn({
               <button
                 type="button"
                 onClick={() => onDone("pending")}
-                className="tap-target inline-flex items-center gap-2 rounded-full bg-secondary px-5 font-display text-secondary-foreground"
+                className="px-2 py-2 text-sm text-muted-foreground underline underline-offset-4"
               >
                 Seguir sin grabar
               </button>
-            </>
+            </div>
           ) : null}
 
           {state === "recording" ? (
@@ -252,32 +260,26 @@ export function RecordTurn({
           ) : null}
 
           {state === "result" ? (
-            <>
-              <button
-                type="button"
-                onClick={() => {
-                  stopClip();
-                  if (url) void new Audio(url).play().catch(() => {});
-                }}
-                className="tap-target inline-flex items-center gap-2 rounded-full bg-primary px-5 font-display text-primary-foreground shadow-[var(--shadow-pop)] active:translate-y-1 active:shadow-none"
-              >
-                <Play className="size-5" aria-hidden /> Escucharme
-              </button>
+            <div className="flex flex-col items-start gap-3">
+              {!heard ? (
               <button
                 type="button"
                 onClick={() => setState("idle")}
-                className="tap-target inline-flex items-center gap-2 rounded-full bg-secondary px-5 font-display text-secondary-foreground"
+                className="tap-target inline-flex items-center gap-2 rounded-full bg-accent px-6 font-display text-lg text-accent-foreground shadow-[var(--shadow-pop)]"
               >
                 <RotateCcw className="size-5" aria-hidden /> Otra vez
               </button>
+              ) : null}
               <button
                 type="button"
                 onClick={() => onDone(heard ? "heard" : "practiced")}
-                className="tap-target inline-flex items-center gap-2 rounded-full bg-success px-6 font-display text-lg text-success-foreground shadow-[var(--shadow-pop)] active:translate-y-1 active:shadow-none"
+                className={heard
+                  ? "tap-target inline-flex items-center gap-2 rounded-full bg-success px-6 font-display text-lg text-success-foreground shadow-[var(--shadow-pop)] active:translate-y-1 active:shadow-none"
+                  : "px-2 py-2 text-sm text-muted-foreground underline underline-offset-4"}
               >
                 Seguir <ArrowRight className="size-5" aria-hidden />
               </button>
-            </>
+            </div>
           ) : null}
         </div>
       )}

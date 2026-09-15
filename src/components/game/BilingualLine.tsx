@@ -1,6 +1,4 @@
-import { Languages, Turtle } from "lucide-react";
 import { AudioButton } from "./AudioButton";
-import { playClip } from "@/lib/audio";
 import { gloss } from "@/content/glossary";
 import { cn } from "@/lib/utils";
 
@@ -13,13 +11,12 @@ type Props = {
   autoPlayKey?: string | number;
   /** Texto en español forzado (si no, se busca en el glosario). */
   es?: string | undefined;
-  onHelpUsed?: (() => void) | undefined;
+  showAudio?: boolean;
   className?: string;
 };
 
 /**
- * Muestra la frase en inglés grande y SIEMPRE su significado en español debajo,
- * con altavoces para escucharla en inglés, en español y lenta.
+ * Muestra la frase en inglés y su significado, con una sola acción de audio.
  */
 export function BilingualLine({
   en,
@@ -27,7 +24,7 @@ export function BilingualLine({
   clip,
   autoPlayKey,
   es,
-  onHelpUsed,
+  showAudio = true,
   className,
 }: Props) {
   const g = gloss(en, alias);
@@ -45,37 +42,16 @@ export function BilingualLine({
       </p>
       {spanish ? <p className="mt-2 text-base text-muted-foreground">{spanish}</p> : null}
 
-      <div className="mt-3 flex flex-wrap items-center gap-2">
-        {clip ? (
+      {showAudio && clip ? (
+        <div className="mt-3">
           <AudioButton
             clipId={clip}
             {...(autoPlayKey === undefined ? {} : { autoPlayKey })}
-            label="Escuchar"
+            label="Escuchar otra vez"
             size="sm"
           />
-        ) : null}
-        {g?.slowClip ? (
-          <button
-            type="button"
-            onClick={() => void playClip(g.slowClip!)}
-            className="tap-target inline-flex h-12 items-center gap-2 rounded-full bg-secondary px-4 font-display text-secondary-foreground"
-          >
-            <Turtle className="size-5" aria-hidden /> Lento
-          </button>
-        ) : null}
-        {g?.esClip ? (
-          <button
-            type="button"
-            onClick={() => {
-              onHelpUsed?.();
-              void playClip(g.esClip!);
-            }}
-            className="tap-target inline-flex h-12 items-center gap-2 rounded-full bg-sun/60 px-4 font-display text-foreground"
-          >
-            <Languages className="size-5" aria-hidden /> ¿Qué significa?
-          </button>
-        ) : null}
-      </div>
+        </div>
+      ) : null}
     </div>
   );
 }
