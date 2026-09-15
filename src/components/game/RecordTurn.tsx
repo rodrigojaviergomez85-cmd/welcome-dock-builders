@@ -1,48 +1,67 @@
 import { useEffect, useRef, useState } from "react";
-import { Mic, Square, Play, RotateCcw, ArrowRight, MicOff } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Mic, Square, Play, RotateCcw, ArrowRight, MicOff, Ear, Loader2 } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
 import { AudioButton } from "./AudioButton";
 import { micSupported, startRecording } from "@/lib/recorder";
+import { startWavRecording, wavRecordingSupported, blobToBase64 } from "@/lib/wav-recorder";
 import { saveRecording } from "@/lib/recordings";
 import { stopClip } from "@/lib/audio";
+import { transcribeAttempt } from "@/lib/speech.functions";
+import { matchSpeech, type MatchResult } from "@/lib/speech-match";
+import { useProgress } from "@/lib/useProgress";
 
 type Props = {
   missionId: string;
   turnId: string;
   promptEs: string;
   targetEn: string;
+  /** Alias del avatar: cualquier nombre se acepta, así que no hace falta acertarlo. */
+  alias?: string;
   modelClip: string;
   support: "full" | "reduced";
   onHelpUsed?: () => void;
-  /** "practiced" = se grabó; "pending" = sin micrófono, la voz queda pendiente. */
-  onDone: (status: "practiced" | "pending") => void;
+  /** "heard" = el juego lo entendió, "practiced" = habló, "pending" = queda pendiente. */
+  onDone: (status: "heard" | "practiced" | "pending") => void;
 };
+
+type State = "idle" | "recording" | "checking" | "result" | "nomic";
 
 export function RecordTurn({
   missionId,
   turnId,
   promptEs,
   targetEn,
+  alias = "",
   modelClip,
   support,
   onHelpUsed,
   onDone,
 }: Props) {
+  const { state: progress } = useProgress();
   const [textVisible, setTextVisible] = useState(support === "full");
-  const [state, setState] = useState<"idle" | "recording" | "saved" | "nomic">("idle");
+  const [state, setState] = useState<State>("idle");
   const [url, setUrl] = useState<string | null>(null);
+  const [match, setMatch] = useState<MatchResult | null>(null);
+  const [serviceNote, setServiceNote] = useState<string | null>(null);
   const stopperRef = useRef<{ stop: () => Promise<Blob> } | null>(null);
+  const transcribe = useServerFn(transcribeAttempt);
+
+  const listenEnabled = progress.listenEnabled !== false;
 
   useEffect(() => {
-    if (!micSupported()) setState("nomic");
+    if (!micSupported() && !wavRecordingSupported()) setState("nomic");
   }, []);
 
   useEffect(() => () => { if (url) URL.revokeObjectURL(url); }, [url]);
 
   async function begin() {
     stopClip();
+    setMatch(null);
+    setServiceNote(null);
     try {
-      stopperRef.current = await startRecording();
+      stopperRef.current = wavRecordingSupported()
+        ? await startWavRecording()
+        : await startRecording();
       setState("recording");
     } catch {
       setState("nomic");
@@ -56,7 +75,7 @@ export function RecordTurn({
     stopperRef.current = null;
     if (url) URL.revokeObjectURL(url);
     setUrl(URL.createObjectURL(blob));
-    setState("saved");
+
     try {
       await saveRecording({
         key: `${missionId}:${turnId}`,
@@ -67,9 +86,32 @@ export function RecordTurn({
         blob,
       });
     } catch {
-      /* si IndexedDB falla, la práctica sigue contando en esta sesión */
+      /* si la base local falla, la práctica sigue contando en esta sesión */
     }
+
+    if (!listenEnabled || blob.type !== "audio/wav") {
+      setState("result");
+      return;
+    }
+
+    setState("checking");
+    try {
+      const audioBase64 = await blobToBase64(blob);
+      const result = await transcribe({ data: { audioBase64 } });
+      if (result.ok) {
+        setMatch(matchSpeech(result.text, targetEn, alias));
+      } else if (result.reason === "no-se-entendio" || result.reason === "audio-vacio") {
+        setMatch({ kind: "unclear", heardText: "" });
+      } else {
+        setServiceNote("No pude escucharte esta vez, pero tu voz quedó grabada.");
+      }
+    } catch {
+      setServiceNote("No pude escucharte esta vez, pero tu voz quedó grabada.");
+    }
+    setState("result");
   }
+
+  const heard = match?.kind === "heard";
 
   return (
     <div className="w-full max-w-xl rounded-3xl bg-card/95 p-5 text-card-foreground shadow-[var(--shadow-soft)]">
@@ -124,7 +166,7 @@ export function RecordTurn({
                 onClick={begin}
                 className="tap-target inline-flex items-center gap-2 rounded-full bg-accent px-6 font-display text-lg text-accent-foreground shadow-[var(--shadow-pop)] active:translate-y-1 active:shadow-none"
               >
-                <Mic className="size-6" aria-hidden /> Grabar
+                <Mic className="size-6" aria-hidden /> Decirlo
               </button>
               <button
                 type="button"
@@ -146,7 +188,13 @@ export function RecordTurn({
             </button>
           ) : null}
 
-          {state === "saved" ? (
+          {state === "checking" ? (
+            <p className="flex items-center gap-2 font-display text-lg text-muted-foreground">
+              <Loader2 className="size-6 animate-spin" aria-hidden /> Te estoy escuchando…
+            </p>
+          ) : null}
+
+          {state === "result" ? (
             <>
               <button
                 type="button"
@@ -167,7 +215,7 @@ export function RecordTurn({
               </button>
               <button
                 type="button"
-                onClick={() => onDone("practiced")}
+                onClick={() => onDone(heard ? "heard" : "practiced")}
                 className="tap-target inline-flex items-center gap-2 rounded-full bg-success px-6 font-display text-lg text-success-foreground shadow-[var(--shadow-pop)] active:translate-y-1 active:shadow-none"
               >
                 Seguir <ArrowRight className="size-5" aria-hidden />
@@ -177,10 +225,39 @@ export function RecordTurn({
         </div>
       )}
 
-      {state === "saved" ? (
-        <p className={cn("mt-4 rounded-2xl bg-muted p-3 text-sm text-muted-foreground")}>
-          Guardado como <strong>practicado</strong>. Todavía no hay revisión automática de
-          pronunciación: nadie corrige este audio aún.
+      {state === "result" && match ? (
+        <div
+          className={`mt-4 animate-pop rounded-2xl p-4 ${
+            heard ? "bg-success/15" : "bg-muted"
+          }`}
+        >
+          <p className="flex items-center gap-2 font-display text-xl">
+            <Ear className="size-6" aria-hidden />
+            {heard
+              ? "¡Te escuché!"
+              : match.kind === "partial"
+                ? "Te escuché casi todo"
+                : "No te escuché bien"}
+          </p>
+          {match.heardText ? (
+            <p lang="en" className="mt-2 font-display text-2xl">
+              “{match.heardText}”
+            </p>
+          ) : null}
+          <p className="mt-2 text-sm text-muted-foreground">
+            {heard
+              ? "Dijiste la frase. Cualquier nombre está bien."
+              : match.kind === "partial"
+                ? `Probá de nuevo incluyendo: ${match.missing.join(" ")}`
+                : "Probá otra vez, más cerca del micrófono y en voz alta."}
+          </p>
+        </div>
+      ) : null}
+
+      {state === "result" && !match ? (
+        <p className="mt-4 rounded-2xl bg-muted p-3 text-sm text-muted-foreground">
+          {serviceNote ??
+            "Guardado como practicado. El juego no escuchó este intento porque la escucha está apagada en el panel de adultos."}
         </p>
       ) : null}
     </div>
