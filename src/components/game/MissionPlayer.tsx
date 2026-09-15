@@ -24,6 +24,8 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
   const [stepIndex, setStepIndex] = useState(0);
   const [finished, setFinished] = useState(false);
   const [restored, setRestored] = useState(false);
+  /** Id del bloque cuya explicación en español ya se vio. */
+  const [introFor, setIntroFor] = useState<string | null>(null);
 
   // Recuperar dónde quedó el alumno, una sola vez.
   useEffect(() => {
