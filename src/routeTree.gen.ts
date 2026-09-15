@@ -10,33 +10,53 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PerfilRouteImport } from './routes/perfil'
+import { Route as MisionLunesRouteImport } from './routes/mision.lunes'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PerfilRoute = PerfilRouteImport.update({
+  id: '/perfil',
+  path: '/perfil',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MisionLunesRoute = MisionLunesRouteImport.update({
+  id: '/mision/lunes',
+  path: '/mision/lunes',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/perfil': typeof PerfilRoute
+  '/mision/lunes': typeof MisionLunesRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/perfil': typeof PerfilRoute
+  '/mision/lunes': typeof MisionLunesRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/perfil': typeof PerfilRoute
+  '/mision/lunes': typeof MisionLunesRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/perfil' | '/mision/lunes'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/perfil' | '/mision/lunes'
+  id: '__root__' | '/' | '/perfil' | '/mision/lunes'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  PerfilRoute: typeof PerfilRoute
+  MisionLunesRoute: typeof MisionLunesRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +68,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/perfil': {
+      id: '/perfil'
+      path: '/perfil'
+      fullPath: '/perfil'
+      preLoaderRoute: typeof PerfilRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mision/lunes': {
+      id: '/mision/lunes'
+      path: '/mision/lunes'
+      fullPath: '/mision/lunes'
+      preLoaderRoute: typeof MisionLunesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  PerfilRoute: PerfilRoute,
+  MisionLunesRoute: MisionLunesRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
