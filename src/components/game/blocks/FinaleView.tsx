@@ -12,7 +12,7 @@ type Props = {
   alias: string;
   avatarImage: string;
   onHelpUsed: () => void;
-  onOral: (status: "practiced" | "pending") => void;
+  onOral: (status: "heard" | "practiced" | "pending") => void;
   onFinish: () => void;
 };
 

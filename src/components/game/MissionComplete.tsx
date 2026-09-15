@@ -13,11 +13,11 @@ type Props = {
 
 export function MissionComplete({ mission, progress, alias, avatarImage, onReplay }: Props) {
   const oralLabel =
-    progress.oral.status === "practiced"
-      ? `Práctica oral: ${progress.oral.recordings} grabación(es) marcadas como practicadas`
+    progress.oral.recordings > 0
+      ? `Frases dichas: ${progress.oral.recordings}. El juego entendió ${progress.oral.understood}`
       : progress.oral.status === "pending-no-mic"
-        ? "Práctica oral: pendiente (no hubo micrófono)"
-        : "Práctica oral: sin grabaciones todavía";
+        ? "Práctica oral: pendiente (no se habló todavía)"
+        : "Práctica oral: sin frases dichas todavía";
 
   return (
     <div className="mx-auto flex min-h-screen max-w-2xl flex-col items-center justify-center gap-6 p-6 text-center">
@@ -54,8 +54,8 @@ export function MissionComplete({ mission, progress, alias, avatarImage, onRepla
         </ul>
 
         <p className="mt-5 rounded-2xl bg-muted p-4 text-sm text-muted-foreground">
-          Esto no es una certificación de nivel. Haberse grabado significa <strong>practicado</strong>;
-          todavía no existe revisión automática de pronunciación, así que no se muestra ninguna nota.
+          Esto no es una certificación de nivel. “Entendido” significa que el juego reconoció las
+          palabras de la frase, con cualquier nombre; no es una nota de pronunciación.
         </p>
       </div>
 

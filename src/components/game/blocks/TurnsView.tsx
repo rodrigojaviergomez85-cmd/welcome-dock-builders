@@ -17,7 +17,7 @@ type Props = {
   alias: string;
   support: "full" | "reduced";
   onHelpUsed: () => void;
-  onOral: (status: "practiced" | "pending") => void;
+  onOral: (status: "heard" | "practiced" | "pending") => void;
   onFinish: () => void;
 };
 
@@ -72,6 +72,7 @@ export function TurnsView({
           turnId={`${conversationId}-${turn.id}`}
           promptEs={turn.promptEs}
           targetEn={turn.targetEn.replace("{alias}", alias)}
+          alias={alias}
           modelClip={turn.modelClip}
           support={support}
           onHelpUsed={onHelpUsed}
