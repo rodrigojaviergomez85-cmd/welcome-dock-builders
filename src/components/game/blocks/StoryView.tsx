@@ -24,12 +24,19 @@ export function StoryView({ block, alias, onComprehension, onFinish }: Props) {
         <CharacterFigure id={choosing ? "luna" : line.speaker} size="lg" />
         <div className="flex flex-col items-start gap-3 pb-6">
           {choosing ? (
-            <SpeechBubble en={block.lines[block.lines.length - 1]!.en} es={block.choice.promptEs} />
+            <BilingualLine
+              en={block.lines[block.lines.length - 1]!.en}
+              alias={alias}
+              es={block.choice.promptEs}
+            />
           ) : (
-            <>
-              <SpeechBubble en={line.en} es={line.es} />
-              <AudioButton clipId={line.clip} autoPlayKey={line.clip} label="Escuchar" />
-            </>
+            <BilingualLine
+              en={line.en}
+              alias={alias}
+              clip={line.clip}
+              autoPlayKey={line.clip}
+              es={line.es}
+            />
           )}
         </div>
       </div>
@@ -41,6 +48,7 @@ export function StoryView({ block, alias, onComprehension, onFinish }: Props) {
             {block.choice.options.map((option, i) => {
               const text = option.en.replace("{alias}", alias);
               const isChosen = chosen === i;
+              const meaning = gloss(option.en)?.es;
               return (
                 <button
                   key={option.en}
@@ -48,9 +56,10 @@ export function StoryView({ block, alias, onComprehension, onFinish }: Props) {
                   onClick={() => {
                     if (chosen !== null && block.choice.options[chosen]!.correct) return;
                     setChosen(i);
+                    if (option.correct) playSuccess();
+                    else playTryAgain();
                     onComprehension(option.correct);
                   }}
-                  lang="en"
                   className={`tap-target rounded-2xl px-5 py-4 text-left font-display text-xl shadow-[var(--shadow-soft)] transition-transform active:scale-95 ${
                     isChosen && option.correct
                       ? "bg-success text-success-foreground"
@@ -59,11 +68,15 @@ export function StoryView({ block, alias, onComprehension, onFinish }: Props) {
                         : "bg-secondary text-secondary-foreground"
                   }`}
                 >
-                  {text}
+                  <span lang="en">{text}</span>
+                  {meaning ? (
+                    <span className="mt-1 block text-sm font-normal opacity-80">{meaning}</span>
+                  ) : null}
                 </button>
               );
             })}
           </div>
+
           {chosen !== null && block.choice.options[chosen]!.correct ? (
             <button
               type="button"
