@@ -72,22 +72,22 @@ export const GLOSSARY: Record<string, Gloss> = {
   },
   "Good evening!": { es: "¡Buenas noches! Se dice al llegar de noche.", esClip: "es-good-evening" },
   "My name is {alias}.": {
-    es: "Me llamo …",
+    es: "Me llamo {alias}.",
     esClip: "es-my-name-is",
     slowClip: "slow-my-name-is",
   },
   "Hello! My name is {alias}.": {
-    es: "¡Hola! Me llamo …",
+    es: "¡Hola! Me llamo {alias}.",
     esClip: "es-hello-my-name-is",
     slowClip: "slow-hello-my-name-is",
   },
   "Hello! My name is {alias}. I am fine.": {
-    es: "¡Hola! Me llamo … Estoy bien.",
+    es: "¡Hola! Me llamo {alias}. Estoy bien.",
     esClip: "es-hello-name-fine",
     slowClip: "slow-hello-name-fine",
   },
   "Good afternoon! My name is {alias}.": {
-    es: "¡Buenas tardes! Me llamo …",
+    es: "¡Buenas tardes! Me llamo {alias}.",
     esClip: "es-good-afternoon-name",
     slowClip: "slow-good-afternoon-name",
   },
