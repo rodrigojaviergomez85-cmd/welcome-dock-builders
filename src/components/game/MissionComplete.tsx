@@ -1,9 +1,11 @@
 import { useEffect } from "react";
 import { Link } from "@tanstack/react-router";
-import { Check, Mic, Ear, RotateCcw } from "lucide-react";
+import { Check, Mic, Ear, RotateCcw, Volume2 } from "lucide-react";
 import type { Mission } from "@/content/missions/types";
 import type { MissionProgress } from "@/lib/progress";
 import { playFanfare } from "@/lib/feedback-sounds";
+import { REVIEW_PHRASES, gloss } from "@/content/glossary";
+import { playClip } from "@/lib/audio";
 
 type Props = {
   mission: Mission;
