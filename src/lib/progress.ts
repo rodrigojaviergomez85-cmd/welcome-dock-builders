@@ -81,7 +81,10 @@ export function saveProgress(state: ProgressState) {
 }
 
 export function getMissionProgress(state: ProgressState, missionId: string): MissionProgress {
-  return state.missions[missionId] ?? emptyMission();
+  const saved = state.missions[missionId];
+  if (!saved) return emptyMission();
+  // Progresos guardados antes de que el juego escuchara no traen "understood".
+  return { ...emptyMission(), ...saved, oral: { ...emptyMission().oral, ...saved.oral } };
 }
 
 export function updateMission(
