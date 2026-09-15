@@ -5,7 +5,10 @@
 
 export const PROGRESS_KEY = "kids-platform-progress-v1";
 
-export type OralStatus = "none" | "practiced" | "pending-no-mic";
+export type OralStatus = "none" | "heard" | "practiced" | "pending-no-mic";
+
+/** Resultado de un turno hablado. "heard" = el juego entendió la frase. */
+export type OralResult = "heard" | "practiced" | "pending";
 
 export type MissionProgress = {
   started: boolean;
