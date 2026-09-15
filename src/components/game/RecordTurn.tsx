@@ -369,11 +369,6 @@ export function RecordTurn({
             "Guardado como practicado. El juego no escuchó este intento porque la escucha está apagada en el panel de adultos."}
         </p>
       ) : null}
-      {state === "result" && !recordingFull ? (
-        <button type="button" onClick={continueAfterResult} className="mt-3 px-2 py-2 text-sm text-muted-foreground underline underline-offset-4">
-          Seguir practicando
-        </button>
-      ) : null}
     </div>
   );
 }
