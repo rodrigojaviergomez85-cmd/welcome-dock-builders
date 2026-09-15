@@ -182,7 +182,7 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
         />
       ) : null}
 
-      {block.kind === "listenPick" ? (
+      {introFor === block.id && block.kind === "listenPick" ? (
         <ListenPickView
           block={block}
           startIndex={stepIndex}
@@ -192,7 +192,7 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
         />
       ) : null}
 
-      {block.kind === "bagMatch" ? (
+      {introFor === block.id && block.kind === "bagMatch" ? (
         <BagMatchView
           block={block}
           alias={alias}
@@ -204,7 +204,7 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
         />
       ) : null}
 
-      {block.kind === "dialogue" ? (
+      {introFor === block.id && block.kind === "dialogue" ? (
         <DialogueView
           missionId={mission.id}
           block={block}
@@ -217,7 +217,7 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
         />
       ) : null}
 
-      {block.kind === "finale" ? (
+      {introFor === block.id && block.kind === "finale" ? (
         <FinaleView
           missionId={mission.id}
           block={block}
