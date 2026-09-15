@@ -11,10 +11,7 @@ type Props = {
 /** Explicación corta en español, con voz, antes de cada parte de la misión. */
 export function BlockIntro({ blockId, onStart }: Props) {
   const intro = BLOCK_INTROS[blockId];
-  if (!intro) {
-    onStart();
-    return null;
-  }
+  if (!intro) return null;
 
   return (
     <div className="flex w-full max-w-2xl flex-col items-center gap-4">
