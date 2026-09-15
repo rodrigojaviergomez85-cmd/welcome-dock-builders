@@ -105,7 +105,7 @@ async function main() {
         voice: VOICES[line.speaker] ?? "sage",
         input: line.text,
         response_format: "mp3",
-        instructions: INSTRUCTIONS,
+        instructions: line.speaker === "model" ? MODEL_INSTRUCTIONS : CHARACTER_INSTRUCTIONS,
       }),
     });
     if (!res.ok) {
