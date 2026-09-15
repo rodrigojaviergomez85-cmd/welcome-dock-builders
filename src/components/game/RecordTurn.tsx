@@ -96,20 +96,25 @@ export function RecordTurn({
     }
 
     setState("checking");
+    let finalMatch: MatchResult | null = null;
     try {
       const audioBase64 = await blobToBase64(blob);
       const result = await transcribe({ data: { audioBase64 } });
       if (result.ok) {
-        setMatch(matchSpeech(result.text, targetEn, alias));
+        finalMatch = matchSpeech(result.text, targetEn, alias);
       } else if (result.reason === "no-se-entendio" || result.reason === "audio-vacio") {
-        setMatch({ kind: "unclear", heardText: "" });
+        finalMatch = { kind: "unclear", heardText: "" };
       } else {
         setServiceNote("No pude escucharte esta vez, pero tu voz quedó grabada.");
       }
     } catch {
       setServiceNote("No pude escucharte esta vez, pero tu voz quedó grabada.");
     }
-    if (match?.kind === "heard") playSuccess();
+    setMatch(finalMatch);
+    if (finalMatch) {
+      if (finalMatch.kind === "heard") playSuccess();
+      else playTryAgain();
+    }
     setState("result");
   }
 
