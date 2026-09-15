@@ -17,8 +17,11 @@ const VOICES: Record<string, string> = {
   model: "sage",
 };
 
-const INSTRUCTIONS =
-  "Speak slowly, warmly and very clearly, like a friendly teacher talking to an eight year old child who is hearing English for the first time. Leave a small pause between words.";
+const CHARACTER_INSTRUCTIONS =
+  "You are a cheerful 8-year-old child with a high-pitched, youthful, playful kid voice. Speak slowly and very clearly, full of excitement and curiosity, like a kid greeting a new friend. Leave a small pause between words. You must sound like a child, never like an adult.";
+
+const MODEL_INSTRUCTIONS =
+  "Speak slowly, warmly and very clearly, like a friendly young tutor demonstrating a phrase for a child who is hearing English for the first time. Leave a small pause between words.";
 
 type Line = { id: string; speaker: keyof typeof VOICES | string; text: string };
 
