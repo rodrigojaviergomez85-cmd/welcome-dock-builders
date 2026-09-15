@@ -3,7 +3,7 @@ import { HelpCircle } from "lucide-react";
 
 type Props = {
   text: string;
-  onUsed?: () => void;
+  onUsed?: (() => void) | undefined;
 };
 
 /** Ayuda breve en español. Cada apertura se registra como ayuda usada. */

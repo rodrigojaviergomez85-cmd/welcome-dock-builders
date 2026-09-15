@@ -38,7 +38,7 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
 
   useEffect(() => () => stopClip(), []);
 
-  const block = mission.blocks[blockIndex];
+  const block = mission.blocks[blockIndex]!;
   const progress = getMissionProgress(state, mission.id);
 
   function persist(next: { blockIndex?: number; stepIndex?: number }) {
@@ -143,10 +143,10 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
 
   let time: TimeOfDay = "morning";
   if (block.kind === "story") time = block.time;
-  if (block.kind === "listenPick") time = block.rounds[Math.min(stepIndex, block.rounds.length - 1)].time;
+  if (block.kind === "listenPick") time = block.rounds[Math.min(stepIndex, block.rounds.length - 1)]!.time;
   if (block.kind === "bagMatch") time = "afternoon";
   if (block.kind === "dialogue")
-    time = block.conversations[Math.min(stepIndex, block.conversations.length - 1)].time;
+    time = block.conversations[Math.min(stepIndex, block.conversations.length - 1)]!.time;
   if (block.kind === "finale") time = block.time;
 
   return (
