@@ -95,6 +95,55 @@ export const LINES: Line[] = [
   { id: "model-good-morning", speaker: "model", text: "Good morning!" },
   { id: "model-good-afternoon", speaker: "model", text: "Good afternoon!" },
   { id: "model-good-evening", speaker: "model", text: "Good evening!" },
+
+  // Significados en español (modo "primero en español", como Dora)
+  { id: "es-hello", speaker: "es", text: "¡Hola!" },
+  { id: "es-luna-welcome", speaker: "es", text: "¡Hola! Me llamo Luna. ¡Bienvenido a la Isla de los Exploradores!" },
+  { id: "es-what-name", speaker: "es", text: "¿Cómo te llamás?" },
+  { id: "es-hello-what-name", speaker: "es", text: "¡Hola! ¿Cómo te llamás?" },
+  { id: "es-leo-ask-first", speaker: "es", text: "¡Hola! ¿Cómo te llamás? Yo me llamo Leo." },
+  { id: "es-hello-name-leo", speaker: "es", text: "¡Hola! Me llamo Leo." },
+  { id: "es-morning-luna", speaker: "es", text: "¡Buenos días! Me llamo Luna." },
+  { id: "es-afternoon-luna", speaker: "es", text: "¡Buenas tardes! Me llamo Luna." },
+  { id: "es-afternoon-leo", speaker: "es", text: "¡Buenas tardes! Me llamo Leo." },
+  { id: "es-evening-boti", speaker: "es", text: "¡Buenas noches! Me llamo Boti." },
+  { id: "es-boti-greet", speaker: "es", text: "¡Buenas tardes! Soy Boti. Me llamo Boti." },
+  { id: "es-your-backpack", speaker: "es", text: "¡Esta es tu mochila!" },
+  { id: "es-nice", speaker: "es", text: "¡Mucho gusto!" },
+  { id: "es-i-am-fine", speaker: "es", text: "Estoy bien." },
+  { id: "es-how-are-you", speaker: "es", text: "¿Cómo estás?" },
+  { id: "es-good-night", speaker: "es", text: "¡Buenas noches! Se dice al irse a dormir." },
+  { id: "es-good-morning", speaker: "es", text: "¡Buenos días!" },
+  { id: "es-good-afternoon", speaker: "es", text: "¡Buenas tardes!" },
+  { id: "es-good-evening", speaker: "es", text: "¡Buenas noches! Se dice al llegar de noche." },
+  { id: "es-my-name-is", speaker: "es", text: "Me llamo… y acá decís tu nombre." },
+  { id: "es-hello-my-name-is", speaker: "es", text: "¡Hola! Me llamo… y acá decís tu nombre." },
+  { id: "es-hello-name-fine", speaker: "es", text: "¡Hola! Me llamo… y estoy bien." },
+  { id: "es-good-afternoon-name", speaker: "es", text: "¡Buenas tardes! Me llamo… y acá decís tu nombre." },
+  { id: "es-your-turn", speaker: "es", text: "¡Te toca!" },
+
+  // Inglés muy lento, palabra por palabra
+  { id: "slow-what-name", speaker: "slow", text: "What... is... your... name?" },
+  { id: "slow-i-am-fine", speaker: "slow", text: "I... am... fine." },
+  { id: "slow-how-are-you", speaker: "slow", text: "How... are... you?" },
+  { id: "slow-good-morning", speaker: "slow", text: "Good... morning!" },
+  { id: "slow-good-afternoon", speaker: "slow", text: "Good... afternoon!" },
+  { id: "slow-my-name-is", speaker: "slow", text: "My... name... is... Alex." },
+  { id: "slow-hello-my-name-is", speaker: "slow", text: "Hello!... My... name... is... Alex." },
+  { id: "slow-hello-name-fine", speaker: "slow", text: "Hello!... My... name... is... Alex... I... am... fine." },
+  { id: "slow-good-afternoon-name", speaker: "slow", text: "Good... afternoon!... My... name... is... Alex." },
+
+  // Frases puente de la guía
+  { id: "bridge-en-ingles", speaker: "es", text: "En inglés se dice así:" },
+  { id: "bridge-repeat", speaker: "es", text: "¡Ahora vos! Repetí conmigo." },
+  { id: "bridge-muy-bien", speaker: "es", text: "¡Muy bien!" },
+
+  // Instrucciones de cada parte de la misión
+  { id: "intro-story", speaker: "es", text: "Llegaste al muelle. Luna te va a saludar en inglés. Escuchá y después elegí tu respuesta." },
+  { id: "intro-listen", speaker: "es", text: "Vas a escuchar a alguien presentarse en inglés. Tocá quién habló." },
+  { id: "intro-bags", speaker: "es", text: "Cada explorador dice su nombre en inglés. Llevale la mochila a su dueño." },
+  { id: "intro-talk", speaker: "es", text: "Te van a saludar en inglés. Vos vas a contestar con tu nombre. Primero escuchás, después lo decís." },
+  { id: "intro-finale", speaker: "es", text: "Alguien nuevo te espera. Respondé en inglés y ganá tu etiqueta." },
 ];
 
 async function exists(path: string) {
