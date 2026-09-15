@@ -173,17 +173,17 @@ function AdultPanel() {
             <li>Ayudas en español usadas: {monday.helpsUsed}</li>
             <li>
               Práctica oral:{" "}
-              {monday.oral.status === "practiced"
-                ? `${monday.oral.recordings} grabación(es) practicadas`
+              {monday.oral.recordings > 0
+                ? `${monday.oral.recordings} frase(s) dichas, ${monday.oral.understood} entendidas por el juego`
                 : monday.oral.status === "pending-no-mic"
-                  ? "pendiente (sin micrófono)"
-                  : "todavía sin grabaciones"}
+                  ? "pendiente (todavía no habló)"
+                  : "todavía sin frases dichas"}
             </li>
           </ul>
         ) : null}
         <p className="mt-3 text-sm text-muted-foreground">
-          Estos datos son de observación, no una evaluación de nivel. No hay corrección automática de
-          pronunciación.
+          Estos datos son de observación, no una evaluación de nivel. “Entendida” significa que se
+          reconocieron las palabras de la frase; no se califica la pronunciación.
         </p>
 
         <button
