@@ -172,11 +172,13 @@ export function BagMatchView({
       {phase === "reply" && item.reply ? (
         <div className="w-full max-w-xl rounded-3xl bg-card/95 p-5 shadow-[var(--shadow-soft)]">
           <p className="text-sm text-muted-foreground">Saludá y presentate.</p>
-          <p lang="en" className="mt-2 font-display text-2xl">
-            {item.reply.en.replace("{alias}", alias)}
-          </p>
+          <BilingualLine
+            en={item.reply.en.replace("{alias}", alias)}
+            alias={alias}
+            clip={item.reply.modelClip}
+            className="mt-2"
+          />
           <div className="mt-4 flex flex-wrap items-center gap-3">
-            <AudioButton clipId={item.reply.modelClip} label="Escuchar el modelo" size="sm" />
             <button
               type="button"
               onClick={() => setPhase("done")}
