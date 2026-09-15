@@ -1,7 +1,9 @@
+import { useEffect } from "react";
 import { Link } from "@tanstack/react-router";
 import { Check, Mic, Ear, RotateCcw } from "lucide-react";
 import type { Mission } from "@/content/missions/types";
 import type { MissionProgress } from "@/lib/progress";
+import { playFanfare } from "@/lib/feedback-sounds";
 
 type Props = {
   mission: Mission;
