@@ -1,6 +1,8 @@
+import { useEffect } from "react";
 import { AudioButton } from "./AudioButton";
 import { gloss } from "@/content/glossary";
 import { cn } from "@/lib/utils";
+import { playClip } from "@/lib/audio";
 
 type Props = {
   /** Frase en inglés, ya con el alias reemplazado si corresponde. */
@@ -29,6 +31,11 @@ export function BilingualLine({
 }: Props) {
   const g = gloss(en, alias);
   const spanish = (es ?? g?.es)?.split("{alias}").join(alias ?? "…");
+
+  useEffect(() => {
+    if (showAudio || !clip || autoPlayKey === undefined) return;
+    void playClip(clip);
+  }, [autoPlayKey, clip, showAudio]);
 
   return (
     <div
