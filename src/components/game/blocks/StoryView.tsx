@@ -38,6 +38,7 @@ export function StoryView({ block, alias, onComprehension, onFinish }: Props) {
               clip={line.clip}
               autoPlayKey={line.clip}
               es={line.es}
+              showAudio={false}
             />
           )}
         </div>

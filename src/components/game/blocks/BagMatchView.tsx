@@ -34,6 +34,7 @@ export function BagMatchView({
   const [wrongKey, setWrongKey] = useState<string | null>(null);
   const [bagPicked, setBagPicked] = useState(false);
   const [showMeaning, setShowMeaning] = useState(false);
+  const [replyReady, setReplyReady] = useState(false);
 
   const item = block.items[index]!;
   const bag = BAGS[item.bag];
@@ -91,6 +92,7 @@ export function BagMatchView({
     setPhase("deliver");
     setBagPicked(false);
     setShowMeaning(false);
+    setReplyReady(false);
     onItemChange(nextIndex);
   }
 
@@ -102,7 +104,7 @@ export function BagMatchView({
         </span>
         <AudioButton clipId={item.clip} autoPlayKey={item.id} label="Escuchar al dueño" />
         {phase !== "deliver" || showMeaning ? (
-          <BilingualLine en={item.en} clip={item.clip} className="bg-secondary/30" />
+          <BilingualLine en={item.en} showAudio={false} className="bg-secondary/30" />
         ) : null}
         {phase === "deliver" && showMeaning ? (
           <p className="text-sm text-muted-foreground">
@@ -176,10 +178,18 @@ export function BagMatchView({
           <BilingualLine
             en={item.reply.en.replace("{alias}", alias)}
             alias={alias}
-            clip={item.reply.modelClip}
+            showAudio={false}
             className="mt-2"
           />
-          <div className="mt-4 flex flex-wrap items-center gap-3">
+          <div className="mt-4">
+            {!replyReady ? (
+              <AudioButton
+                clipId={item.reply.modelClip}
+                autoPlayKey={`${item.id}-reply`}
+                label="Escuchar otra vez"
+                onEnded={() => setReplyReady(true)}
+              />
+            ) : (
             <button
               type="button"
               onClick={() => setPhase("done")}
@@ -187,6 +197,7 @@ export function BagMatchView({
             >
               Ya lo dije <ArrowRight className="size-5" aria-hidden />
             </button>
+            )}
           </div>
         </div>
       ) : null}
@@ -199,6 +210,7 @@ export function BagMatchView({
               clip={item.thanks.clip}
               autoPlayKey={`${item.id}-thanks`}
               es={item.thanks.es}
+              showAudio={false}
             />
           ) : null}
           <button

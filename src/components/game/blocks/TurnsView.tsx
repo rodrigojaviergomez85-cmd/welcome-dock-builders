@@ -52,7 +52,6 @@ export function TurnsView({
               alias={alias}
               clip={turn.clip}
               autoPlayKey={`${conversationId}-${index}`}
-              onHelpUsed={onHelpUsed}
             />
           ) : (
             <SpeechBubble en="Your turn!" es="Te toca responder." />

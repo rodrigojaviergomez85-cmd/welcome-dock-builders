@@ -1,11 +1,10 @@
 import { useState } from "react";
-import { ArrowRight, Languages } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { AudioButton } from "../AudioButton";
 import { CharacterFigure } from "../CharacterFigure";
 import { BilingualLine } from "../BilingualLine";
 import { TIME_LABEL_ES } from "@/content/backgrounds";
 import { gloss } from "@/content/glossary";
-import { playClip } from "@/lib/audio";
 import type { CharacterId } from "@/content/characters";
 import type { ListenPickBlock } from "@/content/missions/types";
 import { playSuccess, playTryAgain } from "@/lib/feedback-sounds";
@@ -30,7 +29,6 @@ export function ListenPickView({
   const round = block.rounds[index]!;
   const solved = picked === round.answer;
   const meaning = gloss(round.en)?.es;
-  const esClip = gloss(round.en)?.esClip;
 
   function pick(id: CharacterId) {
     if (solved) return;
@@ -59,7 +57,7 @@ export function ListenPickView({
         </span>
         <p className="text-sm text-muted-foreground">¿Quién se presentó?</p>
         <AudioButton clipId={round.clip} autoPlayKey={round.id} label="Escuchar" />
-        {solved ? <BilingualLine en={round.en} clip={round.clip} /> : null}
+        {solved ? <BilingualLine en={round.en} showAudio={false} /> : null}
       </div>
 
       <div className="flex w-full flex-wrap items-end justify-center gap-2 sm:gap-6">
@@ -92,15 +90,6 @@ export function ListenPickView({
             {meaning ? ` — significa “${meaning}”.` : "."}
           </p>
           <p className="mt-1">Escuchá otra vez y probá de nuevo.</p>
-          {esClip ? (
-            <button
-              type="button"
-              onClick={() => void playClip(esClip)}
-              className="tap-target mt-3 inline-flex h-12 items-center gap-2 rounded-full bg-sun/60 px-4 font-display text-foreground"
-            >
-              <Languages className="size-5" aria-hidden /> Escucharlo en español
-            </button>
-          ) : null}
         </div>
       ) : null}
     </div>
