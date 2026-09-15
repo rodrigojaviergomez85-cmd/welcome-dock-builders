@@ -9,11 +9,12 @@ import { mkdir, writeFile, stat } from "node:fs/promises";
 
 const OUT_DIR = "public/audio";
 
+// Voces agudas y juveniles; "instructions" fuerza el tono de niño.
 const VOICES: Record<string, string> = {
   luna: "shimmer",
-  leo: "alloy",
-  boti: "echo",
-  mia: "nova",
+  leo: "nova",
+  boti: "coral",
+  mia: "shimmer",
   model: "sage",
 };
 
