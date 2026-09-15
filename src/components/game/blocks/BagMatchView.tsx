@@ -2,6 +2,7 @@ import { useState } from "react";
 import { ArrowRight, Hand } from "lucide-react";
 import { AudioButton } from "../AudioButton";
 import { SpeechBubble } from "../SpeechBubble";
+import { BilingualLine } from "../BilingualLine";
 import { CHARACTERS, BAGS } from "@/content/characters";
 import type { BagMatchBlock } from "@/content/missions/types";
 import { cn } from "@/lib/utils";
