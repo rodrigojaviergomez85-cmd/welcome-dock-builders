@@ -89,19 +89,23 @@ export function BagMatchView({
     setIndex(nextIndex);
     setPhase("deliver");
     setBagPicked(false);
+    setShowMeaning(false);
     onItemChange(nextIndex);
   }
 
   return (
     <div className="flex w-full max-w-4xl flex-col items-center gap-4">
-      <div className="flex flex-col items-center gap-3 rounded-3xl bg-card/95 px-5 py-4 shadow-[var(--shadow-soft)]">
+      <div className="flex w-full max-w-xl flex-col items-center gap-3 rounded-3xl bg-card/95 px-5 py-4 shadow-[var(--shadow-soft)]">
         <span className="rounded-full bg-secondary px-4 py-1 text-sm text-secondary-foreground">
           Mochila {index + 1} de {block.items.length}
         </span>
         <AudioButton clipId={item.clip} autoPlayKey={item.id} label="Escuchar al dueño" />
-        {phase !== "deliver" ? (
-          <p lang="en" className="animate-pop font-display text-xl">
-            {item.en}
+        {phase !== "deliver" || showMeaning ? (
+          <BilingualLine en={item.en} clip={item.clip} className="bg-secondary/30" />
+        ) : null}
+        {phase === "deliver" && showMeaning ? (
+          <p className="text-sm text-muted-foreground">
+            Escuchá el nombre otra vez y probá de nuevo.
           </p>
         ) : null}
       </div>
