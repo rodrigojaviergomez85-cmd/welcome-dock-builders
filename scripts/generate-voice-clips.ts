@@ -6,8 +6,27 @@
  * Estos clips son provisionales y deben sustituirse por grabaciones humanas revisadas.
  */
 import { mkdir, writeFile, stat } from "node:fs/promises";
+import { spawnSync } from "node:child_process";
 
 const OUT_DIR = "public/audio";
+
+// Además de las instrucciones, se sube el tono con ffmpeg para que suenen como niños.
+const PITCH: Record<string, number> = {
+  luna: 1.2,
+  leo: 1.16,
+  boti: 1.28,
+  mia: 1.22,
+};
+
+function raisePitch(path: string, factor: number) {
+  const tmp = `${path}.tmp.mp3`;
+  const r = spawnSync("ffmpeg", [
+    "-v", "error", "-y", "-i", path,
+    "-af", `asetrate=24000*${factor},aresample=24000,atempo=${(1 / factor).toFixed(4)}`,
+    "-codec:a", "libmp3lame", "-q:a", "4", tmp,
+  ]);
+  if (r.status === 0) spawnSync("mv", [tmp, path]);
+}
 
 // Voces agudas y juveniles; "instructions" fuerza el tono de niño.
 const VOICES: Record<string, string> = {
