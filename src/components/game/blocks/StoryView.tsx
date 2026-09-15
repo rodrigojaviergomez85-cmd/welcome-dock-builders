@@ -15,7 +15,7 @@ type Props = {
 export function StoryView({ block, alias, onComprehension, onFinish }: Props) {
   const [lineIndex, setLineIndex] = useState(0);
   const [chosen, setChosen] = useState<number | null>(null);
-  const line = block.lines[lineIndex];
+  const line = block.lines[lineIndex]!;
   const choosing = lineIndex >= block.lines.length;
 
   return (
@@ -24,7 +24,7 @@ export function StoryView({ block, alias, onComprehension, onFinish }: Props) {
         <CharacterFigure id={choosing ? "luna" : line.speaker} size="lg" />
         <div className="flex flex-col items-start gap-3 pb-6">
           {choosing ? (
-            <SpeechBubble en={block.lines[block.lines.length - 1].en} es={block.choice.promptEs} />
+            <SpeechBubble en={block.lines[block.lines.length - 1]!.en} es={block.choice.promptEs} />
           ) : (
             <>
               <SpeechBubble en={line.en} es={line.es} />
@@ -46,7 +46,7 @@ export function StoryView({ block, alias, onComprehension, onFinish }: Props) {
                   key={option.en}
                   type="button"
                   onClick={() => {
-                    if (chosen !== null && block.choice.options[chosen].correct) return;
+                    if (chosen !== null && block.choice.options[chosen]!.correct) return;
                     setChosen(i);
                     onComprehension(option.correct);
                   }}
@@ -64,7 +64,7 @@ export function StoryView({ block, alias, onComprehension, onFinish }: Props) {
               );
             })}
           </div>
-          {chosen !== null && block.choice.options[chosen].correct ? (
+          {chosen !== null && block.choice.options[chosen]!.correct ? (
             <button
               type="button"
               onClick={onFinish}
@@ -73,7 +73,7 @@ export function StoryView({ block, alias, onComprehension, onFinish }: Props) {
               Seguir <ArrowRight className="size-5" aria-hidden />
             </button>
           ) : null}
-          {chosen !== null && !block.choice.options[chosen].correct ? (
+          {chosen !== null && !block.choice.options[chosen]!.correct ? (
             <p className="mt-3 text-sm text-muted-foreground">
               Probá otra vez. Podés escuchar el modelo las veces que quieras.
             </p>

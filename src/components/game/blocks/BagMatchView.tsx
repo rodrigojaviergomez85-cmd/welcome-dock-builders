@@ -32,25 +32,25 @@ export function BagMatchView({
   const [wrongKey, setWrongKey] = useState<string | null>(null);
   const [bagPicked, setBagPicked] = useState(false);
 
-  const item = block.items[index];
+  const item = block.items[index]!;
   const bag = BAGS[item.bag];
 
   const targets: Target[] =
     item.owner === "avatar"
       ? [
           {
-            key: CHARACTERS[item.options[0]].id,
-            name: CHARACTERS[item.options[0]].name,
-            image: CHARACTERS[item.options[0]].image,
-            alt: CHARACTERS[item.options[0]].alt,
+            key: CHARACTERS[item.options[0]!].id,
+            name: CHARACTERS[item.options[0]!].name,
+            image: CHARACTERS[item.options[0]!].image,
+            alt: CHARACTERS[item.options[0]!].alt,
             isAnswer: false,
           },
           { key: "avatar", name: alias, image: avatarImage, alt: `Tu avatar, ${alias}`, isAnswer: true },
           {
-            key: CHARACTERS[item.options[1]].id,
-            name: CHARACTERS[item.options[1]].name,
-            image: CHARACTERS[item.options[1]].image,
-            alt: CHARACTERS[item.options[1]].alt,
+            key: CHARACTERS[item.options[1]!].id,
+            name: CHARACTERS[item.options[1]!].name,
+            image: CHARACTERS[item.options[1]!].image,
+            alt: CHARACTERS[item.options[1]!].alt,
             isAnswer: false,
           },
         ]

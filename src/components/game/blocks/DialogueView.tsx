@@ -24,7 +24,7 @@ export function DialogueView({
   onFinish,
 }: Props) {
   const [index, setIndex] = useState(Math.min(startIndex, block.conversations.length - 1));
-  const conversation = block.conversations[index];
+  const conversation = block.conversations[index]!;
 
   return (
     <TurnsView

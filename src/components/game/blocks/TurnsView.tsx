@@ -34,7 +34,7 @@ export function TurnsView({
   onFinish,
 }: Props) {
   const [index, setIndex] = useState(0);
-  const turn = turns[index];
+  const turn = turns[index]!;
 
   function advance() {
     if (index + 1 >= turns.length) onFinish();

@@ -2,9 +2,9 @@ import { cn } from "@/lib/utils";
 
 type Props = {
   en: string;
-  es?: string;
-  hidden?: boolean;
-  className?: string;
+  es?: string | undefined;
+  hidden?: boolean | undefined;
+  className?: string | undefined;
 };
 
 /** Burbuja de diálogo: inglés grande, ayuda en español pequeña. */

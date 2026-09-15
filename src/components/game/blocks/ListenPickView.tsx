@@ -23,7 +23,7 @@ export function ListenPickView({
 }: Props) {
   const [index, setIndex] = useState(Math.min(startIndex, block.rounds.length - 1));
   const [picked, setPicked] = useState<CharacterId | null>(null);
-  const round = block.rounds[index];
+  const round = block.rounds[index]!;
   const solved = picked === round.answer;
 
   function pick(id: CharacterId) {
