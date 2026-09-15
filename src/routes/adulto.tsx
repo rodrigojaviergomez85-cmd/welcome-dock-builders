@@ -30,6 +30,7 @@ function AdultPanel() {
   const { state, ready, update, reset } = useProgress();
   const [recordings, setRecordings] = useState<StoredRecording[]>([]);
   const [loadError, setLoadError] = useState(false);
+  const [canRecord, setCanRecord] = useState<boolean | null>(null);
   const monday = getMissionProgress(state, mondayMission.id);
 
   async function refresh() {
@@ -42,6 +43,7 @@ function AdultPanel() {
 
   useEffect(() => {
     void refresh();
+    setCanRecord(micSupported());
   }, []);
 
   return (
@@ -76,9 +78,11 @@ function AdultPanel() {
           <Mic className="size-5" aria-hidden /> Micrófono
         </h2>
         <p className="mt-2 text-sm text-muted-foreground">
-          {micSupported()
-            ? "Este navegador permite grabar. El permiso lo pide el navegador la primera vez que el niño toca “Grabar”."
-            : "Este navegador no permite grabar. La misión igual se puede completar: las partes habladas quedan como pendientes."}
+          {canRecord === null
+            ? "Comprobando el navegador…"
+            : canRecord
+              ? "Este navegador permite grabar. El permiso lo pide el navegador la primera vez que el niño toca “Grabar”."
+              : "Este navegador no permite grabar. La misión igual se puede completar: las partes habladas quedan como pendientes."}
         </p>
         <p className="mt-2 text-sm">
           Estado guardado del permiso:{" "}
