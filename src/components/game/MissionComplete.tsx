@@ -86,7 +86,9 @@ export function MissionComplete({ mission, progress, alias, avatarImage, onRepla
                     {text}
                   </span>
                   {g?.es ? (
-                    <span className="block text-sm text-muted-foreground">{g.es}</span>
+                    <span className="block text-sm text-muted-foreground">
+                      {g.es.split("{alias}").join(alias)}
+                    </span>
                   ) : null}
                 </span>
                 <span className="flex items-center gap-2">

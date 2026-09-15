@@ -133,7 +133,9 @@ export function RecordTurn({
 
         <div className="mt-3 rounded-2xl bg-sun/30 p-4">
           <p className="text-sm text-muted-foreground">Vos querés decir:</p>
-          <p className="font-display text-2xl">{g?.es ?? promptEs}</p>
+          <p className="font-display text-2xl">
+            {(g?.es ?? promptEs).split("{alias}").join(alias)}
+          </p>
           {g?.esClip ? (
             <AudioButton
               clipId={g.esClip}
