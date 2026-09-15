@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { ArrowRight, Moon } from "lucide-react";
-import { AudioButton } from "../AudioButton";
 import { CharacterFigure } from "../CharacterFigure";
-import { SpeechBubble } from "../SpeechBubble";
+import { BilingualLine } from "../BilingualLine";
 import { TurnsView } from "./TurnsView";
 import type { FinaleBlock } from "@/content/missions/types";
 
