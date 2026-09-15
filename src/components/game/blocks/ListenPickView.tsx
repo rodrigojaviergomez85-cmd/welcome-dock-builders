@@ -57,7 +57,7 @@ export function ListenPickView({
         </span>
         <p className="text-sm text-muted-foreground">¿Quién se presentó?</p>
         <AudioButton clipId={round.clip} autoPlayKey={round.id} label="Escuchar" />
-        {solved ? <BilingualLine en={round.en} clip={round.clip} /> : null}
+        {solved ? <BilingualLine en={round.en} showAudio={false} /> : null}
       </div>
 
       <div className="flex w-full flex-wrap items-end justify-center gap-2 sm:gap-6">

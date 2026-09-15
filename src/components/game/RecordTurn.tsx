@@ -44,6 +44,7 @@ export function RecordTurn({
   const [textVisible, setTextVisible] = useState(support === "full");
   const [state, setState] = useState<State>("learn-es");
   const [spanishPlayed, setSpanishPlayed] = useState(false);
+  const [englishModelPlayed, setEnglishModelPlayed] = useState(false);
   const [englishPlayed, setEnglishPlayed] = useState(false);
   const [micAvailable, setMicAvailable] = useState(true);
   const [url, setUrl] = useState<string | null>(null);
@@ -170,10 +171,18 @@ export function RecordTurn({
           showAudio={false}
           className="mt-2 bg-secondary/40"
         />
-        {!englishPlayed ? (
+        {!englishModelPlayed ? (
+          <AudioButton
+            clipId={modelClip}
+            autoPlayKey={`${turnId}-en`}
+            label="Escuchar otra vez"
+            onEnded={() => setEnglishModelPlayed(true)}
+            className="mt-5"
+          />
+        ) : !englishPlayed ? (
           <AudioButton
             clipId={slowClip}
-            label="Escuchar otra vez"
+            label="Escuchar despacio"
             onEnded={() => setEnglishPlayed(true)}
             className="mt-5"
           />

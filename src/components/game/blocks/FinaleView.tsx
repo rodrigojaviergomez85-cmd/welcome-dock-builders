@@ -73,6 +73,7 @@ export function FinaleView({
             clip={block.goodNight.clip}
             autoPlayKey="goodnight"
             es={block.goodNight.es}
+            showAudio={false}
           />
         </div>
       </div>
