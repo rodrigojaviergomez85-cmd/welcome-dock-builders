@@ -81,9 +81,22 @@ export function ListenPickView({
           Seguir <ArrowRight className="size-5" aria-hidden />
         </button>
       ) : picked ? (
-        <p className="rounded-2xl bg-card/95 px-4 py-2 text-sm text-muted-foreground">
-          Escuchá otra vez y probá de nuevo.
-        </p>
+        <div className="max-w-md rounded-2xl bg-card/95 px-4 py-3 text-center text-sm text-muted-foreground">
+          <p>
+            Escuchaste: <span lang="en">“{round.en}”</span>
+            {meaning ? ` — significa “${meaning}”.` : "."}
+          </p>
+          <p className="mt-1">Escuchá otra vez y probá de nuevo.</p>
+          {esClip ? (
+            <button
+              type="button"
+              onClick={() => void playClip(esClip)}
+              className="tap-target mt-3 inline-flex h-12 items-center gap-2 rounded-full bg-sun/60 px-4 font-display text-foreground"
+            >
+              <Languages className="size-5" aria-hidden /> Escucharlo en español
+            </button>
+          ) : null}
+        </div>
       ) : null}
     </div>
   );
