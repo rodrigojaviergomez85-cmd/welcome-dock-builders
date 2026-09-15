@@ -133,6 +133,8 @@ async function main() {
       continue;
     }
     await writeFile(path, Buffer.from(await res.arrayBuffer()));
+    const factor = PITCH[line.speaker];
+    if (factor) raisePitch(path, factor);
     console.log(`ok   ${line.id}`);
   }
 }
