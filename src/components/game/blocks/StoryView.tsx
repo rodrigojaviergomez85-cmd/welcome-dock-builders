@@ -2,7 +2,9 @@ import { useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { AudioButton } from "../AudioButton";
 import { CharacterFigure } from "../CharacterFigure";
-import { SpeechBubble } from "../SpeechBubble";
+import { BilingualLine } from "../BilingualLine";
+import { gloss } from "@/content/glossary";
+import { playSuccess, playTryAgain } from "@/lib/feedback-sounds";
 import type { StoryBlock } from "@/content/missions/types";
 
 type Props = {

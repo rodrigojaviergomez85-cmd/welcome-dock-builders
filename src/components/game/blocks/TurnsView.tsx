@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { ArrowRight } from "lucide-react";
-import { AudioButton } from "../AudioButton";
 import { CharacterFigure } from "../CharacterFigure";
 import { SpeechBubble } from "../SpeechBubble";
+import { BilingualLine } from "../BilingualLine";
 import { RecordTurn } from "../RecordTurn";
 import type { DialogueBlock } from "@/content/missions/types";
 import type { CharacterId } from "@/content/characters";
@@ -47,10 +47,13 @@ export function TurnsView({
         <CharacterFigure id={partner} size="lg" />
         <div className="flex flex-col items-start gap-3 pb-6">
           {turn.type === "character" ? (
-            <>
-              <SpeechBubble en={turn.en} />
-              <AudioButton clipId={turn.clip} autoPlayKey={`${conversationId}-${index}`} label="Escuchar" />
-            </>
+            <BilingualLine
+              en={turn.en}
+              alias={alias}
+              clip={turn.clip}
+              autoPlayKey={`${conversationId}-${index}`}
+              onHelpUsed={onHelpUsed}
+            />
           ) : (
             <SpeechBubble en="Your turn!" es="Te toca responder." />
           )}
