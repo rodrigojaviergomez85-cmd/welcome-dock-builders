@@ -19,7 +19,7 @@ export type MissionProgress = {
   stepIndex: number;
   helpsUsed: number;
   comprehension: { correct: number; attempts: number };
-  oral: { recordings: number; status: OralStatus };
+  oral: { recordings: number; understood: number; status: OralStatus };
   rewards: string[];
   /** Cuántas veces se terminó: repetir cuenta como práctica, no como misión nueva. */
   completions: number;
@@ -32,6 +32,8 @@ export type ProgressState = {
   version: 1;
   profile: Profile | null;
   micAllowed: boolean | null;
+  /** Si el juego puede escuchar y responder (transcribir el intento). */
+  listenEnabled: boolean;
   missions: Record<string, MissionProgress>;
 };
 
@@ -42,7 +44,7 @@ export const emptyMission = (): MissionProgress => ({
   stepIndex: 0,
   helpsUsed: 0,
   comprehension: { correct: 0, attempts: 0 },
-  oral: { recordings: 0, status: "none" },
+  oral: { recordings: 0, understood: 0, status: "none" },
   rewards: [],
   completions: 0,
   updatedAt: new Date().toISOString(),
@@ -52,6 +54,7 @@ export const emptyState = (): ProgressState => ({
   version: 1,
   profile: null,
   micAllowed: null,
+  listenEnabled: true,
   missions: {},
 });
 
