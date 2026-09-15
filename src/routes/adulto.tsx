@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeft, Mic, Trash2, ShieldCheck, RotateCcw } from "lucide-react";
+import { ArrowLeft, Mic, Trash2, ShieldCheck, RotateCcw, Ear } from "lucide-react";
 import { useProgress } from "@/lib/useProgress";
 import { getMissionProgress } from "@/lib/progress";
 import { mondayMission } from "@/content/missions";
