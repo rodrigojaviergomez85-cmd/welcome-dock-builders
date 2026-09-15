@@ -11,8 +11,8 @@
  */
 
 @theme inline {
-  --font-display: "Baloo 2", "Trebuchet MS", system-ui, sans-serif;
-  --font-sans: "Nunito", system-ui, sans-serif;
+  --font-display: "Outfit", "Trebuchet MS", system-ui, sans-serif;
+  --font-sans: "Figtree", system-ui, sans-serif;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -208,6 +208,11 @@
   }
 }
 
+@keyframes mic-pulse {
+  0%, 100% { transform: scale(1); box-shadow: var(--shadow-pop); }
+  50% { transform: scale(1.05); box-shadow: 0 0 0 10px color-mix(in oklab, var(--accent) 22%, transparent); }
+}
+
 @utility animate-pop {
   animation: island-pop 0.35s ease-out both;
 }
@@ -218,4 +223,17 @@
 
 @utility animate-nudge {
   animation: island-shake 0.35s ease-in-out 1;
+}
+
+@utility animate-mic-pulse {
+  animation: mic-pulse 1.15s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-pop,
+  .animate-bob,
+  .animate-nudge,
+  .animate-mic-pulse {
+    animation: none;
+  }
 }

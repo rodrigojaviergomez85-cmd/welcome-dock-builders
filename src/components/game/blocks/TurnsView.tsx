@@ -54,7 +54,7 @@ export function TurnsView({
               autoPlayKey={`${conversationId}-${index}`}
             />
           ) : (
-            <SpeechBubble en="Your turn!" es="Te toca responder." />
+            <SpeechBubble en="¡Ahora practicamos!" />
           )}
         </div>
       </div>
