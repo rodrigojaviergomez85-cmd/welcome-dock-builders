@@ -25,7 +25,7 @@ type Props = {
   onDone: (status: "heard" | "practiced" | "pending") => void;
 };
 
-type State = "idle" | "recording" | "checking" | "result" | "nomic";
+type State = "learn" | "idle" | "recording" | "checking" | "result" | "nomic";
 
 export function RecordTurn({
   missionId,
@@ -40,7 +40,7 @@ export function RecordTurn({
 }: Props) {
   const { state: progress } = useProgress();
   const [textVisible, setTextVisible] = useState(support === "full");
-  const [state, setState] = useState<State>("idle");
+  const [state, setState] = useState<State>("learn");
   const [url, setUrl] = useState<string | null>(null);
   const [match, setMatch] = useState<MatchResult | null>(null);
   const [serviceNote, setServiceNote] = useState<string | null>(null);
@@ -52,6 +52,8 @@ export function RecordTurn({
   useEffect(() => {
     if (!micSupported() && !wavRecordingSupported()) setState("nomic");
   }, []);
+
+  const noMic = state === "nomic";
 
   useEffect(() => () => { if (url) URL.revokeObjectURL(url); }, [url]);
 
