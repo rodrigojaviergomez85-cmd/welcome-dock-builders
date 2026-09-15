@@ -51,6 +51,7 @@ export function RecordTurn({
   promptEs,
   targetEn,
   alias = "",
+  modelClip,
   onDone,
 }: Props) {
   const { state: progress } = useProgress();
