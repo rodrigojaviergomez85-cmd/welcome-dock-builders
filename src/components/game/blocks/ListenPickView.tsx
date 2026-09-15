@@ -29,6 +29,8 @@ export function ListenPickView({
   const [picked, setPicked] = useState<CharacterId | null>(null);
   const round = block.rounds[index]!;
   const solved = picked === round.answer;
+  const meaning = gloss(round.en)?.es;
+  const esClip = gloss(round.en)?.esClip;
 
   function pick(id: CharacterId) {
     if (solved) return;
