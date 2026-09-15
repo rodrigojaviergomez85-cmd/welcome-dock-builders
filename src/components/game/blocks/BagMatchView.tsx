@@ -194,10 +194,12 @@ export function BagMatchView({
       {phase === "done" ? (
         <div className="flex flex-col items-center gap-3">
           {item.thanks ? (
-            <>
-              <SpeechBubble en={item.thanks.en} />
-              <AudioButton clipId={item.thanks.clip} autoPlayKey={`${item.id}-thanks`} label="Escuchar" size="sm" />
-            </>
+            <BilingualLine
+              en={item.thanks.en}
+              clip={item.thanks.clip}
+              autoPlayKey={`${item.id}-thanks`}
+              es={item.thanks.es}
+            />
           ) : null}
           <button
             type="button"
