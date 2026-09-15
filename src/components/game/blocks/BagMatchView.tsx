@@ -69,11 +69,13 @@ export function BagMatchView({
     if (!target.isAnswer) {
       playTryAgain();
       setWrongKey(target.key);
+      setShowMeaning(true);
       window.setTimeout(() => setWrongKey(null), 700);
       return;
     }
     playSuccess();
     setBagPicked(false);
+    setShowMeaning(false);
     setPhase(item.reply ? "reply" : "done");
   }
 
