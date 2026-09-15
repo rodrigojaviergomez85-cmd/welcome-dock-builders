@@ -31,7 +31,7 @@ export function BilingualLine({
   className,
 }: Props) {
   const g = gloss(en, alias);
-  const spanish = es ?? g?.es;
+  const spanish = (es ?? g?.es)?.split("{alias}").join(alias ?? "…");
 
   return (
     <div
