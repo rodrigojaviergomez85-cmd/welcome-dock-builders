@@ -11,6 +11,8 @@ import { BagMatchView } from "./blocks/BagMatchView";
 import { DialogueView } from "./blocks/DialogueView";
 import { FinaleView } from "./blocks/FinaleView";
 import { MissionComplete } from "./MissionComplete";
+import { BlockIntro } from "./BlockIntro";
+import { BLOCK_INTROS } from "@/content/glossary";
 
 type Props = {
   mission: Mission;
