@@ -1,8 +1,11 @@
 import { useState } from "react";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Languages } from "lucide-react";
 import { AudioButton } from "../AudioButton";
 import { CharacterFigure } from "../CharacterFigure";
+import { BilingualLine } from "../BilingualLine";
 import { TIME_LABEL_ES } from "@/content/backgrounds";
+import { gloss } from "@/content/glossary";
+import { playClip } from "@/lib/audio";
 import type { CharacterId } from "@/content/characters";
 import type { ListenPickBlock } from "@/content/missions/types";
 import { playSuccess, playTryAgain } from "@/lib/feedback-sounds";
