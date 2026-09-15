@@ -101,6 +101,30 @@ function AdultPanel() {
       </section>
 
       <section className="mt-4 rounded-3xl bg-card p-5 shadow-[var(--shadow-soft)]">
+        <h2 className="flex items-center gap-2 font-display text-xl">
+          <Ear className="size-5" aria-hidden /> Permitir que el juego escuche y responda
+        </h2>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Encendido, el juego convierte en texto lo que dice el niño y le contesta “¡Te escuché!” o
+          le pide intentar otra vez. Para eso, el audio del intento se envía a un servicio de
+          reconocimiento de voz y vuelve como texto. Apagado, el juego solo graba, como antes.
+        </p>
+        <button
+          type="button"
+          onClick={() =>
+            update((prev) => ({ ...prev, listenEnabled: prev.listenEnabled === false }))
+          }
+          className="tap-target mt-4 inline-flex items-center gap-2 rounded-full bg-secondary px-6 font-display text-secondary-foreground"
+        >
+          {state.listenEnabled === false ? "Encender la escucha" : "Apagar la escucha"}
+        </button>
+        <p className="mt-2 text-sm">
+          Ahora está {state.listenEnabled === false ? "apagada" : "encendida"}.
+        </p>
+      </section>
+
+
+      <section className="mt-4 rounded-3xl bg-card p-5 shadow-[var(--shadow-soft)]">
         <h2 className="font-display text-xl">Grabaciones guardadas</h2>
         {loadError ? (
           <p className="mt-2 text-sm text-muted-foreground">
