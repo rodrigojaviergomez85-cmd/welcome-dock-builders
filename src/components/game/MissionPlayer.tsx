@@ -161,6 +161,9 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
     time = block.conversations[Math.min(stepIndex, block.conversations.length - 1)]!.time;
   if (block.kind === "finale") time = block.time;
 
+  const showingIntro = BLOCK_INTROS[block.id] !== undefined && introFor !== block.id;
+
+
   return (
     <SceneShell
       background={BACKGROUNDS[time]}
