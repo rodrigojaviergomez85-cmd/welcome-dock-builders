@@ -32,6 +32,7 @@ export function BagMatchView({
   const [phase, setPhase] = useState<"deliver" | "reply" | "done">("deliver");
   const [wrongKey, setWrongKey] = useState<string | null>(null);
   const [bagPicked, setBagPicked] = useState(false);
+  const [showMeaning, setShowMeaning] = useState(false);
 
   const item = block.items[index]!;
   const bag = BAGS[item.bag];
