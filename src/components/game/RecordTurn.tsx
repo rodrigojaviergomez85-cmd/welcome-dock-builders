@@ -9,6 +9,7 @@ import { stopClip } from "@/lib/audio";
 import { transcribeAttempt } from "@/lib/speech.functions";
 import { matchSpeech, type MatchResult } from "@/lib/speech-match";
 import { useProgress } from "@/lib/useProgress";
+import { playSuccess, playTryAgain } from "@/lib/feedback-sounds";
 
 type Props = {
   missionId: string;
@@ -108,6 +109,7 @@ export function RecordTurn({
     } catch {
       setServiceNote("No pude escucharte esta vez, pero tu voz quedó grabada.");
     }
+    if (match?.kind === "heard") playSuccess();
     setState("result");
   }
 
