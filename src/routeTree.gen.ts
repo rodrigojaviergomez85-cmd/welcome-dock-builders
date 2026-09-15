@@ -10,12 +10,18 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdultoRouteImport } from './routes/adulto'
 import { Route as PerfilRouteImport } from './routes/perfil'
 import { Route as MisionLunesRouteImport } from './routes/mision.lunes'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdultoRoute = AdultoRouteImport.update({
+  id: '/adulto',
+  path: '/adulto',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PerfilRoute = PerfilRouteImport.update({
@@ -31,30 +37,34 @@ const MisionLunesRoute = MisionLunesRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/adulto': typeof AdultoRoute
   '/perfil': typeof PerfilRoute
   '/mision/lunes': typeof MisionLunesRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/adulto': typeof AdultoRoute
   '/perfil': typeof PerfilRoute
   '/mision/lunes': typeof MisionLunesRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/adulto': typeof AdultoRoute
   '/perfil': typeof PerfilRoute
   '/mision/lunes': typeof MisionLunesRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/perfil' | '/mision/lunes'
+  fullPaths: '/' | '/adulto' | '/perfil' | '/mision/lunes'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/perfil' | '/mision/lunes'
-  id: '__root__' | '/' | '/perfil' | '/mision/lunes'
+  to: '/' | '/adulto' | '/perfil' | '/mision/lunes'
+  id: '__root__' | '/' | '/adulto' | '/perfil' | '/mision/lunes'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdultoRoute: typeof AdultoRoute
   PerfilRoute: typeof PerfilRoute
   MisionLunesRoute: typeof MisionLunesRoute
 }
@@ -66,6 +76,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/adulto': {
+      id: '/adulto'
+      path: '/adulto'
+      fullPath: '/adulto'
+      preLoaderRoute: typeof AdultoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/perfil': {
@@ -87,6 +104,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdultoRoute: AdultoRoute,
   PerfilRoute: PerfilRoute,
   MisionLunesRoute: MisionLunesRoute,
 }
