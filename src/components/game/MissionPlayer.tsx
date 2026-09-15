@@ -67,15 +67,27 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
     );
   }
 
-  function onOral(status: "practiced" | "pending") {
+  function onOral(status: "heard" | "practiced" | "pending") {
     update((prev) =>
-      updateMission(prev, mission.id, (p) => ({
-        ...p,
-        oral:
-          status === "practiced"
-            ? { recordings: p.oral.recordings + 1, status: "practiced" }
-            : { recordings: p.oral.recordings, status: p.oral.status === "practiced" ? "practiced" : "pending-no-mic" },
-      })),
+      updateMission(prev, mission.id, (p) => {
+        if (status === "pending") {
+          return {
+            ...p,
+            oral: {
+              ...p.oral,
+              status: p.oral.status === "none" ? "pending-no-mic" : p.oral.status,
+            },
+          };
+        }
+        return {
+          ...p,
+          oral: {
+            recordings: p.oral.recordings + 1,
+            understood: p.oral.understood + (status === "heard" ? 1 : 0),
+            status: status === "heard" || p.oral.status === "heard" ? "heard" : "practiced",
+          },
+        };
+      }),
     );
   }
 

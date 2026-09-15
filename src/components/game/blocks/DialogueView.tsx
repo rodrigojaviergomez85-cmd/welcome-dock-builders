@@ -7,7 +7,7 @@ type Props = {
   block: DialogueBlock;
   alias: string;
   onHelpUsed: () => void;
-  onOral: (status: "practiced" | "pending") => void;
+  onOral: (status: "heard" | "practiced" | "pending") => void;
   onConversationChange: (index: number) => void;
   startIndex?: number;
   onFinish: () => void;
