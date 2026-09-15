@@ -164,6 +164,19 @@ export function RecordTurn({
     setState("complete");
   }
 
+  function continueWithoutMic() {
+    if (recordingFull) {
+      onDone("pending");
+      return;
+    }
+    if (fragmentIndex + 1 < fragments.length) {
+      setFragmentIndex((current) => current + 1);
+      setState("fragment-listen");
+      return;
+    }
+    setState("complete");
+  }
+
   const progressLabels = ["Escuchá", "Practicá", "Decilo"];
   const Progress = () => (
     <div className="mb-4 grid grid-cols-3 gap-2" aria-label={`Paso ${step + 1} de 3`}>
@@ -281,14 +294,14 @@ export function RecordTurn({
             <MicOff className="size-5" aria-hidden /> Sin micrófono por ahora
           </p>
           <p className="mt-1 text-sm text-muted-foreground">
-            Podés seguir jugando. Tu voz queda pendiente y no se marca como practicada.
+            Podés seguir aprendiendo aunque hoy no puedas grabar tu voz.
           </p>
           <button
             type="button"
-            onClick={() => onDone("pending")}
+            onClick={continueWithoutMic}
             className="tap-target mt-4 inline-flex items-center gap-2 rounded-full bg-primary px-6 font-display text-lg text-primary-foreground shadow-[var(--shadow-pop)] active:translate-y-1 active:shadow-none"
           >
-            Seguir <ArrowRight className="size-5" aria-hidden />
+            {recordingFull ? "Seguir" : "Siguiente parte"} <ArrowRight className="size-5" aria-hidden />
           </button>
         </div>
       ) : (
