@@ -9,16 +9,20 @@ import { mkdir, writeFile, stat } from "node:fs/promises";
 
 const OUT_DIR = "public/audio";
 
+// Voces agudas y juveniles; "instructions" fuerza el tono de niño.
 const VOICES: Record<string, string> = {
   luna: "shimmer",
-  leo: "alloy",
-  boti: "echo",
-  mia: "nova",
+  leo: "nova",
+  boti: "coral",
+  mia: "shimmer",
   model: "sage",
 };
 
-const INSTRUCTIONS =
-  "Speak slowly, warmly and very clearly, like a friendly teacher talking to an eight year old child who is hearing English for the first time. Leave a small pause between words.";
+const CHARACTER_INSTRUCTIONS =
+  "You are a cheerful 8-year-old child with a high-pitched, youthful, playful kid voice. Speak slowly and very clearly, full of excitement and curiosity, like a kid greeting a new friend. Leave a small pause between words. You must sound like a child, never like an adult.";
+
+const MODEL_INSTRUCTIONS =
+  "Speak slowly, warmly and very clearly, like a friendly young tutor demonstrating a phrase for a child who is hearing English for the first time. Leave a small pause between words.";
 
 type Line = { id: string; speaker: keyof typeof VOICES | string; text: string };
 
@@ -102,7 +106,7 @@ async function main() {
         voice: VOICES[line.speaker] ?? "sage",
         input: line.text,
         response_format: "mp3",
-        instructions: INSTRUCTIONS,
+        instructions: line.speaker === "model" ? MODEL_INSTRUCTIONS : CHARACTER_INSTRUCTIONS,
       }),
     });
     if (!res.ok) {
