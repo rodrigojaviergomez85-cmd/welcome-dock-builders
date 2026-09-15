@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Mic, Square, RotateCcw, ArrowRight, MicOff, Ear, Loader2, Volume2 } from "lucide-react";
+import { Mic, Square, RotateCcw, ArrowRight, MicOff, Ear, Loader2 } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import { AudioButton } from "./AudioButton";
 import { micSupported, startRecording } from "@/lib/recorder";
@@ -51,7 +51,6 @@ export function RecordTurn({
   promptEs,
   targetEn,
   alias = "",
-  modelClip,
   onDone,
 }: Props) {
   const { state: progress } = useProgress();
@@ -75,7 +74,11 @@ export function RecordTurn({
   useEffect(() => () => { if (url) URL.revokeObjectURL(url); }, [url]);
 
   const fragments = practiceFragments(targetEn, alias);
-  const fragment = fragments[fragmentIndex] ?? fragments[0];
+  const fragment = fragments[fragmentIndex] ?? {
+    en: targetEn,
+    es: gloss(targetEn, alias)?.es ?? targetEn,
+    clip: modelClip,
+  };
   const practiceTarget = recordingFull ? targetEn : fragment.en;
 
   async function begin(full = false) {
