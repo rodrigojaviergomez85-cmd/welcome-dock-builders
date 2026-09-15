@@ -16,7 +16,7 @@ const PITCH: Record<string, number> = {
   leo: 1.16,
   boti: 1.28,
   mia: 1.22,
-  es: 1.14,
+  es: 1.24,
 };
 
 function raisePitch(path: string, factor: number) {
@@ -47,7 +47,7 @@ const MODEL_INSTRUCTIONS =
   "Speak slowly, warmly and very clearly, like a friendly young tutor demonstrating a phrase for a child who is hearing English for the first time. Leave a small pause between words.";
 
 const ES_INSTRUCTIONS =
-  "Hablás en español latinoamericano neutro, con voz alegre y juvenil de guía infantil, como Dora la Exploradora. Hablá despacio, con mucha claridad y entusiasmo, dirigiéndote a un niño de 8 años.";
+  "Sos una niña de 8 años. Hablá en español latinoamericano neutro con una voz claramente infantil, aguda, juguetona y llena de entusiasmo. Hablá despacio y con mucha claridad, como una niña ayudando a otro niño. Nunca debes sonar como una persona adulta, una maestra adulta o una narradora adulta.";
 
 const SLOW_INSTRUCTIONS =
   "Speak EXTREMELY slowly in English, one word at a time, with a clear pause after every single word, exaggerating each sound, like a teacher helping a child repeat the phrase.";
