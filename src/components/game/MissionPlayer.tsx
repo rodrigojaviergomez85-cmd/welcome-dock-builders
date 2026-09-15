@@ -169,11 +169,11 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
       onHelpUsed={onHelpUsed}
       steps={{ total: mission.blocks.length, current: blockIndex }}
     >
-      {introFor !== block.id ? (
+      {showingIntro ? (
         <BlockIntro blockId={block.id} onStart={() => setIntroFor(block.id)} />
       ) : null}
 
-      {introFor === block.id && block.kind === "story" ? (
+      {!showingIntro && block.kind === "story" ? (
         <StoryView
           block={block}
           alias={alias}
@@ -182,7 +182,7 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
         />
       ) : null}
 
-      {introFor === block.id && block.kind === "listenPick" ? (
+      {!showingIntro && block.kind === "listenPick" ? (
         <ListenPickView
           block={block}
           startIndex={stepIndex}
@@ -192,7 +192,7 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
         />
       ) : null}
 
-      {introFor === block.id && block.kind === "bagMatch" ? (
+      {!showingIntro && block.kind === "bagMatch" ? (
         <BagMatchView
           block={block}
           alias={alias}
@@ -204,7 +204,7 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
         />
       ) : null}
 
-      {introFor === block.id && block.kind === "dialogue" ? (
+      {!showingIntro && block.kind === "dialogue" ? (
         <DialogueView
           missionId={mission.id}
           block={block}
@@ -217,7 +217,7 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
         />
       ) : null}
 
-      {introFor === block.id && block.kind === "finale" ? (
+      {!showingIntro && block.kind === "finale" ? (
         <FinaleView
           missionId={mission.id}
           block={block}
