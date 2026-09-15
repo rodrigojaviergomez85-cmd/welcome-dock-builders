@@ -37,7 +37,6 @@ export function RecordTurn({
   alias = "",
   modelClip,
   support,
-  onHelpUsed,
   onDone,
 }: Props) {
   const { state: progress } = useProgress();
@@ -166,8 +165,6 @@ export function RecordTurn({
         <BilingualLine
           en={targetEn}
           alias={alias}
-          clip={modelClip}
-          autoPlayKey={`${turnId}-en`}
           showAudio={false}
           className="mt-2 bg-secondary/40"
         />

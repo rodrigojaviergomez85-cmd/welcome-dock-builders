@@ -104,7 +104,7 @@ export function BagMatchView({
         </span>
         <AudioButton clipId={item.clip} autoPlayKey={item.id} label="Escuchar al dueño" />
         {phase !== "deliver" || showMeaning ? (
-          <BilingualLine en={item.en} clip={item.clip} className="bg-secondary/30" />
+          <BilingualLine en={item.en} showAudio={false} className="bg-secondary/30" />
         ) : null}
         {phase === "deliver" && showMeaning ? (
           <p className="text-sm text-muted-foreground">
