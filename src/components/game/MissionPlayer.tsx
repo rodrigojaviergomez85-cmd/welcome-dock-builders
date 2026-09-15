@@ -169,7 +169,11 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
       onHelpUsed={onHelpUsed}
       steps={{ total: mission.blocks.length, current: blockIndex }}
     >
-      {block.kind === "story" ? (
+      {introFor !== block.id ? (
+        <BlockIntro blockId={block.id} onStart={() => setIntroFor(block.id)} />
+      ) : null}
+
+      {introFor === block.id && block.kind === "story" ? (
         <StoryView
           block={block}
           alias={alias}
