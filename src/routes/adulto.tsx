@@ -64,7 +64,12 @@ function AdultPanel() {
         <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
           <li>Todo se guarda solo en este dispositivo: no hay cuentas ni servidor todavía.</li>
           <li>Progreso y alias: en el almacenamiento local del navegador.</li>
-          <li>Grabaciones de voz: en la base local del navegador; nunca se suben ni se comparten.</li>
+          <li>Grabaciones de voz: en la base local del navegador; no se suben ni se comparten.</li>
+          <li>
+            Si la escucha está encendida, una copia temporal del intento se envía a un servicio de
+            reconocimiento de voz para convertirlo en texto. No se guarda allí y no viaja el nombre
+            real del niño (el perfil usa un alias inventado).
+          </li>
           <li>No se piden nombre real, edad exacta, dirección, correo ni fotos.</li>
           <li>
             El borrado automático a los 30 días todavía no existe: hoy el borrado es manual con el
