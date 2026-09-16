@@ -1,0 +1,128 @@
+import type { Mission } from "./types";
+
+/**
+ * Martes — Day 2 de la currícula: Countries / Where are you from?
+ * Formato del día: el barco de banderas (escuchar de dónde es cada quien).
+ */
+export const tuesdayMission: Mission = {
+  id: "tuesday",
+  order: 2,
+  dayEs: "Martes",
+  title: "El barco de banderas",
+  status: "available",
+  objective: "Where are you from? / I am from ______.",
+  storyProblem:
+    "Llega un barco con exploradores de varios países y las banderas se mezclaron. Hay que escuchar de dónde es cada uno.",
+  prerequisites: ["monday"],
+  models: ["Where are you from?", "I am from {country}."],
+  reward: { id: "tuesday-flag", label: "Bandera de tu país en el pase" },
+  evidence: "Reconoce países dichos en inglés y dice de dónde es.",
+  counter: { icon: "star", label: "Banderas colocadas" },
+  reviewPhrases: [
+    "Hello! My name is {alias}.",
+    "Where are you from?",
+    "I am from {country}.",
+  ],
+  blocks: [
+    {
+      kind: "tapPick",
+      id: "tue-flags",
+      estimatedMinutes: 6,
+      helpEs: "Escuchá el país y tocá su bandera.",
+      style: "flag",
+      time: "morning",
+      promptEs: "¿De dónde es?",
+      rounds: [
+        {
+          id: "t1",
+          clip: ["p-i-am-from", "w-c-mexico"],
+          en: "I am from Mexico.",
+          es: "Soy de México.",
+          answer: "c-mexico",
+          options: ["c-mexico", "c-brazil", "c-peru", "c-colombia"],
+          speaker: "leo",
+        },
+        {
+          id: "t2",
+          clip: ["p-i-am-from", "w-c-guatemala"],
+          en: "I am from Guatemala.",
+          es: "Soy de Guatemala.",
+          answer: "c-guatemala",
+          options: ["c-argentina", "c-guatemala", "c-united-states", "c-mexico"],
+          speaker: "mia",
+        },
+        {
+          id: "t3",
+          clip: ["p-i-am-from", "w-c-colombia"],
+          en: "I am from Colombia.",
+          es: "Soy de Colombia.",
+          answer: "c-colombia",
+          options: ["c-colombia", "c-peru", "c-el-salvador", "c-brazil"],
+          speaker: "boti",
+        },
+        {
+          id: "t4",
+          clip: ["p-i-am-from", "w-c-el-salvador"],
+          en: "I am from El Salvador.",
+          es: "Soy de El Salvador.",
+          answer: "c-el-salvador",
+          options: ["c-united-states", "c-guatemala", "c-el-salvador", "c-argentina"],
+          speaker: "luna",
+        },
+      ],
+    },
+    {
+      kind: "pickProfile",
+      id: "tue-mine",
+      estimatedMinutes: 5,
+      helpEs: "Elegí tu país y decilo en inglés.",
+      time: "morning",
+      field: "country",
+      promptEs: "¿De dónde sos vos?",
+      options: [
+        "c-el-salvador",
+        "c-mexico",
+        "c-guatemala",
+        "c-colombia",
+        "c-peru",
+        "c-argentina",
+        "c-brazil",
+        "c-united-states",
+      ],
+      say: {
+        targetEn: "I am from {country}.",
+        promptEs: "Decí de dónde sos.",
+        modelClip: ["p-i-am-from", "{countryClip}"],
+      },
+    },
+    {
+      kind: "showcase",
+      id: "tue-show",
+      estimatedMinutes: 5,
+      helpEs: "Presentate: tu nombre y tu país.",
+      time: "afternoon",
+      audience: ["luna", "leo"],
+      intro: {
+        speaker: "luna",
+        clip: "p-where-from",
+        en: "Where are you from?",
+        es: "¿De dónde sos?",
+      },
+      steps: [
+        {
+          id: "s1",
+          promptEs: "Saludá y decí tu nombre.",
+          targetEn: "Hello! My name is {alias}.",
+          modelClip: "model-hello-my-name-is",
+        },
+        {
+          id: "s2",
+          promptEs: "Decí de dónde sos.",
+          targetEn: "I am from {country}.",
+          modelClip: ["p-i-am-from", "{countryClip}"],
+        },
+      ],
+      cheer: { speaker: "luna", clip: "luna-nice", en: "Nice to meet you!", es: "¡Mucho gusto!" },
+    },
+  ],
+};
