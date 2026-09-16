@@ -130,7 +130,73 @@ export const BLOCK_INTROS: Record<string, { es: string; clip: string }> = {
     es: "¡Falta una mochila! Es la tuya. Decí tu nombre en inglés para completar su etiqueta.",
     clip: "intro-finale",
   },
+
+  // Martes
+  "tue-flags": {
+    es: "Llegó el barco y las banderas se mezclaron. Escuchá de dónde es cada explorador y tocá su bandera.",
+    clip: "intro-tue-flags",
+  },
+  "tue-mine": {
+    es: "Ahora te toca a vos: elegí tu país y aprendé a decirlo en inglés.",
+    clip: "intro-tue-mine",
+  },
+  "tue-show": {
+    es: "Luna te pregunta de dónde sos. Decí tu nombre y tu país en inglés.",
+    clip: "intro-tue-show",
+  },
+
+  // Miércoles
+  "wed-numbers": {
+    es: "En el mercado se cayeron las cajas. Escuchá el número en inglés y tocalo.",
+    clip: "intro-wed-numbers",
+  },
+  "wed-age": {
+    es: "Elegí cuántos años tenés y aprendé a decirlo en inglés.",
+    clip: "intro-wed-age",
+  },
+  "wed-show": {
+    es: "Boti quiere saber tu edad. Decí tu nombre, tu país y tus años.",
+    clip: "intro-wed-show",
+  },
+
+  // Jueves
+  "thu-letters": {
+    es: "El faro perdió sus letras. Escuchá cada letra en inglés y tocala.",
+    clip: "intro-thu-letters",
+  },
+  "thu-bee": {
+    es: "Ahora deletrean nombres. Escuchá letra por letra y tocá de quién es.",
+    clip: "intro-thu-bee",
+  },
+  "thu-spell-mine": {
+    es: "Armá tu propio nombre tocando sus letras en inglés.",
+    clip: "intro-thu-spell",
+  },
+
+  // Viernes
+  "fri-warmup": {
+    es: "Repaso rápido de letras antes de salir al escenario.",
+    clip: "intro-fri-warmup",
+  },
+  "fri-spell": {
+    es: "Deletreá tu nombre para el público de la isla.",
+    clip: "intro-fri-spell",
+  },
+  "fri-show": {
+    es: "¡Es tu show! Contá quién sos: nombre, país y edad, todo en inglés.",
+    clip: "intro-fri-show",
+  },
 };
+
+/** Reemplaza {alias}, {country} y {age} en una frase. */
+export function fill(text: string, vars: Record<string, string | number | undefined>): string {
+  let out = text;
+  for (const [key, value] of Object.entries(vars)) {
+    if (value === undefined) continue;
+    out = out.split(`{${key}}`).join(String(value));
+  }
+  return out;
+}
 
 /**
  * Busca el significado de una frase. Si el alias del avatar está dentro del texto,
