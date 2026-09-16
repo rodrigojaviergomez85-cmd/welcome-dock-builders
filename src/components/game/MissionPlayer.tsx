@@ -10,6 +10,11 @@ import { ListenPickView } from "./blocks/ListenPickView";
 import { BagMatchView } from "./blocks/BagMatchView";
 import { DialogueView } from "./blocks/DialogueView";
 import { FinaleView } from "./blocks/FinaleView";
+import { TapPickView } from "./blocks/TapPickView";
+import { PickProfileView } from "./blocks/PickProfileView";
+import { SpellView } from "./blocks/SpellView";
+import { ShowcaseView } from "./blocks/ShowcaseView";
+import { addCoins, addPassPiece, registerPlayDay, COINS_PER_MISSION, COINS_PER_STEP } from "@/lib/economy";
 import { MissionComplete } from "./MissionComplete";
 import { BlockIntro } from "./BlockIntro";
 import { BLOCK_INTROS } from "@/content/glossary";
@@ -36,7 +41,9 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
     setBlockIndex(Math.min(progress.blockIndex, mission.blocks.length - 1));
     setStepIndex(progress.stepIndex);
     setRestored(true);
-    update((prev) => updateMission(prev, mission.id, (p) => ({ ...p, started: true })));
+    update((prev) =>
+      registerPlayDay(updateMission(prev, mission.id, (p) => ({ ...p, started: true }))),
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ready, restored]);
 
@@ -107,12 +114,16 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
       return;
     }
     const next = blockIndex + 1;
+    update((prev) => addCoins(prev, COINS_PER_STEP));
     setBlockIndex(next);
     setStepIndex(0);
     persist({ blockIndex: next, stepIndex: 0 });
   }
 
   function completeMission() {
+    update((prev) =>
+      addPassPiece(addCoins(prev, COINS_PER_MISSION), mission.id),
+    );
     update((prev) =>
       updateMission(prev, mission.id, (p) =>
         addReward(
@@ -164,10 +175,24 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
   if (block.kind === "dialogue")
     time = block.conversations[Math.min(stepIndex, block.conversations.length - 1)]!.time;
   if (block.kind === "finale") time = block.time;
+  if (
+    block.kind === "tapPick" ||
+    block.kind === "pickProfile" ||
+    block.kind === "spell" ||
+    block.kind === "showcase"
+  )
+    time = block.time;
 
   const showingIntro = BLOCK_INTROS[block.id] !== undefined && introFor !== block.id;
   const bagsIndex = mission.blocks.findIndex((candidate) => candidate.kind === "bagMatch");
-  const rescuedCount = blockIndex < bagsIndex ? 0 : blockIndex === bagsIndex ? Math.min(stepIndex, 3) : 3;
+  const counter =
+    bagsIndex >= 0
+      ? {
+          icon: "bag" as const,
+          total: 4,
+          current: blockIndex < bagsIndex ? 0 : blockIndex === bagsIndex ? Math.min(stepIndex, 3) : 3,
+        }
+      : { icon: "star" as const, total: mission.blocks.length, current: blockIndex };
 
 
   return (
@@ -176,7 +201,7 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
       title={mission.title}
       helpEs={block.helpEs}
       onHelpUsed={onHelpUsed}
-      rescued={{ total: 4, current: rescuedCount }}
+      counter={counter}
     >
       {showingIntro ? (
         <BlockIntro blockId={block.id} onStart={() => setIntroFor(block.id)} />
@@ -222,6 +247,51 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
           onHelpUsed={onHelpUsed}
           onOral={onOral}
           onConversationChange={goToStep}
+          onFinish={nextBlock}
+        />
+      ) : null}
+
+      {!showingIntro && block.kind === "tapPick" ? (
+        <TapPickView
+          block={block}
+          startIndex={stepIndex}
+          onComprehension={onComprehension}
+          onRoundChange={goToStep}
+          onFinish={nextBlock}
+        />
+      ) : null}
+
+      {!showingIntro && block.kind === "pickProfile" ? (
+        <PickProfileView
+          missionId={mission.id}
+          block={block}
+          alias={alias}
+          onHelpUsed={onHelpUsed}
+          onOral={onOral}
+          onFinish={nextBlock}
+        />
+      ) : null}
+
+      {!showingIntro && block.kind === "spell" ? (
+        <SpellView
+          missionId={mission.id}
+          block={block}
+          alias={alias}
+          onHelpUsed={onHelpUsed}
+          onOral={onOral}
+          onFinish={nextBlock}
+        />
+      ) : null}
+
+      {!showingIntro && block.kind === "showcase" ? (
+        <ShowcaseView
+          missionId={mission.id}
+          block={block}
+          alias={alias}
+          startIndex={stepIndex}
+          onHelpUsed={onHelpUsed}
+          onOral={onOral}
+          onStepChange={goToStep}
           onFinish={nextBlock}
         />
       ) : null}
