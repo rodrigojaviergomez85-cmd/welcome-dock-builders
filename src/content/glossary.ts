@@ -92,6 +92,13 @@ export const GLOSSARY: Record<string, Gloss> = {
     slowClip: "slow-good-afternoon-name",
   },
   "Your turn!": { es: "¡Te toca!", esClip: "es-your-turn" },
+
+  // Semana 1 · martes a viernes
+  "Where are you from?": { es: "¿De dónde sos?", esClip: "es-where-from" },
+  "I am from {country}.": { es: "Soy de {country}.", esClip: "es-i-am-from" },
+  "How old are you?": { es: "¿Cuántos años tenés?", esClip: "es-how-old" },
+  "I am {age} years old.": { es: "Tengo {age} años.", esClip: "es-years-old" },
+  "Tell me about yourself!": { es: "¡Contame de vos!", esClip: "es-tell-me" },
 };
 
 /** Clips puente que usa el modo "primero en español". */
