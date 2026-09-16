@@ -6,6 +6,9 @@ import type { MissionProgress } from "@/lib/progress";
 import { playFanfare } from "@/lib/feedback-sounds";
 import { REVIEW_PHRASES, gloss } from "@/content/glossary";
 import { playClip } from "@/lib/audio";
+import { useProgress } from "@/lib/useProgress";
+import { missionVars, fillText } from "@/lib/mission-vars";
+import { Coins, Flame } from "lucide-react";
 
 type Props = {
   mission: Mission;
@@ -16,6 +19,10 @@ type Props = {
 };
 
 export function MissionComplete({ mission, progress, alias, avatarImage, onReplay }: Props) {
+  const { state } = useProgress();
+  const vars = missionVars(state.profile, alias);
+  const phrases = mission.reviewPhrases ?? REVIEW_PHRASES;
+
   useEffect(() => {
     playFanfare();
   }, []);
@@ -30,14 +37,27 @@ export function MissionComplete({ mission, progress, alias, avatarImage, onRepla
   return (
     <div className="mx-auto flex min-h-screen max-w-2xl flex-col items-center justify-center gap-6 p-6 text-center">
       <img src={avatarImage} alt={`Tu avatar, ${alias}`} className="h-32 w-auto animate-pop" />
-      <h1 className="font-display text-4xl">¡Rescate completado!</h1>
+      <h1 className="font-display text-4xl">¡Misión completada!</h1>
       <p className="text-muted-foreground">
         {mission.dayEs} · {mission.title}
       </p>
 
       <div className="w-full rounded-3xl bg-card p-6 text-left shadow-[var(--shadow-soft)]">
-        <p className="mb-4 flex items-center justify-center gap-2 rounded-2xl bg-success/15 px-4 py-3 font-display text-xl text-success">
-          <Backpack className="size-6" aria-hidden /> 4 de 4 mochilas rescatadas
+        <div className="mb-4 grid gap-2 sm:grid-cols-2">
+          <p className="flex items-center justify-center gap-2 rounded-2xl bg-sun/40 px-4 py-3 font-display text-xl">
+            <Coins className="size-6" aria-hidden /> {state.coins ?? 0} monedas
+          </p>
+          <p className="flex items-center justify-center gap-2 rounded-2xl bg-accent/20 px-4 py-3 font-display text-xl">
+            <Flame className="size-6" aria-hidden /> Racha: {state.streak?.count ?? 1} día(s)
+          </p>
+        </div>
+        {mission.id === "monday" ? (
+          <p className="mb-4 flex items-center justify-center gap-2 rounded-2xl bg-success/15 px-4 py-3 font-display text-xl text-success">
+            <Backpack className="size-6" aria-hidden /> 4 de 4 mochilas rescatadas
+          </p>
+        ) : null}
+        <p className="text-sm text-muted-foreground">
+          Piezas del pase de la semana: {(state.passPieces ?? []).length} de 5
         </p>
         <p className="font-display text-xl">Tu pase de explorador</p>
         <div className="mt-3 rounded-2xl border-4 border-dashed border-accent px-5 py-4 text-center">
@@ -76,9 +96,9 @@ export function MissionComplete({ mission, progress, alias, avatarImage, onRepla
           Tocá el altavoz para escucharlas otra vez en inglés o en español.
         </p>
         <ul className="mt-4 space-y-3">
-          {REVIEW_PHRASES.map((phrase) => {
+          {phrases.map((phrase) => {
             const g = gloss(phrase);
-            const text = phrase.replace("{alias}", alias);
+            const text = fillText(phrase, vars);
             return (
               <li
                 key={phrase}
@@ -90,7 +110,7 @@ export function MissionComplete({ mission, progress, alias, avatarImage, onRepla
                   </span>
                   {g?.es ? (
                     <span className="block text-sm text-muted-foreground">
-                      {g.es.split("{alias}").join(alias)}
+                      {fillText(g.es.split("{age}").join(vars.ageEs), vars)}
                     </span>
                   ) : null}
                 </span>
