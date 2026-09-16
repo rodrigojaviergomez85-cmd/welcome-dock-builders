@@ -14,7 +14,7 @@ export function stopClip() {
   }
 }
 
-export function playClip(clipId: string): Promise<void> {
+function playOne(clipId: string): Promise<void> {
   if (typeof window === "undefined") return Promise.resolve();
   stopClip();
   const audio = new Audio(clipUrl(clipId));
@@ -27,4 +27,16 @@ export function playClip(clipId: string): Promise<void> {
     audio.onerror = () => resolve();
     audio.play().catch(() => resolve());
   });
+}
+
+/** Reproduce un clip o varios seguidos (por ejemplo "I am from" + "Mexico"). */
+export function playClip(clipId: string | string[]): Promise<void> {
+  if (Array.isArray(clipId)) return playSequence(clipId);
+  return playOne(clipId);
+}
+
+export async function playSequence(clips: string[]): Promise<void> {
+  for (const clip of clips) {
+    await playOne(clip);
+  }
 }

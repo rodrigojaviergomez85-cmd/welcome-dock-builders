@@ -26,7 +26,14 @@ export type MissionProgress = {
   updatedAt: string;
 };
 
-export type Profile = { avatarId: string; alias: string };
+export type Profile = {
+  avatarId: string;
+  alias: string;
+  /** Id del país elegido en la misión del martes. */
+  countryId?: string;
+  /** Edad elegida en la misión del miércoles. */
+  age?: number;
+};
 
 export type ProgressState = {
   version: 1;
@@ -35,6 +42,12 @@ export type ProgressState = {
   /** Si el juego puede escuchar y responder (transcribir el intento). */
   listenEnabled: boolean;
   missions: Record<string, MissionProgress>;
+  /** Monedas ganadas al hablar y acertar. */
+  coins: number;
+  /** Días seguidos jugados. */
+  streak: { count: number; lastDay: string | null };
+  /** Piezas del pase de la semana, una por misión terminada. */
+  passPieces: string[];
 };
 
 export const emptyMission = (): MissionProgress => ({
@@ -56,6 +69,9 @@ export const emptyState = (): ProgressState => ({
   micAllowed: null,
   listenEnabled: true,
   missions: {},
+  coins: 0,
+  streak: { count: 0, lastDay: null },
+  passPieces: [],
 });
 
 export function loadProgress(): ProgressState {
