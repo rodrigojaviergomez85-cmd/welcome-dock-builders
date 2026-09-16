@@ -73,7 +73,6 @@ export function TapPickView({
       <div
         className={cn(
           "grid w-full gap-3",
-          block.options?.length,
           bigSymbol ? "grid-cols-4" : "grid-cols-2",
         )}
       >
@@ -95,7 +94,7 @@ export function TapPickView({
               )}
             >
               <span className={bigSymbol ? "font-display text-4xl" : "text-4xl"} aria-hidden>
-                {item.symbol ?? ""}
+                {block.style === "word" ? "🧒" : (item.symbol ?? "")}
               </span>
               <span lang="en" className="font-display text-base leading-tight">
                 {item.en}
