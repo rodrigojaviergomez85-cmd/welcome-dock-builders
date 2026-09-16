@@ -61,6 +61,28 @@ function instructionsFor(speaker: string) {
 
 type Line = { id: string; speaker: keyof typeof VOICES | string; text: string };
 
+
+const COUNTRY_NAMES: [string, string][] = [
+  ["c-el-salvador", "El Salvador"],
+  ["c-mexico", "Mexico"],
+  ["c-guatemala", "Guatemala"],
+  ["c-colombia", "Colombia"],
+  ["c-peru", "Peru"],
+  ["c-argentina", "Argentina"],
+  ["c-brazil", "Brazil"],
+  ["c-united-states", "United States"],
+];
+const COUNTRY_LINES: Line[] = COUNTRY_NAMES.map(([id, name]) => ({ id: `w-${id}`, speaker: "model", text: name }));
+
+const NUMBER_NAMES = ["One","Two","Three","Four","Five","Six","Seven","Eight","Nine","Ten","Eleven","Twelve"];
+const NUMBER_LINES: Line[] = NUMBER_NAMES.map((word, i) => ({ id: `w-n-${i + 1}`, speaker: "model", text: word }));
+
+const LETTER_LINES: Line[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").map((letter) => ({
+  id: `w-l-${letter.toLowerCase()}`,
+  speaker: "model",
+  text: `${letter}.`,
+}));
+
 export const LINES: Line[] = [
   // Luna
   { id: "luna-hello-name", speaker: "luna", text: "Hello! My name is Luna." },
@@ -160,7 +182,45 @@ export const LINES: Line[] = [
   { id: "intro-bags", speaker: "es", text: "Cada explorador dice su nombre en inglés. Llevale la mochila a su dueño." },
   { id: "intro-talk", speaker: "es", text: "Te van a saludar en inglés. Vos vas a contestar con tu nombre. Primero escuchás, después lo decís." },
   { id: "intro-finale", speaker: "es", text: "Alguien nuevo te espera. Respondé en inglés y ganá tu etiqueta." },
+
+  // --- Semana 1: vocabulario nuevo (países, números, alfabeto) y partes de frase ---
+  ...COUNTRY_LINES,
+  ...NUMBER_LINES,
+  ...LETTER_LINES,
+
+  { id: "p-i-am-from", speaker: "model", text: "I am from" },
+  { id: "p-i-am", speaker: "model", text: "I am" },
+  { id: "p-years-old", speaker: "model", text: "years old" },
+  { id: "p-where-from", speaker: "luna", text: "Where are you from?" },
+  { id: "p-how-old", speaker: "boti", text: "How old are you?" },
+  { id: "p-tell-me", speaker: "luna", text: "Tell me about yourself!" },
+  { id: "p-nice", speaker: "model", text: "Nice to meet you!" },
+
+  { id: "spell-luna", speaker: "slow", text: "L... U... N... A" },
+  { id: "spell-leo", speaker: "slow", text: "L... E... O" },
+  { id: "spell-boti", speaker: "slow", text: "B... O... T... I" },
+  { id: "spell-mia", speaker: "slow", text: "M... I... A" },
+
+  { id: "es-where-from", speaker: "es", text: "¿De dónde sos?" },
+  { id: "es-i-am-from", speaker: "es", text: "Soy de… y acá decís tu país." },
+  { id: "es-how-old", speaker: "es", text: "¿Cuántos años tenés?" },
+  { id: "es-years-old", speaker: "es", text: "Tengo… y acá decís tus años." },
+  { id: "es-tell-me", speaker: "es", text: "¡Contame de vos!" },
+
+  { id: "intro-tue-flags", speaker: "es", text: "Llegó el barco y las banderas se mezclaron. Escuchá de dónde es cada explorador y tocá su bandera." },
+  { id: "intro-tue-mine", speaker: "es", text: "Ahora te toca a vos: elegí tu país y aprendé a decirlo en inglés." },
+  { id: "intro-tue-show", speaker: "es", text: "Luna te pregunta de dónde sos. Decí tu nombre y tu país en inglés." },
+  { id: "intro-wed-numbers", speaker: "es", text: "En el mercado se cayeron las cajas. Escuchá el número en inglés y tocalo." },
+  { id: "intro-wed-age", speaker: "es", text: "Elegí cuántos años tenés y aprendé a decirlo en inglés." },
+  { id: "intro-wed-show", speaker: "es", text: "Boti quiere saber tu edad. Decí tu nombre, tu país y tus años." },
+  { id: "intro-thu-letters", speaker: "es", text: "El faro perdió sus letras. Escuchá cada letra en inglés y tocala." },
+  { id: "intro-thu-bee", speaker: "es", text: "Ahora deletrean nombres. Escuchá letra por letra y tocá de quién es." },
+  { id: "intro-thu-spell", speaker: "es", text: "Armá tu propio nombre tocando sus letras en inglés." },
+  { id: "intro-fri-warmup", speaker: "es", text: "Repaso rápido de letras antes de salir al escenario." },
+  { id: "intro-fri-spell", speaker: "es", text: "Deletreá tu nombre para el público de la isla." },
+  { id: "intro-fri-show", speaker: "es", text: "¡Es tu show! Contá quién sos: nombre, país y edad, todo en inglés." },
 ];
+
 
 async function exists(path: string) {
   try {
