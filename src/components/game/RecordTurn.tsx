@@ -19,7 +19,9 @@ type Props = {
   targetEn: string;
   /** Alias del avatar: cualquier nombre se acepta, así que no hace falta acertarlo. */
   alias?: string;
-  modelClip: string;
+  modelClip: string | string[];
+  /** Significado en español ya armado (cuando la frase tiene país o edad). */
+  meaning?: { es: string; esClip?: string | undefined } | undefined;
   support: "full" | "reduced";
   onHelpUsed?: () => void;
   /** "heard" = el juego lo entendió, "practiced" = habló, "pending" = queda pendiente. */
@@ -28,9 +30,13 @@ type Props = {
 
 type State = "intent" | "fragment-listen" | "fragment-echo" | "complete" | "recording" | "checking" | "result" | "nomic";
 
-type PracticeFragment = { en: string; es: string; clip: string };
+type PracticeFragment = { en: string; es: string; clip: string | string[] };
 
-function practiceFragments(targetEn: string, alias: string): PracticeFragment[] {
+function practiceFragments(
+  targetEn: string,
+  alias: string,
+  modelClip: string | string[],
+): PracticeFragment[] {
   const fragments: PracticeFragment[] = [];
   if (/hello/i.test(targetEn)) fragments.push({ en: "Hello!", es: "¡Hola!", clip: "model-hello" });
   if (/good afternoon/i.test(targetEn)) {
@@ -42,7 +48,7 @@ function practiceFragments(targetEn: string, alias: string): PracticeFragment[] 
   if (/i am fine/i.test(targetEn)) fragments.push({ en: "I am fine.", es: "Estoy bien.", clip: "model-i-am-fine" });
   return fragments.length > 0
     ? fragments
-    : [{ en: targetEn, es: gloss(targetEn, alias)?.es ?? targetEn, clip: "model-hello" }];
+    : [{ en: targetEn, es: gloss(targetEn, alias)?.es ?? targetEn, clip: modelClip }];
 }
 
 export function RecordTurn({
@@ -52,6 +58,7 @@ export function RecordTurn({
   targetEn,
   alias = "",
   modelClip,
+  meaning,
   onDone,
 }: Props) {
   const { state: progress } = useProgress();
@@ -74,7 +81,7 @@ export function RecordTurn({
 
   useEffect(() => () => { if (url) URL.revokeObjectURL(url); }, [url]);
 
-  const fragments = practiceFragments(targetEn, alias);
+  const fragments = practiceFragments(targetEn, alias, modelClip);
   const fragment = fragments[fragmentIndex] ?? {
     en: targetEn,
     es: gloss(targetEn, alias)?.es ?? targetEn,
@@ -147,7 +154,7 @@ export function RecordTurn({
   }
 
   const heard = match?.kind === "heard";
-  const g = gloss(targetEn, alias);
+  const g = meaning ?? gloss(targetEn, alias);
   const step = state === "intent" ? 0 : recordingFull || state === "complete" ? 2 : 1;
 
   function continueAfterResult() {
@@ -209,7 +216,7 @@ export function RecordTurn({
             />
           ) : null}
         </div>
-        {spanishPlayed ? (
+        {spanishPlayed || !g?.esClip ? (
           <button
             type="button"
             onClick={() => setState("fragment-listen")}

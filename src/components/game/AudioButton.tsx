@@ -4,7 +4,8 @@ import { cn } from "@/lib/utils";
 import { playClip } from "@/lib/audio";
 
 type Props = {
-  clipId: string;
+  /** Un clip o varios que se escuchan seguidos. */
+  clipId: string | string[];
   label?: string;
   /** Cambiar este valor intenta reproducir automáticamente (si el navegador lo permite). */
   autoPlayKey?: string | number;
@@ -17,10 +18,13 @@ export function AudioButton({ clipId, label, autoPlayKey, size = "lg", className
   const [playing, setPlaying] = useState(false);
   const endedRef = useRef(onEnded);
   endedRef.current = onEnded;
+  const clipKey = Array.isArray(clipId) ? clipId.join("|") : clipId;
+  const clipRef = useRef(clipId);
+  clipRef.current = clipId;
 
   const play = () => {
     setPlaying(true);
-    void playClip(clipId).then(() => {
+    void playClip(clipRef.current).then(() => {
       setPlaying(false);
       endedRef.current?.();
     });
@@ -30,7 +34,7 @@ export function AudioButton({ clipId, label, autoPlayKey, size = "lg", className
     if (autoPlayKey === undefined) return;
     setPlaying(true);
     let cancelled = false;
-    void playClip(clipId).then(() => {
+    void playClip(clipRef.current).then(() => {
       if (cancelled) return;
       setPlaying(false);
       endedRef.current?.();
@@ -39,7 +43,7 @@ export function AudioButton({ clipId, label, autoPlayKey, size = "lg", className
       cancelled = true;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [autoPlayKey, clipId]);
+  }, [autoPlayKey, clipKey]);
 
   return (
     <button

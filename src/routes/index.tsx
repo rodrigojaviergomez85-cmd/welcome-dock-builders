@@ -1,26 +1,21 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Lock, Play, ShieldCheck, Sparkles } from "lucide-react";
+import { Coins, Flame, Lock, Play, ShieldCheck, Sparkles, Star } from "lucide-react";
 import { islandMap } from "@/content/backgrounds";
-import { mondayMission, upcomingMissions } from "@/content/missions";
+import { missions } from "@/content/missions";
 import { AVATARS } from "@/content/characters";
 import { useProgress } from "@/lib/useProgress";
 import { getMissionProgress } from "@/lib/progress";
 
+const description =
+  "Juego de inglés para niños de 8 a 12 años. Semana 1 completa: saludos, países, números, alfabeto y tu presentación.";
+
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Explorer Island — Kids Platform de English4Kids" },
-      {
-        name: "description",
-        content:
-          "Juego de inglés para niños de 8 a 12 años. Misión del lunes: el muelle de bienvenida, con saludos y presentaciones.",
-      },
-      { property: "og:title", content: "Explorer Island — Kids Platform de English4Kids" },
-      {
-        property: "og:description",
-        content:
-          "Juego de inglés para niños de 8 a 12 años. Misión del lunes: el muelle de bienvenida, con saludos y presentaciones.",
-      },
+      { title: "Explorer Island — Semana 1 de inglés para niños" },
+      { name: "description", content: description },
+      { property: "og:title", content: "Explorer Island — Semana 1 de inglés para niños" },
+      { property: "og:description", content: description },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -28,11 +23,19 @@ export const Route = createFileRoute("/")({
   component: IslandMap,
 });
 
+const PATHS = {
+  monday: "/mision/lunes",
+  tuesday: "/mision/martes",
+  wednesday: "/mision/miercoles",
+  thursday: "/mision/jueves",
+  friday: "/mision/viernes",
+} as const;
+
 function IslandMap() {
   const { state, ready } = useProgress();
   const profile = state.profile;
-  const monday = getMissionProgress(state, mondayMission.id);
   const avatar = AVATARS.find((a) => a.id === profile?.avatarId) ?? AVATARS[0];
+  const pieces = state.passPieces ?? [];
 
   return (
     <div className="min-h-screen">
@@ -43,13 +46,21 @@ function IslandMap() {
         </div>
         <div className="flex items-center gap-2">
           {ready && profile ? (
-            <Link
-              to="/perfil"
-              className="tap-target inline-flex items-center gap-2 rounded-full bg-card px-4 font-display shadow-[var(--shadow-soft)]"
-            >
-              <img src={avatar.image} alt={avatar.alt} className="size-10" />
-              {profile.alias}
-            </Link>
+            <>
+              <span className="inline-flex items-center gap-1 rounded-full bg-sun/50 px-3 py-2 font-display">
+                <Coins className="size-5" aria-hidden /> {state.coins ?? 0}
+              </span>
+              <span className="inline-flex items-center gap-1 rounded-full bg-accent/20 px-3 py-2 font-display">
+                <Flame className="size-5" aria-hidden /> {state.streak?.count ?? 0}
+              </span>
+              <Link
+                to="/perfil"
+                className="tap-target inline-flex items-center gap-2 rounded-full bg-card px-4 font-display shadow-[var(--shadow-soft)]"
+              >
+                <img src={avatar.image} alt={avatar.alt} className="size-10" />
+                {profile.alias}
+              </Link>
+            </>
           ) : null}
           <Link
             to="/adulto"
@@ -82,46 +93,68 @@ function IslandMap() {
           </div>
         </div>
 
-        <h2 className="mt-8 font-display text-2xl">Las cinco zonas de la semana</h2>
+        <div className="mt-8 flex flex-wrap items-center justify-between gap-3">
+          <h2 className="font-display text-2xl">Los cinco días de la semana</h2>
+          <p className="flex items-center gap-1 rounded-full bg-card px-4 py-2 text-sm shadow-[var(--shadow-soft)]">
+            Pase de la semana:
+            {missions.map((m) => (
+              <Star
+                key={m.id}
+                className={pieces.includes(m.id) ? "size-5 text-success" : "size-5 text-muted-foreground/40"}
+                aria-hidden
+              />
+            ))}
+          </p>
+        </div>
 
         <ul className="mt-4 grid gap-4 sm:grid-cols-2">
-          <li className="rounded-3xl bg-card p-5 shadow-[var(--shadow-soft)]">
-            <p className="text-sm text-muted-foreground">{mondayMission.dayEs} · Zona abierta</p>
-            <h3 className="font-display text-2xl">{mondayMission.title}</h3>
-            <p className="mt-1 text-sm text-muted-foreground">{mondayMission.objective}</p>
+          {missions.map((mission, index) => {
+            const progress = getMissionProgress(state, mission.id);
+            const previous = missions[index - 1];
+            const unlocked =
+              !previous || getMissionProgress(state, previous.id).completed || progress.started;
 
-            {ready ? (
-              <p className="mt-3 text-sm">
-                {monday.completed
-                  ? `Terminada ${monday.completions} vez(ces). Podés repetirla para practicar.`
-                  : monday.started
-                    ? "Empezada: podés continuar donde quedaste."
-                    : "Sin empezar."}
-              </p>
-            ) : null}
+            return (
+              <li
+                key={mission.id}
+                className={
+                  unlocked
+                    ? "rounded-3xl bg-card p-5 shadow-[var(--shadow-soft)]"
+                    : "rounded-3xl border-2 border-dashed border-border bg-muted/60 p-5"
+                }
+              >
+                <p className="text-sm text-muted-foreground">
+                  {mission.dayEs} · {unlocked ? "Zona abierta" : "Zona cerrada"}
+                </p>
+                <h3 className="font-display text-2xl">{mission.title}</h3>
+                <p className="mt-1 text-sm text-muted-foreground">{mission.objective}</p>
 
-            <Link
-              to="/mision/lunes"
-              className="tap-target mt-4 inline-flex items-center gap-2 rounded-full bg-primary px-6 font-display text-lg text-primary-foreground shadow-[var(--shadow-pop)] active:translate-y-1 active:shadow-none"
-            >
-              <Play className="size-5" aria-hidden />
-              {monday.started && !monday.completed ? "Continuar" : "Jugar"}
-            </Link>
-          </li>
+                {ready && unlocked ? (
+                  <p className="mt-3 text-sm">
+                    {progress.completed
+                      ? `Terminada ${progress.completions} vez(ces). Podés repetirla para practicar.`
+                      : progress.started
+                        ? "Empezada: podés continuar donde quedaste."
+                        : "Sin empezar."}
+                  </p>
+                ) : null}
 
-          {upcomingMissions.map((mission) => (
-            <li
-              key={mission.id}
-              className="rounded-3xl border-2 border-dashed border-border bg-muted/60 p-5"
-            >
-              <p className="text-sm text-muted-foreground">{mission.dayEs} · Próxima entrega</p>
-              <h3 className="font-display text-2xl text-muted-foreground">{mission.title}</h3>
-              <p className="mt-1 text-sm text-muted-foreground">{mission.objective}</p>
-              <p className="mt-4 inline-flex items-center gap-2 rounded-full bg-card px-4 py-2 text-sm text-muted-foreground">
-                <Lock className="size-4" aria-hidden /> Todavía no está construida
-              </p>
-            </li>
-          ))}
+                {unlocked ? (
+                  <Link
+                    to={PATHS[mission.id as keyof typeof PATHS]}
+                    className="tap-target mt-4 inline-flex items-center gap-2 rounded-full bg-primary px-6 font-display text-lg text-primary-foreground shadow-[var(--shadow-pop)] active:translate-y-1 active:shadow-none"
+                  >
+                    <Play className="size-5" aria-hidden />
+                    {progress.started && !progress.completed ? "Continuar" : "Jugar"}
+                  </Link>
+                ) : (
+                  <p className="mt-4 inline-flex items-center gap-2 rounded-full bg-card px-4 py-2 text-sm text-muted-foreground">
+                    <Lock className="size-4" aria-hidden /> Se abre al terminar el día anterior
+                  </p>
+                )}
+              </li>
+            );
+          })}
         </ul>
 
         <p className="mt-8 rounded-3xl bg-card p-5 text-sm text-muted-foreground shadow-[var(--shadow-soft)]">
