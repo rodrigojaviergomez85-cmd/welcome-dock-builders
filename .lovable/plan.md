@@ -1,71 +1,54 @@
-# 21 meses sin que se vuelva repetitivo — sobre tu currícula real
+# Semana 1 completa, con formatos de juego distintos cada día
 
-Ya leí el Excel. Tiene exactamente lo que hace falta: **21 meses, 11 niveles (0 a 10), 4 semanas por mes, 5 días por semana = 420 días**, cada uno con su tema, vocabulario, gramática, práctica y meta de fluidez. También trae los `SUPER STAR EXAM` cada dos semanas y las metas semanales del resumen.
+Ya leí tu Excel. La semana 1 del mes 1 (Level 0) es exactamente esto:
 
-El problema entonces no es el contenido: es que hoy cada día se escribe a mano con las mismas 5 pantallas. La solución es un motor que tome esa tabla y genere días distintos.
+| Día | Tema | Vocabulario | Frase clave | Meta acumulada |
+|---|---|---|---|---|
+| Lunes | Saludos | Good morning / afternoon / evening / night | What is your name? My name is ___ | saludo + nombre |
+| Martes | Países | países más comunes | Where are you from? I am from ___ | + país |
+| Miércoles | Números | 1 a 12 | How old are you? I am ___ | + edad |
+| Jueves | Alfabeto | ABC | deletreo (spelling bee) | + letras |
+| Viernes | Alfabeto | ABC | deletrear tu nombre | Tell me about yourself completo |
 
-## La estructura que ya trae tu currícula (y que el juego debe respetar)
+El viernes el niño puede decir solo: *Hello! My name is Rodrigo, R-O-D-R-I-G-O. I am from El Salvador and I am 10 years old.*
 
-- **Mes = isla.** 21 islas, una por mes, con su tema visual y su historia.
-- **Nivel = región del mapa.** Level 0 es el muelle; cada nivel abre una zona nueva (11 zonas).
-- **Semana = meta.** La `WEEKLY GOAL` del resumen ("Tell me about yourself", "What is your daily routine?") se vuelve el reto del viernes.
-- **Día = misión.** Su `TOPIC`, `VOCABULARY`, `GRAMMAR` y `PRACTICE` alimentan los mini-juegos.
-- **SUPER STAR EXAM** (aparece cada 2 semanas) se convierte en el **jefe de la isla**: un desafío especial con premio grande, no un examen.
-- **AUTOMATIC FLUENCY** es la frase que el niño debe poder decir solo al final del día.
+## La clave para que no se sienta repetitivo
 
-## Las cuatro capas que evitan la repetición
+Cada día usa **un formato de juego distinto**, aunque el objetivo se vaya acumulando. Así se repasa sin que parezca lo mismo:
 
-**1. Formatos de juego rotativos**
-En vez de 5 pantallas fijas, un catálogo. Cada día el motor arma 3 o 4 según el tipo de contenido del día:
-- Escuchá y elegí (existe)
-- Eco: repetir frases cortas (existe)
-- Emparejar objeto/imagen con palabra — ideal para Colors, Food, Fruits, Family
-- Espía: encontrar el objeto escondido en la escena
-- Ordenar la frase con piezas — ideal para los días de GRAMMAR
-- Conversación con personaje (role play, como pide la columna PRACTICE)
-- Carrera contra reloj de palabras ya vistas
-- Karaoke / canción de la semana
-- Memoria de pares
-- Deletreo (los días de Alphabet lo piden explícitamente)
+- **Lunes — Rescate de mochilas** (ya construido): saludos según la hora del día.
+- **Martes — El barco de banderas**: llegan niños de distintos países; el jugador escucha *I am from...* y lleva a cada uno a su bandera. Cierra diciendo de dónde es él.
+- **Miércoles — Mercado de números**: contar cosas del muelle de 1 a 12, atrapar el número que se dice. Cierra diciendo su edad.
+- **Jueves — Torre de letras**: las letras caen y hay que atraparlas por su sonido; mini duelo de deletreo con un personaje.
+- **Viernes — El gran escenario**: reto final. El jugador se presenta completo y deletrea su nombre frente a los personajes de la semana. Es el "jefe" de la semana, con premio grande.
 
-Regla: nunca el mismo formato dos días seguidos, y el vocabulario nuevo siempre entra por audio antes que por texto.
+## Enganche, sin que deje de ser escuela
 
-**2. Vocabulario en espiral**
-Cada día: las palabras nuevas de la fila + repaso automático de lo que el niño falló o no practica hace días. Así el repaso nunca se siente repetido, porque llega dentro de otro mini-juego.
+- Cada día da monedas y una pieza de un **pase semanal** (ya está en el concepto original).
+- Racha de días: si vuelve mañana, el premio sube.
+- El avatar gana algo visible cada día (gorro, mascota, color).
+- Los personajes de cada día se suman al escenario del viernes, así se ve el progreso.
+- Repaso automático: cada día arranca con 30 segundos de lo del día anterior, dentro del juego nuevo, no como examen.
 
-**3. Historia que avanza**
-Cada isla tiene un problema propio y un personaje nuevo que se suma al equipo. El viernes cierra la historia con la meta semanal. Cada dos semanas, el jefe de isla.
+## Qué se construye
 
-**4. Enganche tipo Roblox**
-- Avatar y mascota que se personalizan con lo ganado.
-- Monedas por misión y tienda para gastarlas.
-- Racha diaria con premio creciente.
-- Coleccionables: una figura por isla, álbum visible.
-- Día sorpresa semanal impredecible.
+1. **Datos de la semana** tomados del Excel: los cinco días con su tema, vocabulario, frase y meta acumulada.
+2. **Motor de misiones reutilizable**: una misión = vocabulario + lista de formatos, en lugar de pantallas escritas a mano. El lunes actual se migra a este motor.
+3. **Cuatro formatos nuevos**: banderas (emparejar), números (atrapar/contar), letras (sonido-letra y deletreo), escenario final (presentación hablada).
+4. **Audio infantil** para el vocabulario nuevo de martes a viernes, con las mismas voces de niños y el español ya configurados.
+5. **Recompensas**: monedas, racha, pase semanal y avatar que cambia.
+6. **Mapa de la semana**: los cinco días visibles, el siguiente se abre al terminar el anterior.
 
-## Qué se construye ahora (primera entrega)
-
-1. **Importar el Excel al proyecto**: convertir las 420 filas en datos que la app lee, con mes, nivel, semana, día, tema, vocabulario, gramática, práctica y frase de fluidez.
-2. **Motor de misiones**: una misión pasa a ser "vocabulario del día + lista de formatos", en vez de pantallas escritas a mano.
-3. **Tres mini-juegos nuevos**: emparejar, ordenar la frase, espía en la escena.
-4. **Repaso en espiral**: guardar qué sabe cada niño y reinyectarlo.
-5. **Economía y mapa de islas**: monedas, racha, primeras recompensas, y el mapa mostrando las 21 islas con solo la primera abierta.
-6. **Mes 1 completo (Level 0)**: los 20 días generados con el motor, empezando por el lunes que ya funciona.
-
-Con eso, los meses 2 a 21 se producen aportando audio y arte, no pantallas nuevas.
+Los meses 2 al 21 quedan como siguiente etapa: ya tenemos la tabla completa y el motor los soportará sin rehacer pantallas.
 
 ## Detalles técnicos
 
-- Script de importación que lee `COMPLETE CURRICULUM` y `SUMMARY` y emite `src/content/curriculum/*.ts` (un archivo por mes) más `src/content/vocabulary.ts` con un ID por expresión.
-- Ampliar `src/content/missions/types.ts` con los nuevos tipos de bloque; un componente por bloque en `src/components/game/blocks/`.
-- `src/lib/mission-builder.ts`: dado un día de la currícula, elige formatos evitando repetir el del día anterior.
-- `src/lib/progress.ts` guarda dominio por expresión (aciertos, última práctica) además del avance; migración desde `kids-platform-progress-v1` sin perder datos.
-- `src/lib/spaced-review.ts` para el repaso en espiral; `src/lib/economy.ts` para monedas y racha.
-- `scripts/generate-voice-clips.ts` se extiende para generar clips por ID de vocabulario, con las voces infantiles y el español ya configurados.
-- Verificación móvil 394×702 al cerrar cada entrega.
-
-## Lo que sigue necesitando trabajo humano
-
-- **Audio**: el mes 1 ya tiene clips; los 20 meses restantes necesitan generación masiva (es automatizable con el script, pero hay costo y revisión de calidad).
-- **Arte**: 21 islas y sus personajes. Se puede arrancar con arte generado y reemplazar después.
-- **Historias**: una línea narrativa por isla; la puedo proponer yo a partir de los temas del Excel y vos la aprobás mes a mes.
+- Script que extrae `MONTH 1 / Week 1` del Excel a `src/content/curriculum/month1-week1.ts` y un `src/content/vocabulary.ts` con un ID por expresión (audio, inglés, español).
+- Ampliar `src/content/missions/types.ts` con los bloques nuevos: `flagMatch`, `numberCatch`, `letterSound`, `spellName`, `showcase`; un componente por bloque en `src/components/game/blocks/`.
+- `src/lib/mission-builder.ts` arma la misión del día a partir de la fila de currícula y evita repetir el formato del día anterior.
+- `src/lib/progress.ts` suma dominio por expresión, monedas, racha y piezas del pase, con migración desde `kids-platform-progress-v1`.
+- `src/lib/economy.ts` para monedas/racha; recompensas del avatar en el perfil existente.
+- Rutas `/mision/martes`… reutilizan `MissionPlayer`; el mapa en `src/routes/index.tsx` pasa a mostrar los cinco días con desbloqueo progresivo.
+- `scripts/generate-voice-clips.ts` se extiende para generar por ID de vocabulario (saludos, países, números 1–12, alfabeto).
+- Se conserva lo ya logrado: validación flexible de voz, sonidos de acierto/error, andamiaje bilingüe y una sola acción principal por pantalla.
+- Verificación móvil 394×702 recorriendo los cinco días.
