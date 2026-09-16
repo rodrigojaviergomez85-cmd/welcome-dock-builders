@@ -99,12 +99,80 @@ export type FinaleBlock = {
   goodNight: SpokenLine;
 };
 
+/** Escuchar en inglés y tocar la opción correcta: banderas, números o letras. */
+export type TapPickBlock = {
+  kind: "tapPick";
+  id: string;
+  estimatedMinutes: number;
+  helpEs: string;
+  style: "flag" | "number" | "letter" | "word";
+  time: TimeOfDay;
+  promptEs: string;
+  rounds: {
+    id: string;
+    /** Clip (o secuencia de clips) que se escucha. */
+    clip: string | string[];
+    en: string;
+    es?: string;
+    /** Id de vocabulario correcto. */
+    answer: string;
+    options: string[];
+    /** Personaje que dice la frase, si aplica. */
+    speaker?: CharacterId;
+  }[];
+};
+
+/** El jugador elige un dato suyo (país o edad) y queda guardado en su perfil. */
+export type PickProfileBlock = {
+  kind: "pickProfile";
+  id: string;
+  estimatedMinutes: number;
+  helpEs: string;
+  time: TimeOfDay;
+  field: "country" | "age";
+  promptEs: string;
+  /** Ids de vocabulario entre los que elegir. */
+  options: string[];
+  /** Frase que dice después de elegir, con {value}. */
+  say: { targetEn: string; promptEs: string; modelClip: string | string[] };
+};
+
+/** Deletrear una palabra tocando letras en orden. */
+export type SpellBlock = {
+  kind: "spell";
+  id: string;
+  estimatedMinutes: number;
+  helpEs: string;
+  time: TimeOfDay;
+  promptEs: string;
+  /** "alias" deletrea el nombre del jugador. */
+  word: "alias" | string;
+  record?: { id: string; promptEs: string; targetEn: string; modelClip: string | string[] };
+};
+
+/** Presentación final: varias frases seguidas frente a los personajes. */
+export type ShowcaseBlock = {
+  kind: "showcase";
+  id: string;
+  estimatedMinutes: number;
+  helpEs: string;
+  time: TimeOfDay;
+  audience: CharacterId[];
+  intro: SpokenLine;
+  steps: { id: string; promptEs: string; targetEn: string; modelClip: string | string[] }[];
+  cheer: SpokenLine;
+};
+
 export type MissionBlock =
   | StoryBlock
   | ListenPickBlock
   | BagMatchBlock
   | DialogueBlock
-  | FinaleBlock;
+  | FinaleBlock
+  | TapPickBlock
+  | PickProfileBlock
+  | SpellBlock
+  | ShowcaseBlock;
 
 export type MissionStatus = "available" | "locked";
 
@@ -124,5 +192,9 @@ export type Mission = {
   reward: { id: string; label: string };
   /** Qué evidencia de aprendizaje se puede observar. */
   evidence: string;
+  /** Contador visible arriba: mochilas el lunes, estrellas los demás días. */
+  counter?: { icon: "bag" | "star"; label: string };
+  /** Frases que se repasan al terminar. */
+  reviewPhrases?: string[];
   blocks: MissionBlock[];
 };
