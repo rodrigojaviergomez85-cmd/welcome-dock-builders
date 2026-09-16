@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
-import { Backpack, X } from "lucide-react";
+import { Backpack, Star, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { HelpBubble } from "./HelpBubble";
 
@@ -9,7 +9,7 @@ type Props = {
   title: string;
   helpEs: string;
   onHelpUsed?: () => void;
-  rescued: { total: number; current: number };
+  counter: { icon: "bag" | "star"; total: number; current: number };
   children: ReactNode;
   footer?: ReactNode;
   className?: string;
@@ -20,7 +20,7 @@ export function SceneShell({
   title,
   helpEs,
   onHelpUsed,
-  rescued,
+  counter,
   children,
   footer,
   className,
@@ -48,14 +48,23 @@ export function SceneShell({
 
           <div className="flex items-center gap-2 rounded-full bg-card/90 px-4 py-2 shadow-[var(--shadow-soft)]">
             <span className="hidden font-display text-card-foreground sm:inline">{title}</span>
-            <span className="flex items-center gap-0.5" aria-label={`${rescued.current} mochilas rescatadas de ${rescued.total}`}>
-              {Array.from({ length: rescued.total }).map((_, index) => (
-                <Backpack
-                  key={index}
-                  className={cn("size-5", index < rescued.current ? "text-success" : "text-muted-foreground/45")}
-                  aria-hidden
-                />
-              ))}
+            <span
+              className="flex items-center gap-0.5"
+              aria-label={`${counter.current} de ${counter.total} completados`}
+            >
+              {Array.from({ length: counter.total }).map((_, index) => {
+                const Icon = counter.icon === "bag" ? Backpack : Star;
+                return (
+                  <Icon
+                    key={index}
+                    className={cn(
+                      "size-5",
+                      index < counter.current ? "text-success" : "text-muted-foreground/45",
+                    )}
+                    aria-hidden
+                  />
+                );
+              })}
             </span>
           </div>
 
