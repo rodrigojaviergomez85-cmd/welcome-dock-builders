@@ -12,7 +12,11 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdultoRouteImport } from './routes/adulto'
 import { Route as PerfilRouteImport } from './routes/perfil'
+import { Route as MisionJuevesRouteImport } from './routes/mision.jueves'
 import { Route as MisionLunesRouteImport } from './routes/mision.lunes'
+import { Route as MisionMartesRouteImport } from './routes/mision.martes'
+import { Route as MisionMiercolesRouteImport } from './routes/mision.miercoles'
+import { Route as MisionViernesRouteImport } from './routes/mision.viernes'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -29,9 +33,29 @@ const PerfilRoute = PerfilRouteImport.update({
   path: '/perfil',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MisionJuevesRoute = MisionJuevesRouteImport.update({
+  id: '/mision/jueves',
+  path: '/mision/jueves',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MisionLunesRoute = MisionLunesRouteImport.update({
   id: '/mision/lunes',
   path: '/mision/lunes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MisionMartesRoute = MisionMartesRouteImport.update({
+  id: '/mision/martes',
+  path: '/mision/martes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MisionMiercolesRoute = MisionMiercolesRouteImport.update({
+  id: '/mision/miercoles',
+  path: '/mision/miercoles',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MisionViernesRoute = MisionViernesRouteImport.update({
+  id: '/mision/viernes',
+  path: '/mision/viernes',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -39,34 +63,75 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/adulto': typeof AdultoRoute
   '/perfil': typeof PerfilRoute
+  '/mision/jueves': typeof MisionJuevesRoute
   '/mision/lunes': typeof MisionLunesRoute
+  '/mision/martes': typeof MisionMartesRoute
+  '/mision/miercoles': typeof MisionMiercolesRoute
+  '/mision/viernes': typeof MisionViernesRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/adulto': typeof AdultoRoute
   '/perfil': typeof PerfilRoute
+  '/mision/jueves': typeof MisionJuevesRoute
   '/mision/lunes': typeof MisionLunesRoute
+  '/mision/martes': typeof MisionMartesRoute
+  '/mision/miercoles': typeof MisionMiercolesRoute
+  '/mision/viernes': typeof MisionViernesRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/adulto': typeof AdultoRoute
   '/perfil': typeof PerfilRoute
+  '/mision/jueves': typeof MisionJuevesRoute
   '/mision/lunes': typeof MisionLunesRoute
+  '/mision/martes': typeof MisionMartesRoute
+  '/mision/miercoles': typeof MisionMiercolesRoute
+  '/mision/viernes': typeof MisionViernesRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/adulto' | '/perfil' | '/mision/lunes'
+  fullPaths:
+    | '/'
+    | '/adulto'
+    | '/perfil'
+    | '/mision/jueves'
+    | '/mision/lunes'
+    | '/mision/martes'
+    | '/mision/miercoles'
+    | '/mision/viernes'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/adulto' | '/perfil' | '/mision/lunes'
-  id: '__root__' | '/' | '/adulto' | '/perfil' | '/mision/lunes'
+  to:
+    | '/'
+    | '/adulto'
+    | '/perfil'
+    | '/mision/jueves'
+    | '/mision/lunes'
+    | '/mision/martes'
+    | '/mision/miercoles'
+    | '/mision/viernes'
+  id:
+    | '__root__'
+    | '/'
+    | '/adulto'
+    | '/perfil'
+    | '/mision/jueves'
+    | '/mision/lunes'
+    | '/mision/martes'
+    | '/mision/miercoles'
+    | '/mision/viernes'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdultoRoute: typeof AdultoRoute
   PerfilRoute: typeof PerfilRoute
+  MisionJuevesRoute: typeof MisionJuevesRoute
   MisionLunesRoute: typeof MisionLunesRoute
+  MisionMartesRoute: typeof MisionMartesRoute
+  MisionMiercolesRoute: typeof MisionMiercolesRoute
+  MisionViernesRoute: typeof MisionViernesRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -92,11 +157,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PerfilRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/mision/jueves': {
+      id: '/mision/jueves'
+      path: '/mision/jueves'
+      fullPath: '/mision/jueves'
+      preLoaderRoute: typeof MisionJuevesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/mision/lunes': {
       id: '/mision/lunes'
       path: '/mision/lunes'
       fullPath: '/mision/lunes'
       preLoaderRoute: typeof MisionLunesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mision/martes': {
+      id: '/mision/martes'
+      path: '/mision/martes'
+      fullPath: '/mision/martes'
+      preLoaderRoute: typeof MisionMartesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mision/miercoles': {
+      id: '/mision/miercoles'
+      path: '/mision/miercoles'
+      fullPath: '/mision/miercoles'
+      preLoaderRoute: typeof MisionMiercolesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mision/viernes': {
+      id: '/mision/viernes'
+      path: '/mision/viernes'
+      fullPath: '/mision/viernes'
+      preLoaderRoute: typeof MisionViernesRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -106,7 +199,11 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdultoRoute: AdultoRoute,
   PerfilRoute: PerfilRoute,
+  MisionJuevesRoute: MisionJuevesRoute,
   MisionLunesRoute: MisionLunesRoute,
+  MisionMartesRoute: MisionMartesRoute,
+  MisionMiercolesRoute: MisionMiercolesRoute,
+  MisionViernesRoute: MisionViernesRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
