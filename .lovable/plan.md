@@ -1,80 +1,64 @@
-# Que el juego enganche como Roblox: mascota, estrellas y juego libre
+# Cómo sostener 21 meses sin que se vuelva repetitivo
 
-## El problema hoy
+El problema no es tener más frases: es que hoy cada misión se escribe a mano y usa siempre las mismas 5 pantallas. Con 21 meses (unas 420 misiones diarias) hace falta un motor: pocas piezas, muchas combinaciones, y una historia que avanza.
 
-La misión del lunes es un camino lineal: se termina y ya no hay motivo para volver.
-Roblox engancha porque siempre hay algo que crece, algo que coleccionar y algo rápido
-que rejugar. Vamos a agregar eso **sin tocar la pedagogía** que ya funciona.
+## La idea en una frase
 
-## La idea: "Pipo", tu mascota del muelle
+Un mundo que crece por temporadas: cada mes es una isla nueva con su historia, sus personajes y su premio final. Dentro de cada isla, los días combinan mini-juegos distintos sobre el vocabulario de esa semana.
 
-Una mascota tropical (perezoso bebé) que vive en el muelle y **solo crece si el niño
-habla inglés**. Ese es el truco: la mecánica adictiva está atada al objetivo de aprender.
+## Las cuatro capas que evitan la repetición
 
-### 1. Pipo, la mascota que crece
+**1. Historia larga (21 meses)**
+- 21 islas, una por mes. Cada isla tiene tema propio: el muelle, la selva, el mercado, la nave, el circo...
+- Cada isla cierra con un evento especial (rescate, fiesta, competencia) y desbloquea la siguiente en el mapa.
+- Personajes que viajan con el niño y se suman: hoy Luna, Leo, Boti y Mia; cada isla presenta uno nuevo.
 
-- Pipo tiene 5 etapas: huevo → bebé → pequeño → grande → explorador.
-- Cada frase dicha en voz alta da **estrellas**. Las estrellas alimentan a Pipo.
-- Si Pipo está feliz, anima al niño durante las misiones ("¡Vas muy bien!").
-- Pipo aparece en el mapa, en la misión y en la pantalla final.
+**2. Biblioteca de mini-juegos (se reutiliza, se siente distinto)**
+En vez de 5 pantallas fijas, un catálogo de formatos. Cada día el sistema elige 3 o 4 distintos:
+- Escuchá y elegí (lo actual)
+- Emparejar objeto con palabra
+- Eco: repetir frases cortas (lo actual)
+- Carrera contra reloj de palabras vistas
+- Espía: encontrar el objeto escondido en la escena
+- Ordenar la frase con piezas
+- Conversación con un personaje
+- Karaoke de canción del mes
+- Memoria de pares
+- "Simón dice" con acciones físicas
 
-### 2. Estrellas por hablar (la moneda del juego)
+Regla del motor: un formato no puede repetirse dos días seguidos, y el vocabulario nuevo del día siempre entra primero por audio, nunca por texto.
 
-- Frase entendida por el juego: 3 estrellas (con sonido de monedas y animación).
-- Frase intentada aunque no se entienda: 1 estrella (nunca castigar el intento).
-- Repetir la misión SÍ da estrellas nuevas (hoy dice "no da recompensas": eso mata
-  la rejugabilidad; se mantiene la regla solo para recompensas únicas como la etiqueta).
-- Contador de estrellas visible siempre arriba, al lado de las mochilas.
+**3. Vocabulario en espiral (aprender de verdad)**
+Cada día: 3–5 expresiones nuevas + repaso automático de las que el niño falló o no practicó hace días. Así el contenido nunca se agota ni se olvida, y el repaso no se siente repetido porque llega dentro de un mini-juego distinto.
 
-### 3. Cofre diario (motivo para volver mañana)
+**4. Enganche tipo Roblox**
+- Mascota/avatar que se personaliza con lo ganado (ropa, sombreros, colores).
+- Monedas por misión, tienda para gastarlas.
+- Racha diaria con premio creciente.
+- Coleccionables: una figura por isla, álbum visible.
+- Sorpresa semanal: un día especial impredecible (misión secreta, personaje visitante).
 
-- Una vez por día, al entrar al mapa aparece un cofre del tesoro.
-- Al abrirlo: animación + estrellas sorpresa (5 a 20 al azar) + racha de días.
-- Racha visible: "Llevas 3 días seguidos". A los 7 días, premio especial.
+## Qué se construye ahora (primera entrega)
 
-### 4. Zona de juego libre con mini-juegos rejugables
+1. **Motor de misiones**: en lugar de escribir cada pantalla, una misión pasa a ser una lista de "bloques" con su vocabulario. Ya existe algo así; se amplía para soportar formatos nuevos.
+2. **Tres mini-juegos nuevos** además de los actuales: emparejar, espía en la escena, ordenar la frase.
+3. **Sistema de repaso espiral**: guardar qué palabras sabe cada niño y reinyectarlas solo.
+4. **Economía**: monedas, racha y un primer set de premios para el avatar.
+5. **Isla 1 completa**: los 20 días del mes 1 generados con el motor, sin repetir formato dos días seguidos.
 
-Nueva zona en el mapa: **"La playa de juegos"**, siempre abierta, con mini-juegos
-de 1-2 minutos que reusan el vocabulario del lunes. Cada partida da estrellas.
-
-- **"Atrapa la palabra"**: caen palabras en inglés y español; tocá el par correcto
-  (Hello! ↔ ¡Hola!). 60 segundos, puntaje propio.
-- **"Eco del muelle"**: Pipo dice una frase; el niño la repite al micrófono.
-  Cada frase entendida = estrellas. Dificultad sube con frases más largas.
-- **"Memoria bilingüe"**: pares de cartas inglés/español con audio al voltear.
-
-### 5. Conexiones con lo existente
-
-- La misión del lunes sigue igual por dentro; al terminarla Pipo sube una etapa.
-- Panel de adulto: muestra estrellas, racha y etapa de Pipo; el botón de reinicio
-  también reinicia la mascota (privacidad intacta).
-- Todo sigue guardado solo en el dispositivo (localStorage), sin cuentas.
-- Se reusan las voces infantiles, los sonidos de acierto/error y la validación
-  flexible que acepta cualquier nombre.
-
-## Pantallas que cambian
-
-- **Mapa (/)**: Pipo animado con su barra de hambre/etapa, contador de estrellas,
-  cofre diario si toca, y tarjeta "Playa de juegos".
-- **Nueva ruta `/playa`**: los tres mini-juegos.
-- **Misión del lunes**: contador de estrellas arriba; estrellas al grabar;
-  Pipo celebra al completar.
-- **Panel de adulto**: resumen de estrellas, racha y etapa.
+Con eso, los meses siguientes se producen escribiendo solo vocabulario + historia, no pantallas nuevas.
 
 ## Detalles técnicos
 
-- `src/lib/pet.ts`: estado de Pipo (etapa, estrellas totales, última alimentación),
-  persistido en la misma clave de localStorage (versión de esquema compatible con
-  lo ya guardado; no se pierde progreso existente).
-- `src/lib/streaks.ts`: cofre diario y racha por fecha local.
-- Mini-juegos en `src/components/arcade/`; ruta `src/routes/playa.tsx`.
-- Arte de Pipo generado (5 etapas + poses de celebración), estilo consistente
-  con el arte actual del muelle.
-- Sonidos de monedas/cofre con Web Audio (como los de acierto actuales).
-- Sin backend nuevo: todo local, sin integraciones pendientes.
+- Ampliar `src/content/missions/types.ts` con los nuevos tipos de bloque; cada bloque nuevo tiene su componente en `src/components/game/blocks/`.
+- Nuevo `src/content/vocabulary.ts`: catálogo único de expresiones con clip, traducción e isla; las misiones referencian IDs en vez de repetir textos.
+- `src/lib/progress.ts` pasa a guardar dominio por expresión (aciertos, última práctica) además del avance actual; migración desde la clave existente sin perder datos.
+- `src/lib/spaced-review.ts`: elige qué repasar cada día.
+- `src/lib/economy.ts` + pantalla de tienda/avatar; monedas y racha en el progreso.
+- Generación de audio: extender `scripts/generate-voice-clips.ts` para producir los clips por ID de vocabulario (voces infantiles y español, como hoy).
+- Verificación móvil 394×702 al cerrar cada entrega.
 
-## Verificación
+## Lo que hace falta de tu lado
 
-- Playwright móvil (394x702): abrir cofre, jugar cada mini-juego, ganar estrellas,
-  ver a Pipo subir de etapa tras completar la misión, recargar y confirmar que
-  todo persiste. Build y typecheck limpios.
+- Decidir el orden de las 21 islas y su tema (puedo proponer una lista).
+- El vocabulario objetivo por mes, si ya lo tenés del documento original; si no, lo derivo del nivel A1 por temas.
