@@ -21,7 +21,7 @@ type Props = {
   alias?: string;
   modelClip: string | string[];
   /** Significado en español ya armado (cuando la frase tiene país o edad). */
-  meaning?: { es: string; esClip?: string | undefined };
+  meaning?: { es: string; esClip?: string | undefined } | undefined;
   support: "full" | "reduced";
   onHelpUsed?: () => void;
   /** "heard" = el juego lo entendió, "practiced" = habló, "pending" = queda pendiente. */
