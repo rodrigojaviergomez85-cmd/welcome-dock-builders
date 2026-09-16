@@ -104,23 +104,23 @@ export const BRIDGE = {
 /** Instrucción en español al empezar cada parte de la misión. */
 export const BLOCK_INTROS: Record<string, { es: string; clip: string }> = {
   story: {
-    es: "Llegaste al muelle. Luna te va a saludar en inglés. Escuchá y después elegí tu respuesta.",
+    es: "¡Alerta en el muelle! Cuatro mochilas perdieron sus etiquetas. Saludá a Luna para empezar el rescate.",
     clip: "intro-story",
   },
   listen: {
-    es: "Vas a escuchar a alguien presentarse en inglés. Tocá quién habló.",
+    es: "Necesitamos tres pistas. Escuchá cada voz y tocá quién habló.",
     clip: "intro-listen",
   },
   bags: {
-    es: "Cada explorador dice su nombre en inglés. Llevale la mochila a su dueño.",
+    es: "¡Pistas listas! Reconocé cada voz y llevá las tres mochilas a sus dueños.",
     clip: "intro-bags",
   },
   talk: {
-    es: "Te van a saludar en inglés. Vos vas a contestar con tu nombre. Primero escuchás, después lo decís.",
+    es: "Luna quiere saber cómo estás. Aprendé una respuesta nueva y decila para abrir el último reto.",
     clip: "intro-talk",
   },
   finale: {
-    es: "Alguien nuevo te espera. Respondé en inglés y ganá tu etiqueta.",
+    es: "¡Falta una mochila! Es la tuya. Decí tu nombre en inglés para completar su etiqueta.",
     clip: "intro-finale",
   },
 };

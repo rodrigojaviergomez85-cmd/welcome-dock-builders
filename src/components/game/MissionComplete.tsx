@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { Link } from "@tanstack/react-router";
-import { Check, Mic, Ear, RotateCcw, Volume2 } from "lucide-react";
+import { Backpack, Check, Mic, Ear, RotateCcw, Volume2 } from "lucide-react";
 import type { Mission } from "@/content/missions/types";
 import type { MissionProgress } from "@/lib/progress";
 import { playFanfare } from "@/lib/feedback-sounds";
@@ -30,12 +30,15 @@ export function MissionComplete({ mission, progress, alias, avatarImage, onRepla
   return (
     <div className="mx-auto flex min-h-screen max-w-2xl flex-col items-center justify-center gap-6 p-6 text-center">
       <img src={avatarImage} alt={`Tu avatar, ${alias}`} className="h-32 w-auto animate-pop" />
-      <h1 className="font-display text-4xl">¡Misión terminada!</h1>
+      <h1 className="font-display text-4xl">¡Rescate completado!</h1>
       <p className="text-muted-foreground">
         {mission.dayEs} · {mission.title}
       </p>
 
       <div className="w-full rounded-3xl bg-card p-6 text-left shadow-[var(--shadow-soft)]">
+        <p className="mb-4 flex items-center justify-center gap-2 rounded-2xl bg-success/15 px-4 py-3 font-display text-xl text-success">
+          <Backpack className="size-6" aria-hidden /> 4 de 4 mochilas rescatadas
+        </p>
         <p className="font-display text-xl">Tu pase de explorador</p>
         <div className="mt-3 rounded-2xl border-4 border-dashed border-accent px-5 py-4 text-center">
           <p lang="en" className="font-display text-2xl">

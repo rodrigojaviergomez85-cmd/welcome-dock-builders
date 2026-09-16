@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ArrowRight, Moon } from "lucide-react";
+import { ArrowRight, Backpack, Moon } from "lucide-react";
 import { CharacterFigure } from "../CharacterFigure";
 import { BilingualLine } from "../BilingualLine";
 import { TurnsView } from "./TurnsView";
@@ -45,9 +45,12 @@ export function FinaleView({
   if (phase === "tag") {
     return (
       <div className="flex w-full max-w-2xl animate-pop flex-col items-center gap-4 rounded-3xl bg-card/95 p-6 text-center shadow-[var(--shadow-soft)]">
+        <p className="flex items-center gap-2 rounded-full bg-success/15 px-4 py-2 font-display text-success">
+          <Backpack className="size-5" aria-hidden /> ¡4 de 4 mochilas rescatadas!
+        </p>
         <img src={avatarImage} alt={`Tu avatar, ${alias}`} className="h-28 w-auto" />
         <div className="rounded-2xl border-4 border-dashed border-accent px-6 py-4">
-          <p className="text-sm text-muted-foreground">Etiqueta de tu mochila</p>
+          <p className="text-sm text-muted-foreground">Completaste la etiqueta de tu mochila</p>
           <p lang="en" className="font-display text-3xl">
             My name is {alias}.
           </p>

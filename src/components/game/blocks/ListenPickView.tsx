@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, MapPinCheck } from "lucide-react";
 import { AudioButton } from "../AudioButton";
 import { CharacterFigure } from "../CharacterFigure";
 import { BilingualLine } from "../BilingualLine";
@@ -53,11 +53,18 @@ export function ListenPickView({
     <div className="flex w-full max-w-4xl flex-col items-center gap-5">
       <div className="flex flex-col items-center gap-3 rounded-3xl bg-card/95 px-6 py-5 shadow-[var(--shadow-soft)]">
         <span className="rounded-full bg-secondary px-4 py-1 text-sm text-secondary-foreground">
-          {TIME_LABEL_ES[round.time]} · Ronda {index + 1} de {block.rounds.length}
+          {TIME_LABEL_ES[round.time]} · Pista {index + 1} de {block.rounds.length}
         </span>
         <p className="text-sm text-muted-foreground">¿Quién se presentó?</p>
         <AudioButton clipId={round.clip} autoPlayKey={round.id} label="Escuchar" />
-        {solved ? <BilingualLine en={round.en} showAudio={false} /> : null}
+        {solved ? (
+          <>
+            <p className="flex items-center gap-2 font-display text-lg text-success">
+              <MapPinCheck className="size-5" aria-hidden /> ¡Pista encontrada!
+            </p>
+            <BilingualLine en={round.en} showAudio={false} />
+          </>
+        ) : null}
       </div>
 
       <div className="flex w-full flex-wrap items-end justify-center gap-2 sm:gap-6">
@@ -81,7 +88,7 @@ export function ListenPickView({
           onClick={next}
           className="tap-target inline-flex items-center gap-2 rounded-full bg-primary px-6 font-display text-lg text-primary-foreground shadow-[var(--shadow-pop)] active:translate-y-1 active:shadow-none"
         >
-          Seguir <ArrowRight className="size-5" aria-hidden />
+          {index + 1 < block.rounds.length ? "Siguiente pista" : "Ir por las mochilas"} <ArrowRight className="size-5" aria-hidden />
         </button>
       ) : picked ? (
         <div className="max-w-md rounded-2xl bg-card/95 px-4 py-3 text-center text-sm text-muted-foreground">
