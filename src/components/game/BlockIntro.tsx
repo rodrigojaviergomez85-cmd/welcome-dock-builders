@@ -1,5 +1,4 @@
 import { ArrowRight } from "lucide-react";
-import { AudioButton } from "./AudioButton";
 import { CharacterFigure } from "./CharacterFigure";
 import { BLOCK_INTROS } from "@/content/glossary";
 
@@ -22,13 +21,12 @@ export function BlockIntro({ blockId, onStart }: Props) {
         </div>
       </div>
       <div className="flex flex-wrap items-center justify-center gap-3">
-        <AudioButton clipId={intro.clip} autoPlayKey={intro.clip} label="Escuchar" size="sm" />
         <button
           type="button"
           onClick={onStart}
           className="tap-target inline-flex items-center gap-2 rounded-full bg-primary px-6 font-display text-lg text-primary-foreground shadow-[var(--shadow-pop)] active:translate-y-1 active:shadow-none"
         >
-          Empezar <ArrowRight className="size-5" aria-hidden />
+          ¡Vamos! <ArrowRight className="size-5" aria-hidden />
         </button>
       </div>
     </div>

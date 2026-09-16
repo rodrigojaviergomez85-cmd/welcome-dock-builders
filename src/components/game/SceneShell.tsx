@@ -48,9 +48,14 @@ export function SceneShell({
 
           <div className="flex items-center gap-2 rounded-full bg-card/90 px-4 py-2 shadow-[var(--shadow-soft)]">
             <span className="hidden font-display text-card-foreground sm:inline">{title}</span>
-            <span className="flex items-center gap-1 font-display text-card-foreground" aria-label={`${rescued.current} mochilas rescatadas de ${rescued.total}`}>
-              <Backpack className="size-5 text-accent" aria-hidden />
-              {rescued.current}/{rescued.total}
+            <span className="flex items-center gap-0.5" aria-label={`${rescued.current} mochilas rescatadas de ${rescued.total}`}>
+              {Array.from({ length: rescued.total }).map((_, index) => (
+                <Backpack
+                  key={index}
+                  className={cn("size-5", index < rescued.current ? "text-success" : "text-muted-foreground/45")}
+                  aria-hidden
+                />
+              ))}
             </span>
           </div>
 

@@ -21,6 +21,8 @@ export const Route = createFileRoute("/")({
         content:
           "Juego de inglés para niños de 8 a 12 años. Misión del lunes: el muelle de bienvenida, con saludos y presentaciones.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: IslandMap,
