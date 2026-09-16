@@ -174,7 +174,7 @@ export function BagMatchView({
 
       {phase === "reply" && item.reply ? (
         <div className="w-full max-w-xl rounded-3xl bg-card/95 p-5 shadow-[var(--shadow-soft)]">
-          <p className="text-sm text-muted-foreground">Saludá y presentate.</p>
+          <p className="text-sm text-muted-foreground">Respondé con la frase nueva.</p>
           <BilingualLine
             en={item.reply.en.replace("{alias}", alias)}
             alias={alias}
@@ -195,7 +195,7 @@ export function BagMatchView({
               onClick={() => setPhase("done")}
               className="tap-target inline-flex items-center gap-2 rounded-full bg-primary px-6 font-display text-lg text-primary-foreground shadow-[var(--shadow-pop)] active:translate-y-1 active:shadow-none"
             >
-              Ya lo dije <ArrowRight className="size-5" aria-hidden />
+              ¡Listo! <ArrowRight className="size-5" aria-hidden />
             </button>
             )}
           </div>
