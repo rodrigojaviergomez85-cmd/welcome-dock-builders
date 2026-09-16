@@ -60,5 +60,5 @@ Con eso, los meses siguientes se producen escribiendo solo vocabulario + histori
 
 ## Lo que hace falta de tu lado
 
-- Decidir el orden de las 21 islas y su tema (puedo proponer una lista).
-- El vocabulario objetivo por mes, si ya lo tenés del documento original; si no, lo derivo del nivel A1 por temas.
+- **La currícula completa**: el documento original cita `Kids Super Intensive Curriculum (simple).xlsx` (hoja COMPLETE CURRICULUM, programa A1 → B1 de 36 meses), pero ese Excel no está subido al proyecto. Subilo y armo el mapa de las 21 islas con el vocabulario real por mes y semana, en vez de inventarlo.
+- Mientras tanto puedo proponer el orden de las 21 islas y su tema con nivel A1 por temas, y ajustarlo cuando llegue el Excel.
