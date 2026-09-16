@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ArrowRight, Hand } from "lucide-react";
+import { ArrowRight, Backpack, Hand } from "lucide-react";
 import { AudioButton } from "../AudioButton";
 import { SpeechBubble } from "../SpeechBubble";
 import { BilingualLine } from "../BilingualLine";
@@ -99,8 +99,8 @@ export function BagMatchView({
   return (
     <div className="flex w-full max-w-4xl flex-col items-center gap-4">
       <div className="flex w-full max-w-xl flex-col items-center gap-3 rounded-3xl bg-card/95 px-5 py-4 shadow-[var(--shadow-soft)]">
-        <span className="rounded-full bg-secondary px-4 py-1 text-sm text-secondary-foreground">
-          Mochila {index + 1} de {block.items.length}
+        <span className="flex items-center gap-2 rounded-full bg-secondary px-4 py-1 text-sm font-semibold text-secondary-foreground">
+          <Backpack className="size-4" aria-hidden /> Rescatadas {index + (phase === "done" ? 1 : 0)} de 3
         </span>
         <AudioButton clipId={item.clip} autoPlayKey={item.id} label="Escuchar al dueño" />
         {phase !== "deliver" || showMeaning ? (
@@ -174,7 +174,7 @@ export function BagMatchView({
 
       {phase === "reply" && item.reply ? (
         <div className="w-full max-w-xl rounded-3xl bg-card/95 p-5 shadow-[var(--shadow-soft)]">
-          <p className="text-sm text-muted-foreground">Saludá y presentate.</p>
+          <p className="text-sm text-muted-foreground">Respondé con la frase nueva.</p>
           <BilingualLine
             en={item.reply.en.replace("{alias}", alias)}
             alias={alias}
@@ -195,7 +195,7 @@ export function BagMatchView({
               onClick={() => setPhase("done")}
               className="tap-target inline-flex items-center gap-2 rounded-full bg-primary px-6 font-display text-lg text-primary-foreground shadow-[var(--shadow-pop)] active:translate-y-1 active:shadow-none"
             >
-              Ya lo dije <ArrowRight className="size-5" aria-hidden />
+              ¡Listo! <ArrowRight className="size-5" aria-hidden />
             </button>
             )}
           </div>
@@ -218,7 +218,7 @@ export function BagMatchView({
             onClick={next}
             className="tap-target inline-flex items-center gap-2 rounded-full bg-primary px-6 font-display text-lg text-primary-foreground shadow-[var(--shadow-pop)] active:translate-y-1 active:shadow-none"
           >
-            Seguir <ArrowRight className="size-5" aria-hidden />
+              {index + 1 < block.items.length ? "Buscar otra mochila" : "Abrir el reto de Luna"} <ArrowRight className="size-5" aria-hidden />
           </button>
         </div>
       ) : null}

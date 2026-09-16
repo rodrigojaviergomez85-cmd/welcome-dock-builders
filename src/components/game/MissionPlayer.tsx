@@ -166,6 +166,8 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
   if (block.kind === "finale") time = block.time;
 
   const showingIntro = BLOCK_INTROS[block.id] !== undefined && introFor !== block.id;
+  const bagsIndex = mission.blocks.findIndex((candidate) => candidate.kind === "bagMatch");
+  const rescuedCount = blockIndex < bagsIndex ? 0 : blockIndex === bagsIndex ? Math.min(stepIndex, 3) : 3;
 
 
   return (
@@ -174,7 +176,7 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
       title={mission.title}
       helpEs={block.helpEs}
       onHelpUsed={onHelpUsed}
-      steps={{ total: mission.blocks.length, current: blockIndex }}
+      rescued={{ total: 4, current: rescuedCount }}
     >
       {showingIntro ? (
         <BlockIntro blockId={block.id} onStart={() => setIntroFor(block.id)} />

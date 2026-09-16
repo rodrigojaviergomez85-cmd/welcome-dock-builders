@@ -11,13 +11,15 @@ export const Route = createFileRoute("/mision/lunes")({
       {
         name: "description",
         content:
-          "Misión del lunes: saludar, entender What is your name? y presentarse con My name is… en el muelle de Explorer Island.",
+          "Rescatá cuatro mochilas mientras aprendés saludos, respondés cómo estás y decís tu nombre en inglés.",
       },
       { property: "og:title", content: "Lunes: El muelle de bienvenida — Explorer Island" },
       {
         property: "og:description",
-        content: "Saludos y presentaciones en inglés para niños que empiezan Level 0.",
+        content: "Una aventura de pistas, mochilas y práctica oral para niños que empiezan inglés.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: MondayMissionPage,

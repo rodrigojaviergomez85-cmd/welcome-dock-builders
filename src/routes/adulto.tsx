@@ -21,6 +21,8 @@ export const Route = createFileRoute("/adulto")({
         property: "og:description",
         content: "Control de datos guardados, grabaciones y permisos en el dispositivo.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: AdultPanel,

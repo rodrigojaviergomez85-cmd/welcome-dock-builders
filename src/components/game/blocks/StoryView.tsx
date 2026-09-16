@@ -22,6 +22,10 @@ export function StoryView({ block, alias, onComprehension, onFinish }: Props) {
 
   return (
     <div className="flex w-full max-w-3xl flex-col items-center gap-4">
+      <div className="rounded-2xl bg-sun px-5 py-3 text-center text-sun-foreground shadow-[var(--shadow-soft)]">
+        <p className="font-display text-xl">¡4 mochilas sin etiqueta!</p>
+        <p className="text-sm">Saludá a Luna para empezar el rescate.</p>
+      </div>
       <div className="flex w-full items-end justify-center gap-3">
         <CharacterFigure id={choosing ? "luna" : line.speaker} size="lg" />
         <div className="flex flex-col items-start gap-3 pb-6">
@@ -46,7 +50,7 @@ export function StoryView({ block, alias, onComprehension, onFinish }: Props) {
 
       {choosing ? (
         <div className="w-full max-w-xl rounded-3xl bg-card/95 p-5 shadow-[var(--shadow-soft)]">
-          <AudioButton clipId={block.choice.modelClip} label="Escuchar el modelo" size="sm" />
+          <AudioButton clipId={block.choice.modelClip} label="Escuchar Hello" size="sm" />
           <div className="mt-4 grid gap-3">
             {block.choice.options.map((option, i) => {
               const text = option.en.replace("{alias}", alias);
@@ -86,7 +90,7 @@ export function StoryView({ block, alias, onComprehension, onFinish }: Props) {
               onClick={onFinish}
               className="tap-target mt-5 inline-flex items-center gap-2 rounded-full bg-primary px-6 font-display text-lg text-primary-foreground shadow-[var(--shadow-pop)] active:translate-y-1 active:shadow-none"
             >
-              Seguir <ArrowRight className="size-5" aria-hidden />
+              Buscar pistas <ArrowRight className="size-5" aria-hidden />
             </button>
           ) : null}
           {chosen !== null && !block.choice.options[chosen]!.correct ? (

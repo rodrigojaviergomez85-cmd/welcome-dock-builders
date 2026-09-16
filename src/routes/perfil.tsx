@@ -19,6 +19,8 @@ export const Route = createFileRoute("/perfil")({
         property: "og:description",
         content: "Elegí un avatar y un alias corto de explorador, sin datos personales reales.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: ProfilePage,
