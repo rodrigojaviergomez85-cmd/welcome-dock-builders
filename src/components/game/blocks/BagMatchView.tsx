@@ -49,7 +49,13 @@ export function BagMatchView({
             alt: CHARACTERS[item.options[0]!].alt,
             isAnswer: false,
           },
-          { key: "avatar", name: alias, image: avatarImage, alt: `Tu avatar, ${alias}`, isAnswer: true },
+          {
+            key: "avatar",
+            name: alias,
+            image: avatarImage,
+            alt: `Tu avatar, ${alias}`,
+            isAnswer: true,
+          },
           {
             key: CHARACTERS[item.options[1]!].id,
             name: CHARACTERS[item.options[1]!].name,
@@ -100,7 +106,8 @@ export function BagMatchView({
     <div className="flex w-full max-w-4xl flex-col items-center gap-4">
       <div className="flex w-full max-w-xl flex-col items-center gap-3 rounded-3xl bg-card/95 px-5 py-4 shadow-[var(--shadow-soft)]">
         <span className="flex items-center gap-2 rounded-full bg-secondary px-4 py-1 text-sm font-semibold text-secondary-foreground">
-          <Backpack className="size-4" aria-hidden /> Rescatadas {index + (phase === "done" ? 1 : 0)} de 3
+          <Backpack className="size-4" aria-hidden /> Rescatadas{" "}
+          {index + (phase === "done" ? 1 : 0)} de 3
         </span>
         <AudioButton clipId={item.clip} autoPlayKey={item.id} label="Escuchar al dueño" />
         {phase !== "deliver" || showMeaning ? (
@@ -190,13 +197,13 @@ export function BagMatchView({
                 onEnded={() => setReplyReady(true)}
               />
             ) : (
-            <button
-              type="button"
-              onClick={() => setPhase("done")}
-              className="tap-target inline-flex items-center gap-2 rounded-full bg-primary px-6 font-display text-lg text-primary-foreground shadow-[var(--shadow-pop)] active:translate-y-1 active:shadow-none"
-            >
-              ¡Listo! <ArrowRight className="size-5" aria-hidden />
-            </button>
+              <button
+                type="button"
+                onClick={() => setPhase("done")}
+                className="tap-target inline-flex items-center gap-2 rounded-full bg-primary px-6 font-display text-lg text-primary-foreground shadow-[var(--shadow-pop)] active:translate-y-1 active:shadow-none"
+              >
+                ¡Listo! <ArrowRight className="size-5" aria-hidden />
+              </button>
             )}
           </div>
         </div>
@@ -218,7 +225,8 @@ export function BagMatchView({
             onClick={next}
             className="tap-target inline-flex items-center gap-2 rounded-full bg-primary px-6 font-display text-lg text-primary-foreground shadow-[var(--shadow-pop)] active:translate-y-1 active:shadow-none"
           >
-              {index + 1 < block.items.length ? "Buscar otra mochila" : "Abrir el reto de Luna"} <ArrowRight className="size-5" aria-hidden />
+            {index + 1 < block.items.length ? "Buscar otra mochila" : "Abrir el reto de Luna"}{" "}
+            <ArrowRight className="size-5" aria-hidden />
           </button>
         </div>
       ) : null}

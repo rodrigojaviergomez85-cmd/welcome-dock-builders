@@ -18,11 +18,7 @@ export const tuesdayMission: Mission = {
   reward: { id: "tuesday-flag", label: "Bandera de tu país en el pase" },
   evidence: "Reconoce países dichos en inglés y dice de dónde es.",
   counter: { icon: "star", label: "Banderas colocadas" },
-  reviewPhrases: [
-    "Hello! My name is {alias}.",
-    "Where are you from?",
-    "I am from {country}.",
-  ],
+  reviewPhrases: ["Hello! My name is {alias}.", "Where are you from?", "I am from {country}."],
   blocks: [
     {
       kind: "tapPick",

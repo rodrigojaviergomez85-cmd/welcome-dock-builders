@@ -55,7 +55,5 @@ export function MissionPage({ mission, previousId, previousDayEs }: Props) {
 
   const avatar = AVATARS.find((a) => a.id === state.profile?.avatarId) ?? AVATARS[0];
 
-  return (
-    <MissionPlayer mission={mission} alias={state.profile.alias} avatarImage={avatar.image} />
-  );
+  return <MissionPlayer mission={mission} alias={state.profile.alias} avatarImage={avatar.image} />;
 }

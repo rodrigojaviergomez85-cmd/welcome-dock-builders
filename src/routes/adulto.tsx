@@ -125,7 +125,6 @@ function AdultPanel() {
         </p>
       </section>
 
-
       <section className="mt-4 rounded-3xl bg-card p-5 shadow-[var(--shadow-soft)]">
         <h2 className="font-display text-xl">Grabaciones guardadas</h2>
         {loadError ? (
@@ -169,8 +168,8 @@ function AdultPanel() {
             <li>Empezada: {monday.started ? "sí" : "no"}</li>
             <li>Completada: {monday.completed ? `sí (${monday.completions} vez/veces)` : "no"}</li>
             <li>
-              Comprensión: {monday.comprehension.correct} aciertos de {monday.comprehension.attempts}{" "}
-              intentos
+              Comprensión: {monday.comprehension.correct} aciertos de{" "}
+              {monday.comprehension.attempts} intentos
             </li>
             <li>Ayudas en español usadas: {monday.helpsUsed}</li>
             <li>
@@ -191,7 +190,8 @@ function AdultPanel() {
         <button
           type="button"
           onClick={() => {
-            if (window.confirm("¿Borrar el avatar y todo el progreso de este dispositivo?")) reset();
+            if (window.confirm("¿Borrar el avatar y todo el progreso de este dispositivo?"))
+              reset();
           }}
           className="tap-target mt-4 inline-flex items-center gap-2 rounded-full bg-secondary px-6 font-display text-secondary-foreground"
         >

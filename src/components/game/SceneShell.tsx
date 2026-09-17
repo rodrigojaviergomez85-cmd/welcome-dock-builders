@@ -71,7 +71,12 @@ export function SceneShell({
           <HelpBubble text={helpEs} onUsed={onHelpUsed} />
         </header>
 
-        <main className={cn("flex flex-1 flex-col items-center justify-end gap-4 p-3 sm:p-6", className)}>
+        <main
+          className={cn(
+            "flex flex-1 flex-col items-center justify-end gap-4 p-3 sm:p-6",
+            className,
+          )}
+        >
           {children}
         </main>
 

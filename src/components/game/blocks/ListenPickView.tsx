@@ -88,7 +88,8 @@ export function ListenPickView({
           onClick={next}
           className="tap-target inline-flex items-center gap-2 rounded-full bg-primary px-6 font-display text-lg text-primary-foreground shadow-[var(--shadow-pop)] active:translate-y-1 active:shadow-none"
         >
-          {index + 1 < block.rounds.length ? "Siguiente pista" : "Ir por las mochilas"} <ArrowRight className="size-5" aria-hidden />
+          {index + 1 < block.rounds.length ? "Siguiente pista" : "Ir por las mochilas"}{" "}
+          <ArrowRight className="size-5" aria-hidden />
         </button>
       ) : picked ? (
         <div className="max-w-md rounded-2xl bg-card/95 px-4 py-3 text-center text-sm text-muted-foreground">

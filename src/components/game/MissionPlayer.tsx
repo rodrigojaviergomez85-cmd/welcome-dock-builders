@@ -18,7 +18,13 @@ import { MicCheckView } from "./blocks/MicCheckView";
 import { SunClockView } from "./blocks/SunClockView";
 import { NameTagView } from "./blocks/NameTagView";
 import { resolveTime } from "@/lib/mission-vars";
-import { addCoins, addPassPiece, registerPlayDay, COINS_PER_MISSION, COINS_PER_STEP } from "@/lib/economy";
+import {
+  addCoins,
+  addPassPiece,
+  registerPlayDay,
+  COINS_PER_MISSION,
+  COINS_PER_STEP,
+} from "@/lib/economy";
 import { MissionComplete } from "./MissionComplete";
 import { BlockIntro } from "./BlockIntro";
 import { BLOCK_INTROS } from "@/content/glossary";
@@ -67,7 +73,9 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
   }
 
   function onHelpUsed() {
-    update((prev) => updateMission(prev, mission.id, (p) => ({ ...p, helpsUsed: p.helpsUsed + 1 })));
+    update((prev) =>
+      updateMission(prev, mission.id, (p) => ({ ...p, helpsUsed: p.helpsUsed + 1 })),
+    );
   }
 
   function onComprehension(correct: boolean) {
@@ -125,9 +133,7 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
   }
 
   function completeMission() {
-    update((prev) =>
-      addPassPiece(addCoins(prev, COINS_PER_MISSION), mission.id),
-    );
+    update((prev) => addPassPiece(addCoins(prev, COINS_PER_MISSION), mission.id));
     update((prev) =>
       updateMission(prev, mission.id, (p) =>
         addReward(
@@ -174,7 +180,8 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
 
   let time: TimeOfDay = "morning";
   if (block.kind === "story") time = block.time;
-  if (block.kind === "listenPick") time = block.rounds[Math.min(stepIndex, block.rounds.length - 1)]!.time;
+  if (block.kind === "listenPick")
+    time = block.rounds[Math.min(stepIndex, block.rounds.length - 1)]!.time;
   if (block.kind === "bagMatch") time = "afternoon";
   if (block.kind === "dialogue")
     time = block.conversations[Math.min(stepIndex, block.conversations.length - 1)]!.time;
@@ -197,10 +204,10 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
       ? {
           icon: "bag" as const,
           total: 4,
-          current: blockIndex < bagsIndex ? 0 : blockIndex === bagsIndex ? Math.min(stepIndex, 3) : 3,
+          current:
+            blockIndex < bagsIndex ? 0 : blockIndex === bagsIndex ? Math.min(stepIndex, 3) : 3,
         }
       : { icon: "star" as const, total: mission.blocks.length, current: blockIndex };
-
 
   return (
     <SceneShell

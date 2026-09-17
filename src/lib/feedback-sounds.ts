@@ -8,14 +8,22 @@ let ctx: AudioContext | null = null;
 
 function audioContext(): AudioContext | null {
   if (typeof window === "undefined") return null;
-  const AC = window.AudioContext ?? (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+  const AC =
+    window.AudioContext ??
+    (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
   if (!AC) return null;
   if (!ctx) ctx = new AC();
   if (ctx.state === "suspended") void ctx.resume().catch(() => {});
   return ctx;
 }
 
-type Note = { freq: number; start: number; duration: number; volume?: number; type?: OscillatorType };
+type Note = {
+  freq: number;
+  start: number;
+  duration: number;
+  volume?: number;
+  type?: OscillatorType;
+};
 
 function playNotes(notes: Note[]) {
   const ac = audioContext();

@@ -72,7 +72,11 @@ export function TapPickView({
         <p className="font-display text-xl">{block.promptEs}</p>
         <div className="flex items-end gap-2">
           {round.speaker ? <CharacterFigure id={round.speaker} size="md" /> : null}
-          <AudioButton clipId={round.clip} autoPlayKey={`${block.id}-${round.id}`} label="Escuchar" />
+          <AudioButton
+            clipId={round.clip}
+            autoPlayKey={`${block.id}-${round.id}`}
+            label="Escuchar"
+          />
         </div>
         {solved ? (
           <div className="animate-pop rounded-2xl bg-success/15 px-4 py-3 text-center">
@@ -84,12 +88,7 @@ export function TapPickView({
         ) : null}
       </div>
 
-      <div
-        className={cn(
-          "grid w-full gap-3",
-          bigSymbol ? "grid-cols-4" : "grid-cols-2",
-        )}
-      >
+      <div className={cn("grid w-full gap-3", bigSymbol ? "grid-cols-4" : "grid-cols-2")}>
         {round.options.map((id) => {
           const sky = block.style === "sky" ? skyLabel(id) : null;
           const item = sky ? { en: sky.text, symbol: sky.symbol } : vocab(id);
@@ -114,9 +113,7 @@ export function TapPickView({
               <span lang="en" className="font-display text-base leading-tight">
                 {item.en}
               </span>
-              {isPicked && isAnswer ? (
-                <Check className="size-5 text-success" aria-hidden />
-              ) : null}
+              {isPicked && isAnswer ? <Check className="size-5 text-success" aria-hidden /> : null}
             </button>
           );
         })}

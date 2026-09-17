@@ -83,7 +83,12 @@ export function ShowcaseView({
             {block.cheer.en}
           </p>
           <p className="text-muted-foreground">{block.cheer.es}</p>
-          <AudioButton clipId={block.cheer.clip} autoPlayKey={`${block.id}-cheer`} label="Escuchar" className="mt-3" />
+          <AudioButton
+            clipId={block.cheer.clip}
+            autoPlayKey={`${block.id}-cheer`}
+            label="Escuchar"
+            className="mt-3"
+          />
         </div>
         <button
           type="button"
@@ -114,7 +119,10 @@ export function ShowcaseView({
         modelClip={resolveClip(step.modelClip, vars)}
         meaning={
           template?.es
-            ? { es: fillText(template.es.split("{age}").join(vars.ageEs), vars), esClip: template.esClip }
+            ? {
+                es: fillText(template.es.split("{age}").join(vars.ageEs), vars),
+                esClip: template.esClip,
+              }
             : undefined
         }
         support="full"

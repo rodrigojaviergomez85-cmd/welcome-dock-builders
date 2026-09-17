@@ -14,7 +14,14 @@ type Props = {
   onEnded?: () => void;
 };
 
-export function AudioButton({ clipId, label, autoPlayKey, size = "lg", className, onEnded }: Props) {
+export function AudioButton({
+  clipId,
+  label,
+  autoPlayKey,
+  size = "lg",
+  className,
+  onEnded,
+}: Props) {
   const [playing, setPlaying] = useState(false);
   const endedRef = useRef(onEnded);
   endedRef.current = onEnded;
@@ -42,7 +49,6 @@ export function AudioButton({ clipId, label, autoPlayKey, size = "lg", className
     return () => {
       cancelled = true;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [autoPlayKey, clipKey]);
 
   return (

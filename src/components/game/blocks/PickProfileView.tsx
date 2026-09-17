@@ -18,14 +18,7 @@ type Props = {
 };
 
 /** El jugador elige su país o su edad; queda guardado y después lo dice en inglés. */
-export function PickProfileView({
-  missionId,
-  block,
-  alias,
-  onHelpUsed,
-  onOral,
-  onFinish,
-}: Props) {
+export function PickProfileView({ missionId, block, alias, onHelpUsed, onOral, onFinish }: Props) {
   const { state, update } = useProgress();
   const [chosen, setChosen] = useState<string | null>(null);
 

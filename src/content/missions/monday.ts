@@ -44,7 +44,13 @@ export const mondayMission: Mission = {
   evidence:
     "Reconoce los cuatro saludos por el cielo, dice su nombre para imprimir la etiqueta, sostiene el role play en ambos roles y graba su presentación completa (saludo + nombre).",
   counter: { icon: "star", label: "Soles" },
-  reviewPhrases: ["Good morning!", "Good afternoon!", "Good evening!", "Good night!", "My name is {alias}."],
+  reviewPhrases: [
+    "Good morning!",
+    "Good afternoon!",
+    "Good evening!",
+    "Good night!",
+    "My name is {alias}.",
+  ],
   /** Pip come 8 oraciones en la misión: 4 saludos + etiqueta + 2 turnos del role play + presentación. */
   pip: { feedsToEvolve: 8, rewardLabel: "Pip aprende a saludar" },
   blocks: [
@@ -56,7 +62,12 @@ export const mondayMission: Mission = {
       time: "morning",
       helpEs: "Pip solo entiende inglés. Tocá el micrófono y decile Hello.",
       introClip: "es-pip-intro",
-      record: { id: "t0", promptEs: "Decile Hello a Pip.", targetEn: "Hello!", modelClip: "model-hello" },
+      record: {
+        id: "t0",
+        promptEs: "Decile Hello a Pip.",
+        targetEn: "Hello!",
+        modelClip: "model-hello",
+      },
     },
 
     /* ───────────── 1. EXPLORAR: el reloj del sol (3 min) · VOCABULARY ───────────── */
@@ -64,33 +75,79 @@ export const mondayMission: Mission = {
       kind: "sunClock",
       id: "sun",
       estimatedMinutes: 3,
-      helpEs: "Arrastrá el sol por el cielo. Boti saluda según la hora. Después repetí cada saludo.",
+      helpEs:
+        "Arrastrá el sol por el cielo. Boti saluda según la hora. Después repetí cada saludo.",
       introClip: "es-sun-intro",
       guide: "boti",
       stops: [
         {
           time: "morning",
-          line: { speaker: "boti", clip: "boti-good-morning", en: "Good morning!", es: "¡Buenos días!" },
-          repeat: { id: "s1", promptEs: "Repetí: Good morning!", targetEn: "Good morning!", modelClip: "model-good-morning" },
+          line: {
+            speaker: "boti",
+            clip: "boti-good-morning",
+            en: "Good morning!",
+            es: "¡Buenos días!",
+          },
+          repeat: {
+            id: "s1",
+            promptEs: "Repetí: Good morning!",
+            targetEn: "Good morning!",
+            modelClip: "model-good-morning",
+          },
         },
         {
           time: "afternoon",
-          line: { speaker: "boti", clip: "boti-good-afternoon", en: "Good afternoon!", es: "¡Buenas tardes!" },
-          repeat: { id: "s2", promptEs: "Repetí: Good afternoon!", targetEn: "Good afternoon!", modelClip: "model-good-afternoon" },
+          line: {
+            speaker: "boti",
+            clip: "boti-good-afternoon",
+            en: "Good afternoon!",
+            es: "¡Buenas tardes!",
+          },
+          repeat: {
+            id: "s2",
+            promptEs: "Repetí: Good afternoon!",
+            targetEn: "Good afternoon!",
+            modelClip: "model-good-afternoon",
+          },
         },
         {
           time: "evening",
-          line: { speaker: "boti", clip: "boti-good-evening", en: "Good evening!", es: "¡Buenas noches! (al llegar)" },
-          repeat: { id: "s3", promptEs: "Repetí: Good evening!", targetEn: "Good evening!", modelClip: "model-good-evening" },
+          line: {
+            speaker: "boti",
+            clip: "boti-good-evening",
+            en: "Good evening!",
+            es: "¡Buenas noches! (al llegar)",
+          },
+          repeat: {
+            id: "s3",
+            promptEs: "Repetí: Good evening!",
+            targetEn: "Good evening!",
+            modelClip: "model-good-evening",
+          },
         },
         {
           time: "night",
-          line: { speaker: "boti", clip: "boti-good-night", en: "Good night!", es: "¡Buenas noches! (al irse a dormir)" },
-          repeat: { id: "s4", promptEs: "Repetí: Good night!", targetEn: "Good night!", modelClip: "model-good-night" },
+          line: {
+            speaker: "boti",
+            clip: "boti-good-night",
+            en: "Good night!",
+            es: "¡Buenas noches! (al irse a dormir)",
+          },
+          repeat: {
+            id: "s4",
+            promptEs: "Repetí: Good night!",
+            targetEn: "Good night!",
+            modelClip: "model-good-night",
+          },
         },
       ],
       /** Al terminar, el sol queda arreglado y Boti lo celebra. */
-      done: { speaker: "boti", clip: "boti-sun-fixed", en: "The sun clock works! Thank you!", es: "¡El reloj del sol funciona! ¡Gracias!" },
+      done: {
+        speaker: "boti",
+        clip: "boti-sun-fixed",
+        en: "The sun clock works! Thank you!",
+        es: "¡El reloj del sol funciona! ¡Gracias!",
+      },
     },
 
     /* ───────────── 2. RADAR: ¿a qué hora llega cada explorador? (3 min) · comprensión ───────────── */
@@ -148,17 +205,42 @@ export const mondayMission: Mission = {
       introClip: "es-tag-intro",
       asker: "leo",
       ask: [
-        { speaker: "leo", clip: "leo-hello-name", en: "Hello! My name is Leo.", es: "¡Hola! Me llamo Leo." },
+        {
+          speaker: "leo",
+          clip: "leo-hello-name",
+          en: "Hello! My name is Leo.",
+          es: "¡Hola! Me llamo Leo.",
+        },
         { speaker: "leo", clip: "leo-what-name", en: "What is your name?", es: "¿Cómo te llamás?" },
       ],
-      record: { id: "t1", promptEs: "Decí tu nombre.", targetEn: "My name is {alias}.", modelClip: "model-my-name-is" },
+      record: {
+        id: "t1",
+        promptEs: "Decí tu nombre.",
+        targetEn: "My name is {alias}.",
+        modelClip: "model-my-name-is",
+      },
       /** La etiqueta impresa se guarda en la mochila del alumno (reward visible). */
       /** Sin {alias} en el audio: los clips son pregrabados y no pueden decir el nombre del niño. */
-      printed: { speaker: "boti", clip: "boti-tag-ready", en: "Your tag is ready!", es: "¡Tu etiqueta está lista!" },
+      printed: {
+        speaker: "boti",
+        clip: "boti-tag-ready",
+        en: "Your tag is ready!",
+        es: "¡Tu etiqueta está lista!",
+      },
       /** Cambio de rol: ahora el niño pregunta y Mia responde. */
       swap: {
-        record: { id: "t2", promptEs: "Ahora preguntale el nombre a Mia.", targetEn: "What is your name?", modelClip: "model-what-name" },
-        answer: { speaker: "mia", clip: "mia-my-name-is", en: "My name is Mia!", es: "¡Me llamo Mia!" },
+        record: {
+          id: "t2",
+          promptEs: "Ahora preguntale el nombre a Mia.",
+          targetEn: "What is your name?",
+          modelClip: "model-what-name",
+        },
+        answer: {
+          speaker: "mia",
+          clip: "mia-my-name-is",
+          en: "My name is Mia!",
+          es: "¡Me llamo Mia!",
+        },
       },
     },
 
@@ -175,10 +257,32 @@ export const mondayMission: Mission = {
           time: "evening",
           support: "full",
           turns: [
-            { type: "character", speaker: "luna", clip: "luna-hello-how-are-you", en: "Hello! How are you?" },
-            { type: "record", id: "t3", promptEs: "Decí que estás bien.", targetEn: "I am fine, thank you.", modelClip: "model-i-am-fine-thank-you" },
-            { type: "character", speaker: "luna", clip: "luna-what-name", en: "What is your name?" },
-            { type: "record", id: "t4", promptEs: "Decí tu nombre.", targetEn: "My name is {alias}.", modelClip: "model-my-name-is" },
+            {
+              type: "character",
+              speaker: "luna",
+              clip: "luna-hello-how-are-you",
+              en: "Hello! How are you?",
+            },
+            {
+              type: "record",
+              id: "t3",
+              promptEs: "Decí que estás bien.",
+              targetEn: "I am fine, thank you.",
+              modelClip: "model-i-am-fine-thank-you",
+            },
+            {
+              type: "character",
+              speaker: "luna",
+              clip: "luna-what-name",
+              en: "What is your name?",
+            },
+            {
+              type: "record",
+              id: "t4",
+              promptEs: "Decí tu nombre.",
+              targetEn: "My name is {alias}.",
+              modelClip: "model-my-name-is",
+            },
           ],
         },
         {
@@ -187,9 +291,26 @@ export const mondayMission: Mission = {
           time: "evening",
           support: "reduced",
           turns: [
-            { type: "record", id: "t5", promptEs: "Ahora preguntá vos: Hello! How are you?", targetEn: "Hello! How are you?", modelClip: "model-hello-how-are-you" },
-            { type: "character", speaker: "luna", clip: "luna-i-am-fine-thank-you", en: "I am fine, thank you." },
-            { type: "record", id: "t6", promptEs: "Preguntale el nombre.", targetEn: "What is your name?", modelClip: "model-what-name" },
+            {
+              type: "record",
+              id: "t5",
+              promptEs: "Ahora preguntá vos: Hello! How are you?",
+              targetEn: "Hello! How are you?",
+              modelClip: "model-hello-how-are-you",
+            },
+            {
+              type: "character",
+              speaker: "luna",
+              clip: "luna-i-am-fine-thank-you",
+              en: "I am fine, thank you.",
+            },
+            {
+              type: "record",
+              id: "t6",
+              promptEs: "Preguntale el nombre.",
+              targetEn: "What is your name?",
+              modelClip: "model-what-name",
+            },
             { type: "character", speaker: "luna", clip: "luna-my-name-is", en: "My name is Luna." },
           ],
         },
@@ -201,11 +322,17 @@ export const mondayMission: Mission = {
       kind: "showcase",
       id: "dock",
       estimatedMinutes: 3,
-      helpEs: "Mirá el cielo: es la hora real. Saludá según la hora y decí tu nombre. Esta grabación es tu presentación de hoy.",
+      helpEs:
+        "Mirá el cielo: es la hora real. Saludá según la hora y decí tu nombre. Esta grabación es tu presentación de hoy.",
       /** "auto" = el cielo se pone según la hora real del dispositivo; el saludo objetivo cambia con él. */
       time: "auto",
       audience: ["luna", "leo", "mia", "boti"],
-      intro: { speaker: "luna", clip: "luna-tell-me", en: "Tell me about yourself!", es: "¡Contame de vos!" },
+      intro: {
+        speaker: "luna",
+        clip: "luna-tell-me",
+        en: "Tell me about yourself!",
+        es: "¡Contame de vos!",
+      },
       steps: [
         {
           id: "t7",
@@ -215,11 +342,21 @@ export const mondayMission: Mission = {
           modelClip: ["model-{greetingClip}", "model-my-name-is"],
         },
       ],
-      cheer: { speaker: "luna", clip: "luna-cheer", en: "Yay! Welcome to Explorer Island!", es: "¡Bien! ¡Bienvenido a la Isla de los Exploradores!" },
+      cheer: {
+        speaker: "luna",
+        clip: "luna-cheer",
+        en: "Yay! Welcome to Explorer Island!",
+        es: "¡Bien! ¡Bienvenido a la Isla de los Exploradores!",
+      },
       /** Esta grabación se marca como "presentación del día": es el audio para el padre y el ticket para la clase. */
       saveAs: "presentation-day1",
       /** Gancho para mañana (martes: países). */
-      teaser: { speaker: "leo", clip: "leo-teaser-tuesday", en: "Tomorrow I will tell you where I am from!", es: "Mañana te cuento de dónde soy." },
+      teaser: {
+        speaker: "leo",
+        clip: "leo-teaser-tuesday",
+        en: "Tomorrow I will tell you where I am from!",
+        es: "Mañana te cuento de dónde soy.",
+      },
     },
   ],
 };
