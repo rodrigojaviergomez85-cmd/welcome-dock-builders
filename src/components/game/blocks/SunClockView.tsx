@@ -144,7 +144,11 @@ export function SunClockView({
         onPointerLeave={() => setDragT(null)}
         className="relative h-40 w-full touch-none select-none sm:h-48"
       >
-        <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 size-full">
+        <svg
+          viewBox="0 0 100 100"
+          preserveAspectRatio="none"
+          className="absolute inset-0 size-full"
+        >
           <path
             d="M 6 86 Q 50 -6 94 86"
             fill="none"
