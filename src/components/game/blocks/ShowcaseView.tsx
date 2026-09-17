@@ -99,7 +99,9 @@ export function ShowcaseView({
       <div className="flex w-full max-w-2xl animate-pop flex-col items-center gap-4">
         <CharacterFigure id={block.teaser.speaker} size="lg" />
         <div className="rounded-3xl bg-card/95 px-5 py-4 text-center text-card-foreground shadow-[var(--shadow-soft)]">
-          <p lang="en" className="font-display text-2xl">{block.teaser.en}</p>
+          <p lang="en" className="font-display text-2xl">
+            {block.teaser.en}
+          </p>
           <p className="mt-1 text-muted-foreground">{block.teaser.es}</p>
         </div>
       </div>
