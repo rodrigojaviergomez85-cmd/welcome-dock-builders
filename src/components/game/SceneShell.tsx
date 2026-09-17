@@ -9,7 +9,7 @@ type Props = {
   title: string;
   helpEs: string;
   onHelpUsed?: () => void;
-  counter: { icon: "bag" | "star"; total: number; current: number };
+  counter: { icon: "bag" | "star"; total: number; current: number; label?: string };
   children: ReactNode;
   footer?: ReactNode;
   className?: string;
@@ -28,10 +28,11 @@ export function SceneShell({
   return (
     <div className="relative min-h-screen w-full overflow-hidden">
       <img
+        key={background}
         src={background}
         alt=""
         aria-hidden
-        className="absolute inset-0 size-full object-cover"
+        className="absolute inset-0 size-full animate-fade-in object-cover transition-opacity duration-500"
       />
       <div className="absolute inset-0 bg-gradient-to-b from-background/10 via-background/5 to-background/70" />
 
@@ -48,6 +49,9 @@ export function SceneShell({
 
           <div className="flex items-center gap-2 rounded-full bg-card/90 px-4 py-2 shadow-[var(--shadow-soft)]">
             <span className="hidden font-display text-card-foreground sm:inline">{title}</span>
+            {counter.label ? (
+              <span className="font-display text-sm text-card-foreground">{counter.label}</span>
+            ) : null}
             <span
               className="flex items-center gap-0.5"
               aria-label={`${counter.current} de ${counter.total} completados`}
