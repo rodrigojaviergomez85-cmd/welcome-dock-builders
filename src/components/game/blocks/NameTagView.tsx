@@ -114,7 +114,9 @@ export function NameTagView({
 
       {step === "printed" ? (
         <div className="animate-pop rounded-3xl bg-success px-6 py-4 text-center text-success-foreground shadow-[var(--shadow-soft)]">
-          <p lang="en" className="font-display text-2xl">{block.printed.en}</p>
+          <p lang="en" className="font-display text-2xl">
+            {block.printed.en}
+          </p>
           <p>{block.printed.es}</p>
         </div>
       ) : null}
@@ -146,7 +148,9 @@ export function NameTagView({
         <div className="flex animate-pop flex-col items-center gap-2">
           <CharacterFigure id={block.swap.answer.speaker} size="md" showName />
           <div className="rounded-3xl bg-card/95 px-6 py-4 text-center text-card-foreground shadow-[var(--shadow-soft)]">
-            <p lang="en" className="font-display text-2xl">{block.swap.answer.en}</p>
+            <p lang="en" className="font-display text-2xl">
+              {block.swap.answer.en}
+            </p>
             <p className="text-muted-foreground">{block.swap.answer.es}</p>
             <AudioButton clipId={block.swap.answer.clip} label="Escuchar a Mia" className="mt-3" />
           </div>

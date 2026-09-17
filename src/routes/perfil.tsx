@@ -78,7 +78,11 @@ function ProfilePage() {
               <img src={avatar.image} alt={avatar.alt} className="h-24 w-auto" />
               {hasNameTag && avatarId === avatar.id ? (
                 <div className="absolute -bottom-2 -right-8">
-                  <img src={BAGS.green.image} alt="Mochila con tu etiqueta" className="h-14 w-auto" />
+                  <img
+                    src={BAGS.green.image}
+                    alt="Mochila con tu etiqueta"
+                    className="h-14 w-auto"
+                  />
                   <span className="absolute inset-x-1 top-6 truncate rounded bg-card px-1 text-center font-display text-[9px] text-card-foreground">
                     {cleanAlias}
                   </span>
