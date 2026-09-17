@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { ArrowRight, PartyPopper } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { PartyPopper } from "lucide-react";
 import type { ShowcaseBlock } from "@/content/missions/types";
 import { CharacterFigure } from "../CharacterFigure";
 import { AudioButton } from "../AudioButton";
@@ -8,6 +8,7 @@ import { useProgress } from "@/lib/useProgress";
 import { missionVars, fillText, resolveClip } from "@/lib/mission-vars";
 import { gloss } from "@/content/glossary";
 import { playFanfare } from "@/lib/feedback-sounds";
+import { playClip, stopClip } from "@/lib/audio";
 
 type Props = {
   missionId: string;
@@ -32,9 +33,43 @@ export function ShowcaseView({
   onFinish,
 }: Props) {
   const { state } = useProgress();
-  const [stage, setStage] = useState<"intro" | "step" | "cheer">("intro");
+  const finishRef = useRef(onFinish);
+  finishRef.current = onFinish;
+  const [stage, setStage] = useState<"intro" | "step" | "cheer" | "teaser">("intro");
   const [index, setIndex] = useState(Math.min(startIndex, block.steps.length - 1));
   const vars = missionVars(state.profile, alias, block.time);
+
+  useEffect(() => {
+    let active = true;
+    void (async () => {
+      await playClip("es-dock-intro");
+      if (!active) return;
+      await playClip(block.intro.clip);
+      if (active) setStage("step");
+    })();
+    return () => {
+      active = false;
+      stopClip();
+    };
+  }, [block.intro.clip]);
+
+  useEffect(() => {
+    if (stage !== "cheer") return;
+    let active = true;
+    void (async () => {
+      playFanfare();
+      await playClip(block.cheer.clip);
+      if (!active) return;
+      if (block.teaser) {
+        setStage("teaser");
+        await playClip(block.teaser.clip);
+      }
+      if (active) finishRef.current();
+    })();
+    return () => {
+      active = false;
+    };
+  }, [block.cheer.clip, block.teaser, stage]);
 
   const audience = (
     <div className="flex items-end justify-center gap-1">
@@ -53,20 +88,22 @@ export function ShowcaseView({
             {block.intro.en}
           </p>
           <p className="mt-1 text-muted-foreground">{block.intro.es}</p>
-          <AudioButton
-            clipId={block.intro.clip}
-            autoPlayKey={block.id}
-            label="Escuchar"
-            className="mt-4"
-          />
+          <AudioButton clipId={block.intro.clip} label="Escuchar" className="mt-4" />
         </div>
-        <button
-          type="button"
-          onClick={() => setStage("step")}
-          className="tap-target inline-flex items-center gap-2 rounded-full bg-primary px-6 font-display text-lg text-primary-foreground shadow-[var(--shadow-pop)] active:translate-y-1 active:shadow-none"
-        >
-          ¡Empiezo! <ArrowRight className="size-5" aria-hidden />
-        </button>
+      </div>
+    );
+  }
+
+  if (stage === "teaser" && block.teaser) {
+    return (
+      <div className="flex w-full max-w-2xl animate-pop flex-col items-center gap-4">
+        <CharacterFigure id={block.teaser.speaker} size="lg" />
+        <div className="rounded-3xl bg-card/95 px-5 py-4 text-center text-card-foreground shadow-[var(--shadow-soft)]">
+          <p lang="en" className="font-display text-2xl">
+            {block.teaser.en}
+          </p>
+          <p className="mt-1 text-muted-foreground">{block.teaser.es}</p>
+        </div>
       </div>
     );
   }
@@ -83,20 +120,8 @@ export function ShowcaseView({
             {block.cheer.en}
           </p>
           <p className="text-muted-foreground">{block.cheer.es}</p>
-          <AudioButton
-            clipId={block.cheer.clip}
-            autoPlayKey={`${block.id}-cheer`}
-            label="Escuchar"
-            className="mt-3"
-          />
+          <AudioButton clipId={block.cheer.clip} label="Escuchar" className="mt-3" />
         </div>
-        <button
-          type="button"
-          onClick={onFinish}
-          className="tap-target inline-flex items-center gap-2 rounded-full bg-success px-6 font-display text-lg text-success-foreground shadow-[var(--shadow-pop)]"
-        >
-          Seguir <ArrowRight className="size-5" aria-hidden />
-        </button>
       </div>
     );
   }
@@ -117,6 +142,7 @@ export function ShowcaseView({
         targetEn={fillText(step.targetEn, vars)}
         alias={alias}
         modelClip={resolveClip(step.modelClip, vars)}
+        {...(block.saveAs ? { saveAs: block.saveAs } : {})}
         meaning={
           template?.es
             ? {
@@ -130,7 +156,6 @@ export function ShowcaseView({
         onDone={(status) => {
           onOral(status);
           if (index + 1 >= block.steps.length) {
-            playFanfare();
             setStage("cheer");
             return;
           }
