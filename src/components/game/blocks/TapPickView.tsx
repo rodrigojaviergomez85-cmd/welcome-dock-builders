@@ -104,7 +104,7 @@ export function TapPickView({
           const isPicked = picked === id;
           return (
             <button
-              key={id}
+              key={`${id}-${isPicked && !isAnswer ? wrongTry : 0}`}
               type="button"
               onClick={() => pick(id)}
               disabled={solved}
@@ -119,7 +119,6 @@ export function TapPickView({
             >
               {sky ? (
                 <img
-                  key={`${id}-${isPicked && !isAnswer ? wrongTry : 0}`}
                   src={BACKGROUNDS[skyTime(id)]}
                   alt=""
                   className="h-24 w-full rounded-2xl object-cover sm:h-32"

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { PartyPopper } from "lucide-react";
 import type { ShowcaseBlock } from "@/content/missions/types";
 import { CharacterFigure } from "../CharacterFigure";
@@ -33,6 +33,8 @@ export function ShowcaseView({
   onFinish,
 }: Props) {
   const { state } = useProgress();
+  const finishRef = useRef(onFinish);
+  finishRef.current = onFinish;
   const [stage, setStage] = useState<"intro" | "step" | "cheer" | "teaser">("intro");
   const [index, setIndex] = useState(Math.min(startIndex, block.steps.length - 1));
   const vars = missionVars(state.profile, alias, block.time);
@@ -62,12 +64,12 @@ export function ShowcaseView({
         setStage("teaser");
         await playClip(block.teaser.clip);
       }
-      if (active) onFinish();
+      if (active) finishRef.current();
     })();
     return () => {
       active = false;
     };
-  }, [block.cheer.clip, block.teaser, onFinish, stage]);
+  }, [block.cheer.clip, block.teaser, stage]);
 
   const audience = (
     <div className="flex items-end justify-center gap-1">
