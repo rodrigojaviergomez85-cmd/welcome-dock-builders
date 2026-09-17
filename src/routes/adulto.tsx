@@ -137,13 +137,25 @@ function AdultPanel() {
           <ul className="mt-3 space-y-3">
             {recordings.map((rec) => (
               <li key={rec.key} className="rounded-2xl bg-muted p-3">
+                {rec.key === "presentation-day1" ? (
+                  <p className="mb-1 font-display text-lg text-primary">Presentación del día 1</p>
+                ) : null}
                 <p lang="en" className="font-display">
                   {rec.targetEn}
                 </p>
                 <p className="text-xs text-muted-foreground">
                   {new Date(rec.createdAt).toLocaleString("es-AR")} · marcada como practicada
                 </p>
-                <audio controls src={URL.createObjectURL(rec.blob)} className="mt-2 w-full" />
+                <audio
+                  controls
+                  aria-label={
+                    rec.key === "presentation-day1"
+                      ? "Reproducir presentación del día 1"
+                      : "Reproducir grabación"
+                  }
+                  src={URL.createObjectURL(rec.blob)}
+                  className="mt-2 w-full"
+                />
               </li>
             ))}
           </ul>

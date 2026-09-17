@@ -47,6 +47,7 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
   const [introFor, setIntroFor] = useState<string | null>(null);
   /** Hora del cielo mientras se juega el reloj del sol, y soles dorados ganados. */
   const [sunTime, setSunTime] = useState<TimeOfDay | null>(null);
+  const [skyTime, setSkyTime] = useState<TimeOfDay | null>(null);
   const [sunGold, setSunGold] = useState(0);
   const [pipMood, setPipMood] = useState<PipMood>("happy");
   const [pipEvolving, setPipEvolving] = useState(false);
@@ -236,6 +237,7 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
     time = block.time;
   if (block.kind === "showcase") time = resolveTime(block.time);
   if (block.kind === "sunClock") time = sunTime ?? block.stops[0]?.time ?? "morning";
+  if (block.kind === "tapPick" && block.style === "sky") time = skyTime ?? block.time;
 
   const sunBlock = block.kind === "sunClock" ? block : null;
   const showingIntro = BLOCK_INTROS[block.id] !== undefined && introFor !== block.id;
@@ -286,6 +288,7 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
           startIndex={stepIndex}
           onComprehension={onComprehension}
           onRoundChange={goToStep}
+          onSkyChange={setSkyTime}
           onFinish={nextBlock}
         />
       ) : null}

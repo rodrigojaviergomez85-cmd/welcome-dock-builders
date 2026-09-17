@@ -20,6 +20,8 @@ type Props = {
   /** Alias del avatar: cualquier nombre se acepta, así que no hace falta acertarlo. */
   alias?: string;
   modelClip: string | string[];
+  /** Guarda también la toma completa con una clave destacada para el panel adulto. */
+  saveAs?: string;
   /** Significado en español ya armado (cuando la frase tiene país o edad). */
   meaning?: { es: string; esClip?: string | undefined } | undefined;
   support: "full" | "reduced";
@@ -71,6 +73,7 @@ export function RecordTurn({
   targetEn,
   alias = "",
   modelClip,
+  saveAs,
   meaning,
   onDone,
 }: Props) {
@@ -139,6 +142,16 @@ export function RecordTurn({
         createdAt: new Date().toISOString(),
         blob,
       });
+      if (recordingFull && saveAs) {
+        await saveRecording({
+          key: saveAs,
+          missionId,
+          turnId: saveAs,
+          targetEn: practiceTarget,
+          createdAt: new Date().toISOString(),
+          blob,
+        });
+      }
     } catch {
       /* si la base local falla, la práctica sigue contando en esta sesión */
     }

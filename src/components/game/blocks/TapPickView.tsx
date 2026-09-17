@@ -4,20 +4,18 @@ import { AudioButton } from "../AudioButton";
 import { CharacterFigure } from "../CharacterFigure";
 import type { TapPickBlock } from "@/content/missions/types";
 import { vocab } from "@/content/vocabulary";
-import { TIME_LABEL_ES } from "@/content/backgrounds";
+import { BACKGROUNDS, TIME_LABEL_ES } from "@/content/backgrounds";
 import type { TimeOfDay } from "@/content/missions/types";
 
-const SKY_EMOJI: Record<TimeOfDay, string> = {
-  morning: "🌅",
-  afternoon: "☀️",
-  evening: "🌇",
-  night: "🌙",
-};
-
-function skyLabel(id: string): { symbol: string; text: string } {
-  const time = id.replace("sky-", "") as TimeOfDay;
-  return { symbol: SKY_EMOJI[time] ?? "🌤️", text: TIME_LABEL_ES[time] ?? id };
+function skyTime(id: string): TimeOfDay {
+  return id.replace("sky-", "") as TimeOfDay;
 }
+
+function skyLabel(id: string): { text: string } {
+  const time = id.replace("sky-", "") as TimeOfDay;
+  return { text: TIME_LABEL_ES[time] ?? id };
+}
+import { playClip } from "@/lib/audio";
 import { playSuccess, playTryAgain } from "@/lib/feedback-sounds";
 import { cn } from "@/lib/utils";
 
@@ -26,6 +24,7 @@ type Props = {
   startIndex?: number;
   onComprehension: (correct: boolean) => void;
   onRoundChange: (index: number) => void;
+  onSkyChange?: (time: TimeOfDay) => void;
   onFinish: () => void;
 };
 
@@ -35,19 +34,28 @@ export function TapPickView({
   startIndex = 0,
   onComprehension,
   onRoundChange,
+  onSkyChange,
   onFinish,
 }: Props) {
   const [index, setIndex] = useState(Math.min(startIndex, block.rounds.length - 1));
   const [picked, setPicked] = useState<string | null>(null);
+  const [wrongTry, setWrongTry] = useState(0);
   const round = block.rounds[index]!;
   const solved = picked === round.answer;
 
   function pick(id: string) {
     if (solved) return;
     setPicked(id);
-    if (id === round.answer) playSuccess();
-    else playTryAgain();
-    onComprehension(id === round.answer);
+    if (id === round.answer) {
+      playSuccess();
+      if (block.style === "sky") onSkyChange?.(skyTime(id));
+      onComprehension(true);
+    } else {
+      playTryAgain();
+      setWrongTry((value) => value + 1);
+      void playClip(round.clip);
+      onComprehension(false);
+    }
   }
 
   function next() {
@@ -91,7 +99,7 @@ export function TapPickView({
       <div className={cn("grid w-full gap-3", bigSymbol ? "grid-cols-4" : "grid-cols-2")}>
         {round.options.map((id) => {
           const sky = block.style === "sky" ? skyLabel(id) : null;
-          const item = sky ? { en: sky.text, symbol: sky.symbol } : vocab(id);
+          const item = sky ? { en: sky.text, symbol: "" } : vocab(id);
           const isAnswer = id === round.answer;
           const isPicked = picked === id;
           return (
@@ -104,15 +112,28 @@ export function TapPickView({
                 "tap-target flex min-h-24 flex-col items-center justify-center gap-1 rounded-3xl bg-card/95 p-3 text-card-foreground shadow-[var(--shadow-soft)] transition-transform active:translate-y-1",
                 isPicked && isAnswer && "ring-4 ring-success",
                 isPicked && !isAnswer && "opacity-70 ring-4 ring-destructive",
+                isPicked && !isAnswer && "animate-nudge",
                 solved && !isAnswer && "opacity-40",
               )}
+              aria-label={sky ? sky.text : undefined}
             >
-              <span className={bigSymbol ? "font-display text-4xl" : "text-4xl"} aria-hidden>
-                {block.style === "word" ? "🧒" : (item.symbol ?? "")}
-              </span>
-              <span lang="en" className="font-display text-base leading-tight">
-                {item.en}
-              </span>
+              {sky ? (
+                <img
+                  key={`${id}-${isPicked && !isAnswer ? wrongTry : 0}`}
+                  src={BACKGROUNDS[skyTime(id)]}
+                  alt=""
+                  className="h-24 w-full rounded-2xl object-cover sm:h-32"
+                />
+              ) : (
+                <>
+                  <span className={bigSymbol ? "font-display text-4xl" : "text-4xl"} aria-hidden>
+                    {block.style === "word" ? "🧒" : (item.symbol ?? "")}
+                  </span>
+                  <span lang="en" className="font-display text-base leading-tight">
+                    {item.en}
+                  </span>
+                </>
+              )}
               {isPicked && isAnswer ? <Check className="size-5 text-success" aria-hidden /> : null}
             </button>
           );
