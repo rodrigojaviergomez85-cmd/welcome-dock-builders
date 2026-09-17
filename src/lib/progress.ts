@@ -40,6 +40,7 @@ export type Profile = {
 export type ProgressState = {
   version: 1;
   profile: Profile | null;
+  pip: { color: string; feeds: number; stage: number; accessories: string[] };
   micAllowed: boolean | null;
   /** Si el juego puede escuchar y responder (transcribir el intento). */
   listenEnabled: boolean;
@@ -68,6 +69,7 @@ export const emptyMission = (): MissionProgress => ({
 export const emptyState = (): ProgressState => ({
   version: 1,
   profile: null,
+  pip: { color: "#FF8A3D", feeds: 0, stage: 0, accessories: [] },
   micAllowed: null,
   listenEnabled: true,
   missions: {},
@@ -83,7 +85,18 @@ export function loadProgress(): ProgressState {
     if (!raw) return emptyState();
     const parsed = JSON.parse(raw) as ProgressState;
     if (parsed.version !== 1) return emptyState();
-    return { ...emptyState(), ...parsed };
+    const fallback = emptyState();
+    const legacyColor = parsed.profile?.pipColor;
+    return {
+      ...fallback,
+      ...parsed,
+      pip: {
+        ...fallback.pip,
+        ...parsed.pip,
+        color: parsed.pip?.color ?? legacyColor ?? fallback.pip.color,
+        accessories: parsed.pip?.accessories ?? [],
+      },
+    };
   } catch {
     return emptyState();
   }

@@ -14,7 +14,14 @@ type Props = {
   children: ReactNode;
   footer?: ReactNode;
   className?: string;
-  pip?: { mood: PipMood; color: string };
+  pip?: {
+    mood: PipMood;
+    color: string;
+    feeds: number;
+    total: number;
+    accessories: string[];
+    evolving?: boolean;
+  };
 };
 
 export function SceneShell({
@@ -40,6 +47,13 @@ export function SceneShell({
       <div className="absolute inset-0 bg-gradient-to-b from-background/10 via-background/5 to-background/70" />
 
       <div className="relative flex min-h-screen flex-col">
+        {pip?.evolving ? (
+          <div className="pointer-events-none absolute inset-0 z-50 overflow-hidden" aria-hidden>
+            {Array.from({ length: 16 }).map((_, index) => (
+              <i key={index} className={`pip-confetti pip-confetti-${(index % 4) + 1}`} />
+            ))}
+          </div>
+        ) : null}
         <header className="flex items-center justify-between gap-3 p-3 sm:p-5">
           <Link
             to="/"
@@ -50,7 +64,28 @@ export function SceneShell({
             <span className="hidden sm:inline">Salir</span>
           </Link>
 
-          <div className="flex items-center gap-2 rounded-full bg-card/90 px-4 py-2 shadow-[var(--shadow-soft)]">
+          <div className="flex items-center gap-2 rounded-full bg-card/90 px-2 py-1 shadow-[var(--shadow-soft)] sm:px-4">
+            {pip ? (
+              <div className="flex items-center gap-1.5" aria-label={`Pip comió ${pip.feeds} de ${pip.total}`}>
+                <Pip
+                  mood={pip.mood}
+                  color={pip.color}
+                  accessories={pip.accessories}
+                  className="size-11 shrink-0 sm:size-14"
+                />
+                <span className="flex gap-0.5">
+                  {Array.from({ length: pip.total }).map((_, index) => (
+                    <i
+                      key={index}
+                      className={cn(
+                        "h-4 w-1.5 rounded-full sm:w-2",
+                        index < pip.feeds ? "bg-success" : "bg-muted-foreground/30",
+                      )}
+                    />
+                  ))}
+                </span>
+              </div>
+            ) : null}
             <span className="hidden font-display text-card-foreground sm:inline">{title}</span>
             {counter.label ? (
               <span className="font-display text-sm text-card-foreground">{counter.label}</span>
@@ -84,11 +119,6 @@ export function SceneShell({
             className,
           )}
         >
-          {pip ? (
-            <div className="pointer-events-none absolute bottom-3 left-2 z-10 sm:bottom-5 sm:left-5">
-              <Pip mood={pip.mood} color={pip.color} className="size-20 sm:size-28" />
-            </div>
-          ) : null}
           {children}
         </main>
 

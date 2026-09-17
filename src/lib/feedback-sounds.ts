@@ -79,3 +79,21 @@ export function playFanfare() {
     { freq: 1319, start: 0.42, duration: 0.3, volume: 0.14, type: "triangle" },
   ]);
 }
+
+/** Pip come: dos crujidos cortos y suaves. */
+export function playMunch() {
+  playNotes([
+    { freq: 170, start: 0, duration: 0.08, volume: 0.16, type: "square" },
+    { freq: 125, start: 0.1, duration: 0.1, volume: 0.13, type: "triangle" },
+  ]);
+}
+
+/** Pip evoluciona: destello ascendente distinto de la recompensa final. */
+export function playEvolution() {
+  playNotes([
+    { freq: 440, start: 0, duration: 0.12, type: "triangle" },
+    { freq: 660, start: 0.1, duration: 0.16, type: "triangle" },
+    { freq: 880, start: 0.22, duration: 0.2, type: "triangle" },
+    { freq: 1320, start: 0.36, duration: 0.35, volume: 0.24 },
+  ]);
+}

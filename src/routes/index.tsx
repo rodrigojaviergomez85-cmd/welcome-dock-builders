@@ -5,6 +5,7 @@ import { missions } from "@/content/missions";
 import { AVATARS } from "@/content/characters";
 import { useProgress } from "@/lib/useProgress";
 import { getMissionProgress } from "@/lib/progress";
+import { Pip } from "@/components/game/Pip";
 
 const description =
   "Juego de inglés para niños de 8 a 12 años. Semana 1 completa: saludos, países, números, alfabeto y tu presentación.";
@@ -58,6 +59,12 @@ function IslandMap() {
                 className="tap-target inline-flex items-center gap-2 rounded-full bg-card px-4 font-display shadow-[var(--shadow-soft)]"
               >
                 <img src={avatar.image} alt={avatar.alt} className="size-10" />
+                <Pip
+                  mood="happy"
+                  color={state.pip.color}
+                  accessories={state.pip.accessories}
+                  className="size-10"
+                />
                 {profile.alias}
               </Link>
             </>

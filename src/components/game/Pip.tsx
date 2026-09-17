@@ -8,6 +8,7 @@ export type PipMood = "sleepy" | "happy" | "eat";
 type Props = {
   mood: PipMood;
   color: string;
+  accessories?: string[];
   className?: string;
 };
 
@@ -37,7 +38,7 @@ export function pipSvg(mood: PipMood, color: string) {
     ${eyes}${mouth}</svg>`;
 }
 
-export function Pip({ mood, color, className }: Props) {
+export function Pip({ mood, color, accessories = [], className }: Props) {
   const titleId = useId();
   const sleepy = mood === "sleepy";
 
@@ -53,6 +54,13 @@ export function Pip({ mood, color, className }: Props) {
       )}
     >
       <title id={titleId}>Pip</title>
+      {accessories.includes("sun-tag") ? (
+        <g aria-label="Gorra de explorador">
+          <path d="M24 30Q50 5 76 30L70 38H30Z" fill="var(--color-sun)" />
+          <path d="M20 36Q50 28 82 37Q70 43 38 41Z" fill="var(--color-sun-foreground)" />
+          <circle cx="50" cy="25" r="4" fill="var(--color-accent)" />
+        </g>
+      ) : null}
       <ellipse fill={color} cx="30" cy="22" rx="9" ry="16" transform="rotate(-20 30 22)" />
       <ellipse fill={color} cx="70" cy="22" rx="9" ry="16" transform="rotate(20 70 22)" />
       <ellipse fill={color} cx="50" cy="56" rx="34" ry="32" />
