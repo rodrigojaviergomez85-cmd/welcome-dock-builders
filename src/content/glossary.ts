@@ -63,6 +63,7 @@ export const GLOSSARY: Record<string, Gloss> = {
   "Good night!": {
     es: "¡Buenas noches! Se dice al irse a dormir.",
     esClip: "es-good-night",
+    slowClip: "slow-good-night",
   },
   "Good morning!": { es: "¡Buenos días!", esClip: "es-good-morning", slowClip: "slow-good-morning" },
   "Good afternoon!": {
@@ -70,7 +71,11 @@ export const GLOSSARY: Record<string, Gloss> = {
     esClip: "es-good-afternoon",
     slowClip: "slow-good-afternoon",
   },
-  "Good evening!": { es: "¡Buenas noches! Se dice al llegar de noche.", esClip: "es-good-evening" },
+  "Good evening!": {
+    es: "¡Buenas noches! Se dice al llegar de noche.",
+    esClip: "es-good-evening",
+    slowClip: "slow-good-evening",
+  },
   "My name is {alias}.": {
     es: "Me llamo {alias}.",
     esClip: "es-my-name-is",
@@ -101,11 +106,8 @@ export const GLOSSARY: Record<string, Gloss> = {
   "Tell me about yourself!": { es: "¡Contame de vos!", esClip: "es-tell-me" },
 
   // Lunes · El reloj del sol
-  "Good night!": { es: "¡Buenas noches! Se dice al irse a dormir.", esClip: "es-good-night", slowClip: "slow-good-night" },
-  "Good evening!": { es: "¡Buenas noches! Se dice al llegar de noche.", esClip: "es-good-evening", slowClip: "slow-good-evening" },
   "I am fine, thank you.": { es: "Estoy bien, gracias.", esClip: "es-i-am-fine-thank-you", slowClip: "slow-i-am-fine-thank-you" },
   "Hello! How are you?": { es: "¡Hola! ¿Cómo estás?", esClip: "es-hello-how-are-you", slowClip: "slow-how-are-you" },
-  "Tell me about yourself!": { es: "¡Contame de vos!", esClip: "es-tell-me" },
   "The sun clock works! Thank you!": { es: "¡El reloj del sol funciona! ¡Gracias!" },
   "Your tag is ready!": { es: "¡Tu etiqueta está lista!" },
   "My name is Mia!": { es: "¡Me llamo Mia!" },
