@@ -361,7 +361,16 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
       ) : null}
 
       {!showingIntro && block.kind === "micCheck" ? (
-        <MicCheckView block={block} onFinish={nextBlock} />
+        <MicCheckView
+          missionId={mission.id}
+          block={block}
+          alias={alias}
+          pipColor={state.pip.color}
+          pipAccessories={state.pip.accessories}
+          onHelpUsed={onHelpUsed}
+          onOral={onOral}
+          onFinish={nextBlock}
+        />
       ) : null}
 
       {!showingIntro && block.kind === "sunClock" ? (
@@ -382,7 +391,21 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
       ) : null}
 
       {!showingIntro && block.kind === "nameTag" ? (
-        <NameTagView block={block} alias={alias} onFinish={nextBlock} />
+        <NameTagView
+          missionId={mission.id}
+          block={block}
+          alias={alias}
+          onHelpUsed={onHelpUsed}
+          onOral={onOral}
+          onReward={() =>
+            update((prev) =>
+              updateMission(prev, mission.id, (missionProgress) =>
+                addReward(missionProgress, mission.reward.id),
+              ),
+            )
+          }
+          onFinish={nextBlock}
+        />
       ) : null}
 
       {!showingIntro && block.kind === "finale" ? (

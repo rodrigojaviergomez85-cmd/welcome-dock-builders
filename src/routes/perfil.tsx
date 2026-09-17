@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { ArrowLeft, Check } from "lucide-react";
 import { AVATARS } from "@/content/characters";
+import { BAGS } from "@/content/characters";
 import { DEFAULT_PIP_COLOR, Pip, PIP_COLORS } from "@/components/game/Pip";
 import { useProgress } from "@/lib/useProgress";
+import { getMissionProgress } from "@/lib/progress";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/perfil")({
@@ -43,6 +45,7 @@ function ProfilePage() {
 
   const cleanAlias = alias.trim().slice(0, 12);
   const valid = cleanAlias.length >= 2;
+  const hasNameTag = getMissionProgress(state, "monday").rewards.includes("sun-tag");
 
   return (
     <div className="mx-auto max-w-3xl p-4 pb-16">
@@ -71,7 +74,17 @@ function ProfilePage() {
               avatarId === avatar.id && "ring-4 ring-primary",
             )}
           >
-            <img src={avatar.image} alt={avatar.alt} className="mx-auto h-24 w-auto" />
+            <div className="relative mx-auto w-fit">
+              <img src={avatar.image} alt={avatar.alt} className="h-24 w-auto" />
+              {hasNameTag && avatarId === avatar.id ? (
+                <div className="absolute -bottom-2 -right-8">
+                  <img src={BAGS.green.image} alt="Mochila con tu etiqueta" className="h-14 w-auto" />
+                  <span className="absolute inset-x-1 top-6 truncate rounded bg-card px-1 text-center font-display text-[9px] text-card-foreground">
+                    {cleanAlias}
+                  </span>
+                </div>
+              ) : null}
+            </div>
           </button>
         ))}
       </div>
