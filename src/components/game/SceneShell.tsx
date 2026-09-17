@@ -66,7 +66,10 @@ export function SceneShell({
 
           <div className="flex items-center gap-2 rounded-full bg-card/90 px-2 py-1 shadow-[var(--shadow-soft)] sm:px-4">
             {pip ? (
-              <div className="flex items-center gap-1.5" aria-label={`Pip comió ${pip.feeds} de ${pip.total}`}>
+              <div
+                className="flex items-center gap-1.5"
+                aria-label={`Pip comió ${pip.feeds} de ${pip.total}`}
+              >
                 <Pip
                   mood={pip.mood}
                   color={pip.color}

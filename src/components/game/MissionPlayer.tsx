@@ -61,10 +61,7 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
     update((prev) =>
       registerPlayDay({
         ...updateMission(prev, mission.id, (p) => ({ ...p, started: true })),
-        pip:
-          progress.completed && progress.blockIndex === 0
-            ? { ...prev.pip, feeds: 0 }
-            : prev.pip,
+        pip: progress.completed && progress.blockIndex === 0 ? { ...prev.pip, feeds: 0 } : prev.pip,
       }),
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -112,9 +109,7 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
       const target = mission.pip?.feedsToEvolve ?? 0;
       const nextFeeds = target > 0 ? Math.min(state.pip.feeds + 1, target) : state.pip.feeds + 1;
       const evolves =
-        target > 0 &&
-        nextFeeds >= target &&
-        !state.pip.accessories.includes(mission.reward.id);
+        target > 0 && nextFeeds >= target && !state.pip.accessories.includes(mission.reward.id);
 
       if (evolves) {
         setPipEvolving(true);
