@@ -96,7 +96,9 @@ function ProfilePage() {
               )}
               style={{ backgroundColor: color }}
             >
-              {pipColor === color ? <Check className="mx-auto size-6 text-card" aria-hidden /> : null}
+              {pipColor === color ? (
+                <Check className="mx-auto size-6 text-card" aria-hidden />
+              ) : null}
             </button>
           ))}
         </div>

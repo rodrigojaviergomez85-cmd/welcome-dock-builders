@@ -1,6 +1,8 @@
 import { useId } from "react";
 import { cn } from "@/lib/utils";
 
+/* eslint-disable react-refresh/only-export-components -- el prompt requiere exportar pipSvg junto a Pip */
+
 export type PipMood = "sleepy" | "happy" | "eat";
 
 type Props = {
