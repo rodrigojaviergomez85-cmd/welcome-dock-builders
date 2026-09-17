@@ -1,6 +1,26 @@
 import type { BagId, CharacterId } from "@/content/characters";
 
-export type TimeOfDay = "morning" | "afternoon" | "evening";
+/**
+ * CAMBIOS respecto a la versión anterior (marcados con "NUEVO"):
+ *  - TimeOfDay gana "night" (la currícula del día 1 incluye Good night; necesita fondo dock-night.jpg).
+ *  - Nuevos bloques: micCheck, sunClock, nameTag.
+ *  - tapPick acepta style "sky" (opciones = cielos, no vocabulario).
+ *  - showcase acepta time "auto" (hora real del dispositivo), {greeting} en targetEn, saveAs y teaser.
+ *  - Mission gana `pip` (mascota transversal: come oraciones dichas en voz alta).
+ */
+
+export type TimeOfDay = "morning" | "afternoon" | "evening" | "night"; // NUEVO: night
+
+/** NUEVO: identificadores de cielo para el radar (tapPick style "sky"). */
+export type SkyId = `sky-${TimeOfDay}`;
+
+/** Un turno grabado por el alumno. Cualquier nombre vale en {alias}. */
+export type RecordTurnSpec = {
+  id: string;
+  promptEs: string;
+  targetEn: string;
+  modelClip: string | string[];
+};
 
 /** Una línea hablada por un personaje. El clip ya está producido: nunca se genera en el juego. */
 export type SpokenLine = {
@@ -65,6 +85,10 @@ export type BagMatchBlock = {
   }[];
 };
 
+export type DialogueTurn =
+  | { type: "character"; speaker: CharacterId; clip: string; en: string }
+  | ({ type: "record" } & RecordTurnSpec);
+
 export type DialogueBlock = {
   kind: "dialogue";
   id: string;
@@ -75,16 +99,7 @@ export type DialogueBlock = {
     with: CharacterId;
     time: TimeOfDay;
     support: "full" | "reduced";
-    turns: (
-      | { type: "character"; speaker: CharacterId; clip: string; en: string }
-      | {
-          type: "record";
-          id: string;
-          promptEs: string;
-          targetEn: string;
-          modelClip: string;
-        }
-    )[];
+    turns: DialogueTurn[];
   }[];
 };
 
@@ -95,17 +110,18 @@ export type FinaleBlock = {
   helpEs: string;
   with: CharacterId;
   time: TimeOfDay;
-  turns: DialogueBlock["conversations"][number]["turns"];
+  turns: DialogueTurn[];
   goodNight: SpokenLine;
 };
 
-/** Escuchar en inglés y tocar la opción correcta: banderas, números o letras. */
+/** Escuchar en inglés y tocar la opción correcta: banderas, números, letras, palabras o cielos. */
 export type TapPickBlock = {
   kind: "tapPick";
   id: string;
   estimatedMinutes: number;
   helpEs: string;
-  style: "flag" | "number" | "letter" | "word";
+  /** NUEVO: "sky" → las opciones son SkyId y se dibujan como cielos (mañana/tarde/anochecer/noche). */
+  style: "flag" | "number" | "letter" | "word" | "sky";
   time: TimeOfDay;
   promptEs: string;
   rounds: {
@@ -114,7 +130,7 @@ export type TapPickBlock = {
     clip: string | string[];
     en: string;
     es?: string;
-    /** Id de vocabulario correcto. */
+    /** Id de vocabulario correcto (o SkyId cuando style = "sky"). */
     answer: string;
     options: string[];
     /** Personaje que dice la frase, si aplica. */
@@ -147,7 +163,7 @@ export type SpellBlock = {
   promptEs: string;
   /** "alias" deletrea el nombre del jugador. */
   word: "alias" | string;
-  record?: { id: string; promptEs: string; targetEn: string; modelClip: string | string[] };
+  record?: RecordTurnSpec;
 };
 
 /** Presentación final: varias frases seguidas frente a los personajes. */
@@ -156,11 +172,86 @@ export type ShowcaseBlock = {
   id: string;
   estimatedMinutes: number;
   helpEs: string;
-  time: TimeOfDay;
+  /**
+   * NUEVO: "auto" = el cielo se elige por la hora real del dispositivo
+   * (05–11 morning · 12–17 afternoon · 18–20 evening · 21–04 night)
+   * y las variables {greeting} / {greetingClip} se resuelven con esa hora:
+   *   morning   → "Good morning!"   / "good-morning"
+   *   afternoon → "Good afternoon!" / "good-afternoon"
+   *   evening   → "Good evening!"   / "good-evening"
+   *   night     → "Good night!"     / "good-night"
+   */
+  time: TimeOfDay | "auto";
   audience: CharacterId[];
   intro: SpokenLine;
-  steps: { id: string; promptEs: string; targetEn: string; modelClip: string | string[] }[];
+  steps: RecordTurnSpec[];
   cheer: SpokenLine;
+  /** NUEVO: guarda la grabación con este id como "presentación del día" (audio para el adulto y ticket para la clase). */
+  saveAs?: string;
+  /** NUEVO: gancho para el día siguiente, se reproduce al terminar. */
+  teaser?: SpokenLine;
+};
+
+/* ───────────────────────── NUEVOS BLOQUES ───────────────────────── */
+
+/**
+ * NUEVO · micCheck: primer éxito del día en menos de un minuto.
+ * Pip (la mascota) está dormido; el niño lo despierta diciendo la frase.
+ * Sin micrófono: botón "Lo dije" y Pip se despierta igual (oral = pending).
+ */
+export type MicCheckBlock = {
+  kind: "micCheck";
+  id: string;
+  estimatedMinutes: number;
+  time: TimeOfDay;
+  helpEs: string;
+  /** Clip del guía en español que explica en voz (no se depende del texto). */
+  introClip: string;
+  record: RecordTurnSpec;
+};
+
+/**
+ * NUEVO · sunClock: arrastrar el sol por el cielo. Cada parada cambia el fondo
+ * (BACKGROUNDS[time]) y el guía saluda según la hora. Cuando el niño visitó las
+ * cuatro paradas, se habilita "repetir": dice cada saludo y Pip come uno por uno.
+ * Interacción: arrastrar el sol (pointer events) o tocar la parada directamente.
+ */
+export type SunClockBlock = {
+  kind: "sunClock";
+  id: string;
+  estimatedMinutes: number;
+  helpEs: string;
+  introClip: string;
+  guide: CharacterId;
+  stops: {
+    time: TimeOfDay;
+    line: SpokenLine;
+    repeat: RecordTurnSpec;
+  }[];
+  done: SpokenLine;
+};
+
+/**
+ * NUEVO · nameTag: hablar para producir un objeto.
+ * 1) El personaje se presenta y pregunta el nombre.  2) El niño graba "My name is {alias}."
+ * 3) La máquina de Boti imprime la etiqueta con el alias (animación) y queda guardada en la mochila.
+ * 4) Cambio de rol: el niño pregunta "What is your name?" y otro personaje responde.
+ */
+export type NameTagBlock = {
+  kind: "nameTag";
+  id: string;
+  estimatedMinutes: number;
+  time: TimeOfDay;
+  helpEs: string;
+  introClip: string;
+  asker: CharacterId;
+  ask: SpokenLine[];
+  record: RecordTurnSpec;
+  printed: SpokenLine;
+  swap: {
+    record: RecordTurnSpec;
+    answer: SpokenLine;
+  };
 };
 
 export type MissionBlock =
@@ -172,9 +263,22 @@ export type MissionBlock =
   | TapPickBlock
   | PickProfileBlock
   | SpellBlock
-  | ShowcaseBlock;
+  | ShowcaseBlock
+  | MicCheckBlock
+  | SunClockBlock
+  | NameTagBlock;
 
 export type MissionStatus = "available" | "locked";
+
+/**
+ * NUEVO · Pip, la mascota que solo entiende inglés.
+ * Es transversal a todas las misiones: cada turno grabado (heard o practiced) la alimenta.
+ * Al llegar a feedsToEvolve dentro de la misión, evoluciona (nuevo accesorio) y se guarda en el perfil.
+ */
+export type PipConfig = {
+  feedsToEvolve: number;
+  rewardLabel: string;
+};
 
 export type Mission = {
   id: string;
@@ -196,5 +300,7 @@ export type Mission = {
   counter?: { icon: "bag" | "star"; label: string };
   /** Frases que se repasan al terminar. */
   reviewPhrases?: string[];
+  /** NUEVO */
+  pip?: PipConfig;
   blocks: MissionBlock[];
 };
