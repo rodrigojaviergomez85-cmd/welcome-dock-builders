@@ -99,6 +99,23 @@ export const GLOSSARY: Record<string, Gloss> = {
   "How old are you?": { es: "¿Cuántos años tenés?", esClip: "es-how-old" },
   "I am {age} years old.": { es: "Tengo {age} años.", esClip: "es-years-old" },
   "Tell me about yourself!": { es: "¡Contame de vos!", esClip: "es-tell-me" },
+
+  // Lunes · El reloj del sol
+  "Good night!": { es: "¡Buenas noches! Se dice al irse a dormir.", esClip: "es-good-night", slowClip: "slow-good-night" },
+  "Good evening!": { es: "¡Buenas noches! Se dice al llegar de noche.", esClip: "es-good-evening", slowClip: "slow-good-evening" },
+  "I am fine, thank you.": { es: "Estoy bien, gracias.", esClip: "es-i-am-fine-thank-you", slowClip: "slow-i-am-fine-thank-you" },
+  "Hello! How are you?": { es: "¡Hola! ¿Cómo estás?", esClip: "es-hello-how-are-you", slowClip: "slow-how-are-you" },
+  "Tell me about yourself!": { es: "¡Contame de vos!", esClip: "es-tell-me" },
+  "The sun clock works! Thank you!": { es: "¡El reloj del sol funciona! ¡Gracias!" },
+  "Your tag is ready!": { es: "¡Tu etiqueta está lista!" },
+  "My name is Mia!": { es: "¡Me llamo Mia!" },
+  "My name is Luna.": { es: "Me llamo Luna." },
+  "Good afternoon! My name is Mia.": { es: "¡Buenas tardes! Me llamo Mia." },
+  "Good evening! My name is Leo.": { es: "¡Buenas noches! Me llamo Leo." },
+  "Good night! My name is Boti.": { es: "¡Buenas noches! Me llamo Boti. Good night se dice al irse a dormir." },
+  "Yay! Welcome to Explorer Island!": { es: "¡Bien! ¡Bienvenido a la Isla de los Exploradores!" },
+  "Tomorrow I will tell you where I am from!": { es: "¡Mañana te cuento de dónde soy!" },
+  "{greeting} My name is {alias}.": { es: "{greeting} Me llamo {alias}." },
 };
 
 /** Clips puente que usa el modo "primero en español". */
