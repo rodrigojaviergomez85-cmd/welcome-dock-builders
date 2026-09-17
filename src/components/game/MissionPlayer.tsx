@@ -288,7 +288,6 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
           startIndex={stepIndex}
           onComprehension={onComprehension}
           onRoundChange={goToStep}
-          onSkyChange={setSkyTime}
           onFinish={nextBlock}
         />
       ) : null}
@@ -324,6 +323,7 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
           startIndex={stepIndex}
           onComprehension={onComprehension}
           onRoundChange={goToStep}
+          onSkyChange={setSkyTime}
           onFinish={nextBlock}
         />
       ) : null}

@@ -140,7 +140,7 @@ export function ShowcaseView({
         targetEn={fillText(step.targetEn, vars)}
         alias={alias}
         modelClip={resolveClip(step.modelClip, vars)}
-        saveAs={block.saveAs}
+        {...(block.saveAs ? { saveAs: block.saveAs } : {})}
         meaning={
           template?.es
             ? {
