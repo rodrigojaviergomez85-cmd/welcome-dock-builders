@@ -171,7 +171,7 @@ export function SunClockView({
               aria-label={TIME_LABEL_ES[stop.time]}
               style={{ left: `${point.x}%`, top: `${point.y}%` }}
               className={cn(
-                "absolute -translate-x-1/2 -translate-y-1/2 rounded-full bg-card/95 p-2 shadow-[var(--shadow-soft)] transition-transform active:scale-95",
+                "absolute z-20 -translate-x-1/2 -translate-y-1/2 rounded-full bg-card/95 p-2 shadow-[var(--shadow-soft)] transition-transform active:scale-95",
                 isGold && "ring-4 ring-[#FFD166]",
                 !isGold && isVisited && "ring-2 ring-success",
                 phase === "repeat" && !isGold && "animate-pulse",
@@ -198,9 +198,9 @@ export function SunClockView({
           aria-valuemin={1}
           aria-valuemax={count}
           aria-valuenow={(active ?? 0) + 1}
-          style={{ left: `${sunPos.x}%`, top: `${sunPos.y}%` }}
+          style={{ left: `${sunPos.x}%`, top: `${Math.max(4, sunPos.y - 16)}%` }}
           className={cn(
-            "absolute -translate-x-1/2 -translate-y-1/2 cursor-grab rounded-full bg-[#FFD166] p-3 shadow-[var(--shadow-pop)] transition-[left,top] duration-300",
+            "absolute z-10 -translate-x-1/2 -translate-y-1/2 cursor-grab rounded-full bg-[#FFD166] p-3 shadow-[var(--shadow-pop)] transition-[left,top] duration-300",
             dragT !== null && "scale-110 duration-0",
             spin && "animate-spin",
           )}
