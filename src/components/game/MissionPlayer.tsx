@@ -43,6 +43,9 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
   const [restored, setRestored] = useState(false);
   /** Id del bloque cuya explicación en español ya se vio. */
   const [introFor, setIntroFor] = useState<string | null>(null);
+  /** Hora del cielo mientras se juega el reloj del sol, y soles dorados ganados. */
+  const [sunTime, setSunTime] = useState<TimeOfDay | null>(null);
+  const [sunGold, setSunGold] = useState(0);
 
   // Recuperar dónde quedó el alumno, una sola vez.
   useEffect(() => {
@@ -195,12 +198,14 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
   )
     time = block.time;
   if (block.kind === "showcase") time = resolveTime(block.time);
-  if (block.kind === "sunClock") time = block.stops[0]?.time ?? "morning";
+  if (block.kind === "sunClock") time = sunTime ?? block.stops[0]?.time ?? "morning";
 
+  const sunBlock = block.kind === "sunClock" ? block : null;
   const showingIntro = BLOCK_INTROS[block.id] !== undefined && introFor !== block.id;
   const bagsIndex = mission.blocks.findIndex((candidate) => candidate.kind === "bagMatch");
-  const counter =
-    bagsIndex >= 0
+  const counter = sunBlock
+    ? { icon: "star" as const, total: sunBlock.stops.length, current: sunGold, label: "Soles" }
+    : bagsIndex >= 0
       ? {
           icon: "bag" as const,
           total: 4,
@@ -315,7 +320,20 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
       ) : null}
 
       {!showingIntro && block.kind === "sunClock" ? (
-        <SunClockView block={block} onFinish={nextBlock} />
+        <SunClockView
+          missionId={mission.id}
+          block={block}
+          alias={alias}
+          onHelpUsed={onHelpUsed}
+          onOral={onOral}
+          onTimeChange={setSunTime}
+          onGoldChange={setSunGold}
+          onFinish={() => {
+            setSunTime(null);
+            setSunGold(0);
+            nextBlock();
+          }}
+        />
       ) : null}
 
       {!showingIntro && block.kind === "nameTag" ? (
