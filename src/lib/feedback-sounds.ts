@@ -97,3 +97,11 @@ export function playEvolution() {
     { freq: 1320, start: 0.36, duration: 0.35, volume: 0.24 },
   ]);
 }
+
+/** Ronquido suave de Pip dormido. */
+export function playSnore() {
+  playNotes([
+    { freq: 120, start: 0, duration: 0.42, volume: 0.06, type: "sine" },
+    { freq: 95, start: 0.5, duration: 0.52, volume: 0.05, type: "sine" },
+  ]);
+}
