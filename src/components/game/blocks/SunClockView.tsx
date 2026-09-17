@@ -149,12 +149,13 @@ export function SunClockView({
           preserveAspectRatio="none"
           className="absolute inset-0 size-full"
         >
-          <path
-            d="M 6 86 Q 50 -6 94 86"
+          <polyline
+            points="6.0,86.0 8.2,79.9 10.4,73.8 12.6,67.8 14.8,61.9 17.0,56.2 19.2,50.6 21.4,45.2 23.6,40.2 25.8,35.3 28.0,30.8 30.2,26.7 32.4,22.9 34.6,19.5 36.8,16.5 39.0,13.9 41.2,11.8 43.4,10.2 45.6,9.0 47.8,8.2 50.0,8.0 52.2,8.2 54.4,9.0 56.6,10.2 58.8,11.8 61.0,13.9 63.2,16.5 65.4,19.5 67.6,22.9 69.8,26.7 72.0,30.8 74.2,35.3 76.4,40.2 78.6,45.2 80.8,50.6 83.0,56.2 85.2,61.9 87.4,67.8 89.6,73.8 91.8,79.9 94.0,86.0"
             fill="none"
             stroke="currentColor"
             strokeWidth="1.2"
             strokeDasharray="4 4"
+            vectorEffect="non-scaling-stroke"
             className="text-card/80"
           />
         </svg>
