@@ -28,6 +28,7 @@ import {
 import { MissionComplete } from "./MissionComplete";
 import { BlockIntro } from "./BlockIntro";
 import { BLOCK_INTROS } from "@/content/glossary";
+import { DEFAULT_PIP_COLOR, type PipMood } from "./Pip";
 
 type Props = {
   mission: Mission;
@@ -46,6 +47,7 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
   /** Hora del cielo mientras se juega el reloj del sol, y soles dorados ganados. */
   const [sunTime, setSunTime] = useState<TimeOfDay | null>(null);
   const [sunGold, setSunGold] = useState(0);
+  const [pipMood, setPipMood] = useState<PipMood>("happy");
 
   // Recuperar dónde quedó el alumno, una sola vez.
   useEffect(() => {
@@ -94,6 +96,10 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
   }
 
   function onOral(status: "heard" | "practiced" | "pending") {
+    setPipMood(status === "pending" ? "happy" : "eat");
+    if (status !== "pending") {
+      window.setTimeout(() => setPipMood("happy"), 900);
+    }
     update((prev) =>
       updateMission(prev, mission.id, (p) => {
         if (status === "pending") {
@@ -221,6 +227,10 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
       helpEs={block.helpEs}
       onHelpUsed={onHelpUsed}
       counter={counter}
+      pip={{
+        mood: block.kind === "micCheck" ? "sleepy" : pipMood,
+        color: state.profile?.pipColor ?? DEFAULT_PIP_COLOR,
+      }}
     >
       {showingIntro ? (
         <BlockIntro blockId={block.id} onStart={() => setIntroFor(block.id)} />

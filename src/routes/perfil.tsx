@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { ArrowLeft, Check } from "lucide-react";
 import { AVATARS } from "@/content/characters";
+import { DEFAULT_PIP_COLOR, Pip, PIP_COLORS } from "@/components/game/Pip";
 import { useProgress } from "@/lib/useProgress";
 import { cn } from "@/lib/utils";
 
@@ -31,11 +32,13 @@ function ProfilePage() {
   const navigate = useNavigate();
   const [avatarId, setAvatarId] = useState<string>(AVATARS[0].id);
   const [alias, setAlias] = useState("");
+  const [pipColor, setPipColor] = useState<string>(DEFAULT_PIP_COLOR);
 
   useEffect(() => {
     if (!ready || !state.profile) return;
     setAvatarId(state.profile.avatarId);
     setAlias(state.profile.alias);
+    setPipColor(state.profile.pipColor ?? DEFAULT_PIP_COLOR);
   }, [ready, state.profile]);
 
   const cleanAlias = alias.trim().slice(0, 12);
@@ -73,6 +76,34 @@ function ProfilePage() {
         ))}
       </div>
 
+      <section className="mt-8" aria-labelledby="pip-color-title">
+        <h2 id="pip-color-title" className="font-display text-2xl">
+          Elegí a tu Pip
+        </h2>
+        <p className="mt-1 text-muted-foreground">Va a acompañarte cuando hablás en inglés.</p>
+        <div className="mt-4 flex flex-wrap items-center gap-3">
+          <Pip mood="happy" color={pipColor} className="mr-2 size-28" />
+          {PIP_COLORS.map((color, index) => (
+            <button
+              key={color}
+              type="button"
+              onClick={() => setPipColor(color)}
+              aria-label={`Color ${index + 1} para Pip`}
+              aria-pressed={pipColor === color}
+              className={cn(
+                "tap-target rounded-full border-4 border-card shadow-[var(--shadow-soft)] transition-transform active:scale-90",
+                pipColor === color && "ring-4 ring-primary ring-offset-2 ring-offset-background",
+              )}
+              style={{ backgroundColor: color }}
+            >
+              {pipColor === color ? (
+                <Check className="mx-auto size-6 text-card" aria-hidden />
+              ) : null}
+            </button>
+          ))}
+        </div>
+      </section>
+
       <label className="mt-8 block font-display text-xl" htmlFor="alias">
         Tu alias (2 a 12 letras)
       </label>
@@ -90,7 +121,10 @@ function ProfilePage() {
         type="button"
         disabled={!valid}
         onClick={() => {
-          update((prev) => ({ ...prev, profile: { avatarId, alias: cleanAlias } }));
+          update((prev) => ({
+            ...prev,
+            profile: { ...prev.profile, avatarId, alias: cleanAlias, pipColor },
+          }));
           void navigate({ to: "/" });
         }}
         className={cn(

@@ -3,6 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { Backpack, Star, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { HelpBubble } from "./HelpBubble";
+import { Pip, type PipMood } from "./Pip";
 
 type Props = {
   background: string;
@@ -13,6 +14,7 @@ type Props = {
   children: ReactNode;
   footer?: ReactNode;
   className?: string;
+  pip?: { mood: PipMood; color: string };
 };
 
 export function SceneShell({
@@ -24,6 +26,7 @@ export function SceneShell({
   children,
   footer,
   className,
+  pip,
 }: Props) {
   return (
     <div className="relative min-h-screen w-full overflow-hidden">
@@ -81,6 +84,11 @@ export function SceneShell({
             className,
           )}
         >
+          {pip ? (
+            <div className="pointer-events-none absolute bottom-3 left-2 z-10 sm:bottom-5 sm:left-5">
+              <Pip mood={pip.mood} color={pip.color} className="size-20 sm:size-28" />
+            </div>
+          ) : null}
           {children}
         </main>
 
