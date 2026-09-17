@@ -63,6 +63,7 @@ export const GLOSSARY: Record<string, Gloss> = {
   "Good night!": {
     es: "¡Buenas noches! Se dice al irse a dormir.",
     esClip: "es-good-night",
+    slowClip: "slow-good-night",
   },
   "Good morning!": { es: "¡Buenos días!", esClip: "es-good-morning", slowClip: "slow-good-morning" },
   "Good afternoon!": {
@@ -70,7 +71,11 @@ export const GLOSSARY: Record<string, Gloss> = {
     esClip: "es-good-afternoon",
     slowClip: "slow-good-afternoon",
   },
-  "Good evening!": { es: "¡Buenas noches! Se dice al llegar de noche.", esClip: "es-good-evening" },
+  "Good evening!": {
+    es: "¡Buenas noches! Se dice al llegar de noche.",
+    esClip: "es-good-evening",
+    slowClip: "slow-good-evening",
+  },
   "My name is {alias}.": {
     es: "Me llamo {alias}.",
     esClip: "es-my-name-is",
@@ -99,6 +104,20 @@ export const GLOSSARY: Record<string, Gloss> = {
   "How old are you?": { es: "¿Cuántos años tenés?", esClip: "es-how-old" },
   "I am {age} years old.": { es: "Tengo {age} años.", esClip: "es-years-old" },
   "Tell me about yourself!": { es: "¡Contame de vos!", esClip: "es-tell-me" },
+
+  // Lunes · El reloj del sol
+  "I am fine, thank you.": { es: "Estoy bien, gracias.", esClip: "es-i-am-fine-thank-you", slowClip: "slow-i-am-fine-thank-you" },
+  "Hello! How are you?": { es: "¡Hola! ¿Cómo estás?", esClip: "es-hello-how-are-you", slowClip: "slow-how-are-you" },
+  "The sun clock works! Thank you!": { es: "¡El reloj del sol funciona! ¡Gracias!" },
+  "Your tag is ready!": { es: "¡Tu etiqueta está lista!" },
+  "My name is Mia!": { es: "¡Me llamo Mia!" },
+  "My name is Luna.": { es: "Me llamo Luna." },
+  "Good afternoon! My name is Mia.": { es: "¡Buenas tardes! Me llamo Mia." },
+  "Good evening! My name is Leo.": { es: "¡Buenas noches! Me llamo Leo." },
+  "Good night! My name is Boti.": { es: "¡Buenas noches! Me llamo Boti. Good night se dice al irse a dormir." },
+  "Yay! Welcome to Explorer Island!": { es: "¡Bien! ¡Bienvenido a la Isla de los Exploradores!" },
+  "Tomorrow I will tell you where I am from!": { es: "¡Mañana te cuento de dónde soy!" },
+  "{greeting} My name is {alias}.": { es: "{greeting} Me llamo {alias}." },
 };
 
 /** Clips puente que usa el modo "primero en español". */
@@ -110,6 +129,32 @@ export const BRIDGE = {
 
 /** Instrucción en español al empezar cada parte de la misión. */
 export const BLOCK_INTROS: Record<string, { es: string; clip: string }> = {
+  // Lunes · El reloj del sol
+  hello: {
+    es: "Este es Pip. Pip solo entiende inglés y está dormido. Tocá el micrófono y decile: Hello!",
+    clip: "es-pip-intro",
+  },
+  sun: {
+    es: "El reloj del sol se rompió. Arrastrá el sol por el cielo y escuchá cómo saluda Boti a cada hora.",
+    clip: "es-sun-intro",
+  },
+  radar: {
+    es: "Escuchá cómo saluda cada explorador y tocá el cielo de esa hora.",
+    clip: "es-radar-intro",
+  },
+  tag: {
+    es: "Leo quiere saber tu nombre. Decilo al micrófono y la máquina de Boti imprime tu etiqueta.",
+    clip: "es-tag-intro",
+  },
+  roleplay: {
+    es: "Vamos a conversar con Luna. Primero respondés vos. Después preguntás vos.",
+    clip: "es-roleplay-intro",
+  },
+  dock: {
+    es: "Mirá el cielo: es la hora de verdad. Saludá según la hora y decí tu nombre. Esta es tu presentación de hoy.",
+    clip: "es-dock-intro",
+  },
+
   story: {
     es: "¡Alerta en el muelle! Cuatro mochilas perdieron sus etiquetas. Saludá a Luna para empezar el rescate.",
     clip: "intro-story",
