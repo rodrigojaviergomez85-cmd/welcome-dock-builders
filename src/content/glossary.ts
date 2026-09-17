@@ -129,6 +129,32 @@ export const BRIDGE = {
 
 /** Instrucción en español al empezar cada parte de la misión. */
 export const BLOCK_INTROS: Record<string, { es: string; clip: string }> = {
+  // Lunes · El reloj del sol
+  hello: {
+    es: "Este es Pip. Pip solo entiende inglés y está dormido. Tocá el micrófono y decile: Hello!",
+    clip: "es-pip-intro",
+  },
+  sun: {
+    es: "El reloj del sol se rompió. Arrastrá el sol por el cielo y escuchá cómo saluda Boti a cada hora.",
+    clip: "es-sun-intro",
+  },
+  radar: {
+    es: "Escuchá cómo saluda cada explorador y tocá el cielo de esa hora.",
+    clip: "es-radar-intro",
+  },
+  tag: {
+    es: "Leo quiere saber tu nombre. Decilo al micrófono y la máquina de Boti imprime tu etiqueta.",
+    clip: "es-tag-intro",
+  },
+  roleplay: {
+    es: "Vamos a conversar con Luna. Primero respondés vos. Después preguntás vos.",
+    clip: "es-roleplay-intro",
+  },
+  dock: {
+    es: "Mirá el cielo: es la hora de verdad. Saludá según la hora y decí tu nombre. Esta es tu presentación de hoy.",
+    clip: "es-dock-intro",
+  },
+
   story: {
     es: "¡Alerta en el muelle! Cuatro mochilas perdieron sus etiquetas. Saludá a Luna para empezar el rescate.",
     clip: "intro-story",
