@@ -34,7 +34,7 @@ export function ShowcaseView({
   const { state } = useProgress();
   const [stage, setStage] = useState<"intro" | "step" | "cheer">("intro");
   const [index, setIndex] = useState(Math.min(startIndex, block.steps.length - 1));
-  const vars = missionVars(state.profile, alias);
+  const vars = missionVars(state.profile, alias, block.time);
 
   const audience = (
     <div className="flex items-end justify-center gap-1">

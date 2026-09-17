@@ -14,6 +14,10 @@ import { TapPickView } from "./blocks/TapPickView";
 import { PickProfileView } from "./blocks/PickProfileView";
 import { SpellView } from "./blocks/SpellView";
 import { ShowcaseView } from "./blocks/ShowcaseView";
+import { MicCheckView } from "./blocks/MicCheckView";
+import { SunClockView } from "./blocks/SunClockView";
+import { NameTagView } from "./blocks/NameTagView";
+import { resolveTime } from "@/lib/mission-vars";
 import { addCoins, addPassPiece, registerPlayDay, COINS_PER_MISSION, COINS_PER_STEP } from "@/lib/economy";
 import { MissionComplete } from "./MissionComplete";
 import { BlockIntro } from "./BlockIntro";
@@ -179,9 +183,12 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
     block.kind === "tapPick" ||
     block.kind === "pickProfile" ||
     block.kind === "spell" ||
-    block.kind === "showcase"
+    block.kind === "micCheck" ||
+    block.kind === "nameTag"
   )
     time = block.time;
+  if (block.kind === "showcase") time = resolveTime(block.time);
+  if (block.kind === "sunClock") time = block.stops[0]?.time ?? "morning";
 
   const showingIntro = BLOCK_INTROS[block.id] !== undefined && introFor !== block.id;
   const bagsIndex = mission.blocks.findIndex((candidate) => candidate.kind === "bagMatch");
@@ -294,6 +301,18 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
           onStepChange={goToStep}
           onFinish={nextBlock}
         />
+      ) : null}
+
+      {!showingIntro && block.kind === "micCheck" ? (
+        <MicCheckView block={block} onFinish={nextBlock} />
+      ) : null}
+
+      {!showingIntro && block.kind === "sunClock" ? (
+        <SunClockView block={block} onFinish={nextBlock} />
+      ) : null}
+
+      {!showingIntro && block.kind === "nameTag" ? (
+        <NameTagView block={block} alias={alias} onFinish={nextBlock} />
       ) : null}
 
       {!showingIntro && block.kind === "finale" ? (
