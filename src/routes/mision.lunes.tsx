@@ -40,9 +40,7 @@ function MondayMissionPage() {
     return (
       <div className="mx-auto flex min-h-screen max-w-md flex-col items-center justify-center gap-4 p-6 text-center">
         <h1 className="font-display text-3xl">Primero elegí tu avatar</h1>
-        <p className="text-muted-foreground">
-          La misión usa tu alias para presentarte en inglés.
-        </p>
+        <p className="text-muted-foreground">La misión usa tu alias para presentarte en inglés.</p>
         <Link
           to="/perfil"
           className="tap-target inline-flex items-center rounded-full bg-primary px-6 font-display text-lg text-primary-foreground shadow-[var(--shadow-pop)]"
@@ -56,10 +54,6 @@ function MondayMissionPage() {
   const avatar = AVATARS.find((a) => a.id === state.profile?.avatarId) ?? AVATARS[0];
 
   return (
-    <MissionPlayer
-      mission={mondayMission}
-      alias={state.profile.alias}
-      avatarImage={avatar.image}
-    />
+    <MissionPlayer mission={mondayMission} alias={state.profile.alias} avatarImage={avatar.image} />
   );
 }

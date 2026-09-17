@@ -52,7 +52,12 @@ export function SpellView({ missionId, block, alias, onHelpUsed, onOral, onFinis
       setTyped(next);
       if (next.join("") === word) {
         playSuccess();
-        void playSequence(word.split("").map((l) => letterClip(l) ?? "").filter(Boolean));
+        void playSequence(
+          word
+            .split("")
+            .map((l) => letterClip(l) ?? "")
+            .filter(Boolean),
+        );
       }
     } else {
       playTryAgain();

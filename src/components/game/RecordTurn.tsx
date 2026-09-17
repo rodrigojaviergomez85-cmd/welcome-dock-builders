@@ -28,7 +28,15 @@ type Props = {
   onDone: (status: "heard" | "practiced" | "pending") => void;
 };
 
-type State = "intent" | "fragment-listen" | "fragment-echo" | "complete" | "recording" | "checking" | "result" | "nomic";
+type State =
+  | "intent"
+  | "fragment-listen"
+  | "fragment-echo"
+  | "complete"
+  | "recording"
+  | "checking"
+  | "result"
+  | "nomic";
 
 type PracticeFragment = { en: string; es: string; clip: string | string[] };
 
@@ -43,9 +51,14 @@ function practiceFragments(
     fragments.push({ en: "Good afternoon!", es: "¡Buenas tardes!", clip: "model-good-afternoon" });
   }
   if (/my name is/i.test(targetEn)) {
-    fragments.push({ en: `My name is ${alias}.`, es: `Me llamo ${alias}.`, clip: "model-my-name-is" });
+    fragments.push({
+      en: `My name is ${alias}.`,
+      es: `Me llamo ${alias}.`,
+      clip: "model-my-name-is",
+    });
   }
-  if (/i am fine/i.test(targetEn)) fragments.push({ en: "I am fine.", es: "Estoy bien.", clip: "model-i-am-fine" });
+  if (/i am fine/i.test(targetEn))
+    fragments.push({ en: "I am fine.", es: "Estoy bien.", clip: "model-i-am-fine" });
   return fragments.length > 0
     ? fragments
     : [{ en: targetEn, es: gloss(targetEn, alias)?.es ?? targetEn, clip: modelClip }];
@@ -79,7 +92,12 @@ export function RecordTurn({
     setMicAvailable(micSupported() || wavRecordingSupported());
   }, []);
 
-  useEffect(() => () => { if (url) URL.revokeObjectURL(url); }, [url]);
+  useEffect(
+    () => () => {
+      if (url) URL.revokeObjectURL(url);
+    },
+    [url],
+  );
 
   const fragments = practiceFragments(targetEn, alias, modelClip);
   const fragment = fragments[fragmentIndex] ?? {
@@ -190,7 +208,9 @@ export function RecordTurn({
       {progressLabels.map((label, index) => (
         <div key={label} className="text-center">
           <div className={`h-2 rounded-full ${index <= step ? "bg-primary" : "bg-muted"}`} />
-          <span className={`mt-1 block text-xs font-semibold ${index === step ? "text-primary" : "text-muted-foreground"}`}>
+          <span
+            className={`mt-1 block text-xs font-semibold ${index === step ? "text-primary" : "text-muted-foreground"}`}
+          >
             {label}
           </span>
         </div>
@@ -237,7 +257,9 @@ export function RecordTurn({
           {state === "fragment-listen" ? "Escuchá esta parte" : "Ahora repetí"}
         </p>
         <div className="mt-3 rounded-2xl border-2 border-sun bg-background/80 p-5 text-center">
-          <p lang="en" className="font-display text-3xl leading-tight">{fragment.en}</p>
+          <p lang="en" className="font-display text-3xl leading-tight">
+            {fragment.en}
+          </p>
           <p className="mt-2 text-lg text-muted-foreground">{fragment.es}</p>
         </div>
         {state === "fragment-listen" ? (
@@ -251,13 +273,15 @@ export function RecordTurn({
         ) : (
           <button
             type="button"
-            onClick={() => micAvailable ? void begin(false) : setState("nomic")}
+            onClick={() => (micAvailable ? void begin(false) : setState("nomic"))}
             className="tap-target mt-5 flex w-full items-center justify-center gap-2 rounded-2xl bg-accent px-6 font-display text-lg text-accent-foreground shadow-[var(--shadow-pop)] active:translate-y-1 active:shadow-none"
           >
             <Mic className="size-6" aria-hidden /> Repetí esta parte
           </button>
         )}
-        <p className="mt-4 text-center text-sm text-muted-foreground">Parte {fragmentIndex + 1} de {fragments.length}</p>
+        <p className="mt-4 text-center text-sm text-muted-foreground">
+          Parte {fragmentIndex + 1} de {fragments.length}
+        </p>
       </div>
     );
   }
@@ -268,12 +292,16 @@ export function RecordTurn({
         <Progress />
         <p className="font-display text-2xl text-primary">¡Ahora completa!</p>
         <div className="mt-3 rounded-2xl border-2 border-sun bg-background/80 p-5">
-          <p lang="en" className="font-display text-3xl leading-tight">{targetEn}</p>
-          <p className="mt-2 text-base text-muted-foreground">{g?.es?.split("{alias}").join(alias)}</p>
+          <p lang="en" className="font-display text-3xl leading-tight">
+            {targetEn}
+          </p>
+          <p className="mt-2 text-base text-muted-foreground">
+            {g?.es?.split("{alias}").join(alias)}
+          </p>
         </div>
         <button
           type="button"
-          onClick={() => micAvailable ? void begin(true) : setState("nomic")}
+          onClick={() => (micAvailable ? void begin(true) : setState("nomic"))}
           className="tap-target mx-auto mt-6 flex size-24 items-center justify-center rounded-full bg-accent text-accent-foreground shadow-[var(--shadow-pop)] active:translate-y-1 active:shadow-none"
           aria-label="Tocá y hablá"
         >
@@ -291,9 +319,10 @@ export function RecordTurn({
         {recordingFull ? "Decí la frase completa" : "Repetí esta parte"}
       </p>
       <div className="mt-3 rounded-2xl bg-secondary/40 p-4 text-center">
-        <p lang="en" className="font-display text-2xl">{practiceTarget}</p>
+        <p lang="en" className="font-display text-2xl">
+          {practiceTarget}
+        </p>
       </div>
-
 
       {state === "nomic" ? (
         <div className="mt-5 rounded-2xl bg-muted p-4">
@@ -308,7 +337,8 @@ export function RecordTurn({
             onClick={continueWithoutMic}
             className="tap-target mt-4 inline-flex items-center gap-2 rounded-full bg-primary px-6 font-display text-lg text-primary-foreground shadow-[var(--shadow-pop)] active:translate-y-1 active:shadow-none"
           >
-            {recordingFull ? "Seguir" : "Siguiente parte"} <ArrowRight className="size-5" aria-hidden />
+            {recordingFull ? "Seguir" : "Siguiente parte"}{" "}
+            <ArrowRight className="size-5" aria-hidden />
           </button>
         </div>
       ) : (
@@ -332,22 +362,29 @@ export function RecordTurn({
           {state === "result" ? (
             <div className="flex w-full flex-col items-center gap-3">
               {!heard ? (
-              <button
-                type="button"
-                onClick={() => setState(recordingFull ? "complete" : "fragment-echo")}
-                className="tap-target flex w-full items-center justify-center gap-2 rounded-2xl bg-accent px-6 font-display text-lg text-accent-foreground shadow-[var(--shadow-pop)]"
-              >
-                <RotateCcw className="size-5" aria-hidden /> Otra vez
-              </button>
+                <button
+                  type="button"
+                  onClick={() => setState(recordingFull ? "complete" : "fragment-echo")}
+                  className="tap-target flex w-full items-center justify-center gap-2 rounded-2xl bg-accent px-6 font-display text-lg text-accent-foreground shadow-[var(--shadow-pop)]"
+                >
+                  <RotateCcw className="size-5" aria-hidden /> Otra vez
+                </button>
               ) : null}
               <button
                 type="button"
                 onClick={continueAfterResult}
-                className={heard
-                  ? "tap-target flex w-full items-center justify-center gap-2 rounded-2xl bg-success px-6 font-display text-lg text-success-foreground shadow-[var(--shadow-pop)] active:translate-y-1 active:shadow-none"
-                  : "px-2 py-2 text-sm text-muted-foreground underline underline-offset-4"}
+                className={
+                  heard
+                    ? "tap-target flex w-full items-center justify-center gap-2 rounded-2xl bg-success px-6 font-display text-lg text-success-foreground shadow-[var(--shadow-pop)] active:translate-y-1 active:shadow-none"
+                    : "px-2 py-2 text-sm text-muted-foreground underline underline-offset-4"
+                }
               >
-                {recordingFull ? "Seguir" : fragmentIndex + 1 < fragments.length ? "Siguiente parte" : "Decirla completa"} <ArrowRight className="size-5" aria-hidden />
+                {recordingFull
+                  ? "Seguir"
+                  : fragmentIndex + 1 < fragments.length
+                    ? "Siguiente parte"
+                    : "Decirla completa"}{" "}
+                <ArrowRight className="size-5" aria-hidden />
               </button>
             </div>
           ) : null}
@@ -355,11 +392,7 @@ export function RecordTurn({
       )}
 
       {state === "result" && match ? (
-        <div
-          className={`mt-4 animate-pop rounded-2xl p-4 ${
-            heard ? "bg-success/15" : "bg-muted"
-          }`}
-        >
+        <div className={`mt-4 animate-pop rounded-2xl p-4 ${heard ? "bg-success/15" : "bg-muted"}`}>
           <p className="flex items-center gap-2 font-display text-xl">
             <Ear className="size-6" aria-hidden />
             {heard
@@ -375,7 +408,9 @@ export function RecordTurn({
           ) : null}
           <p className="mt-2 text-sm text-muted-foreground">
             {heard
-              ? recordingFull ? "¡Dijiste la frase! Cualquier nombre está bien." : "¡Muy bien! Ya practicamos esta parte."
+              ? recordingFull
+                ? "¡Dijiste la frase! Cualquier nombre está bien."
+                : "¡Muy bien! Ya practicamos esta parte."
               : match.kind === "partial"
                 ? `Probá de nuevo incluyendo: ${match.missing.join(" ")}`
                 : "Probá otra vez, más cerca del micrófono y en voz alta."}

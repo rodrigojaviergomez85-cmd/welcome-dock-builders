@@ -100,7 +100,9 @@ function IslandMap() {
             {missions.map((m) => (
               <Star
                 key={m.id}
-                className={pieces.includes(m.id) ? "size-5 text-success" : "size-5 text-muted-foreground/40"}
+                className={
+                  pieces.includes(m.id) ? "size-5 text-success" : "size-5 text-muted-foreground/40"
+                }
                 aria-hidden
               />
             ))}

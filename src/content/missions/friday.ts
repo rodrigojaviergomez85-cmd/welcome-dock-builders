@@ -14,11 +14,7 @@ export const fridayMission: Mission = {
   storyProblem:
     "Toda la isla se junta en el escenario del muelle. Es tu turno de presentarte en inglés y ganar el pase de explorador.",
   prerequisites: ["thursday"],
-  models: [
-    "Hello! My name is {alias}.",
-    "I am from {country}.",
-    "I am {age} years old.",
-  ],
+  models: ["Hello! My name is {alias}.", "I am from {country}.", "I am {age} years old."],
   reward: { id: "friday-pass", label: "Pase de explorador de la semana" },
   evidence: "Se presenta solo con nombre, deletreo, país y edad.",
   counter: { icon: "star", label: "Partes del show" },

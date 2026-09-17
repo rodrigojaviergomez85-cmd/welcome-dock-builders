@@ -52,8 +52,8 @@ function ProfilePage() {
 
       <h1 className="mt-6 font-display text-3xl">Tu avatar de explorador</h1>
       <p className="mt-2 text-muted-foreground">
-        Elegí una carita y un nombre de personaje. Puede ser inventado: no se pide el nombre real, ni
-        fecha de nacimiento, ni dirección, ni fotos.
+        Elegí una carita y un nombre de personaje. Puede ser inventado: no se pide el nombre real,
+        ni fecha de nacimiento, ni dirección, ni fotos.
       </p>
 
       <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">

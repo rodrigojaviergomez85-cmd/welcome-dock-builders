@@ -4,6 +4,20 @@ import { AudioButton } from "../AudioButton";
 import { CharacterFigure } from "../CharacterFigure";
 import type { TapPickBlock } from "@/content/missions/types";
 import { vocab } from "@/content/vocabulary";
+import { TIME_LABEL_ES } from "@/content/backgrounds";
+import type { TimeOfDay } from "@/content/missions/types";
+
+const SKY_EMOJI: Record<TimeOfDay, string> = {
+  morning: "🌅",
+  afternoon: "☀️",
+  evening: "🌇",
+  night: "🌙",
+};
+
+function skyLabel(id: string): { symbol: string; text: string } {
+  const time = id.replace("sky-", "") as TimeOfDay;
+  return { symbol: SKY_EMOJI[time] ?? "🌤️", text: TIME_LABEL_ES[time] ?? id };
+}
 import { playSuccess, playTryAgain } from "@/lib/feedback-sounds";
 import { cn } from "@/lib/utils";
 
@@ -58,7 +72,11 @@ export function TapPickView({
         <p className="font-display text-xl">{block.promptEs}</p>
         <div className="flex items-end gap-2">
           {round.speaker ? <CharacterFigure id={round.speaker} size="md" /> : null}
-          <AudioButton clipId={round.clip} autoPlayKey={`${block.id}-${round.id}`} label="Escuchar" />
+          <AudioButton
+            clipId={round.clip}
+            autoPlayKey={`${block.id}-${round.id}`}
+            label="Escuchar"
+          />
         </div>
         {solved ? (
           <div className="animate-pop rounded-2xl bg-success/15 px-4 py-3 text-center">
@@ -70,14 +88,10 @@ export function TapPickView({
         ) : null}
       </div>
 
-      <div
-        className={cn(
-          "grid w-full gap-3",
-          bigSymbol ? "grid-cols-4" : "grid-cols-2",
-        )}
-      >
+      <div className={cn("grid w-full gap-3", bigSymbol ? "grid-cols-4" : "grid-cols-2")}>
         {round.options.map((id) => {
-          const item = vocab(id);
+          const sky = block.style === "sky" ? skyLabel(id) : null;
+          const item = sky ? { en: sky.text, symbol: sky.symbol } : vocab(id);
           const isAnswer = id === round.answer;
           const isPicked = picked === id;
           return (
@@ -99,9 +113,7 @@ export function TapPickView({
               <span lang="en" className="font-display text-base leading-tight">
                 {item.en}
               </span>
-              {isPicked && isAnswer ? (
-                <Check className="size-5 text-success" aria-hidden />
-              ) : null}
+              {isPicked && isAnswer ? <Check className="size-5 text-success" aria-hidden /> : null}
             </button>
           );
         })}

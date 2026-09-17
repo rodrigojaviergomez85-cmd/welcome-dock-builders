@@ -1,10 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import {
-  emptyState,
-  loadProgress,
-  saveProgress,
-  type ProgressState,
-} from "./progress";
+import { emptyState, loadProgress, saveProgress, type ProgressState } from "./progress";
 
 /** Lee el progreso después de hidratar, para no romper el render del servidor. */
 export function useProgress() {

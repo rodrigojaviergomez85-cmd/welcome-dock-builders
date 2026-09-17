@@ -65,7 +65,11 @@ export const GLOSSARY: Record<string, Gloss> = {
     esClip: "es-good-night",
     slowClip: "slow-good-night",
   },
-  "Good morning!": { es: "¡Buenos días!", esClip: "es-good-morning", slowClip: "slow-good-morning" },
+  "Good morning!": {
+    es: "¡Buenos días!",
+    esClip: "es-good-morning",
+    slowClip: "slow-good-morning",
+  },
   "Good afternoon!": {
     es: "¡Buenas tardes!",
     esClip: "es-good-afternoon",
@@ -106,15 +110,25 @@ export const GLOSSARY: Record<string, Gloss> = {
   "Tell me about yourself!": { es: "¡Contame de vos!", esClip: "es-tell-me" },
 
   // Lunes · El reloj del sol
-  "I am fine, thank you.": { es: "Estoy bien, gracias.", esClip: "es-i-am-fine-thank-you", slowClip: "slow-i-am-fine-thank-you" },
-  "Hello! How are you?": { es: "¡Hola! ¿Cómo estás?", esClip: "es-hello-how-are-you", slowClip: "slow-how-are-you" },
+  "I am fine, thank you.": {
+    es: "Estoy bien, gracias.",
+    esClip: "es-i-am-fine-thank-you",
+    slowClip: "slow-i-am-fine-thank-you",
+  },
+  "Hello! How are you?": {
+    es: "¡Hola! ¿Cómo estás?",
+    esClip: "es-hello-how-are-you",
+    slowClip: "slow-how-are-you",
+  },
   "The sun clock works! Thank you!": { es: "¡El reloj del sol funciona! ¡Gracias!" },
   "Your tag is ready!": { es: "¡Tu etiqueta está lista!" },
   "My name is Mia!": { es: "¡Me llamo Mia!" },
   "My name is Luna.": { es: "Me llamo Luna." },
   "Good afternoon! My name is Mia.": { es: "¡Buenas tardes! Me llamo Mia." },
   "Good evening! My name is Leo.": { es: "¡Buenas noches! Me llamo Leo." },
-  "Good night! My name is Boti.": { es: "¡Buenas noches! Me llamo Boti. Good night se dice al irse a dormir." },
+  "Good night! My name is Boti.": {
+    es: "¡Buenas noches! Me llamo Boti. Good night se dice al irse a dormir.",
+  },
   "Yay! Welcome to Explorer Island!": { es: "¡Bien! ¡Bienvenido a la Isla de los Exploradores!" },
   "Tomorrow I will tell you where I am from!": { es: "¡Mañana te cuento de dónde soy!" },
   "{greeting} My name is {alias}.": { es: "{greeting} Me llamo {alias}." },
