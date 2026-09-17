@@ -29,6 +29,8 @@ export type MissionProgress = {
 export type Profile = {
   avatarId: string;
   alias: string;
+  /** Color elegido para Pip al crear el perfil. */
+  pipColor?: string;
   /** Id del país elegido en la misión del martes. */
   countryId?: string;
   /** Edad elegida en la misión del miércoles. */
