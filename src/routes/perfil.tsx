@@ -38,8 +38,8 @@ function ProfilePage() {
     if (!ready || !state.profile) return;
     setAvatarId(state.profile.avatarId);
     setAlias(state.profile.alias);
-    setPipColor(state.profile.pipColor ?? DEFAULT_PIP_COLOR);
-  }, [ready, state.profile]);
+    setPipColor(state.pip.color ?? state.profile.pipColor ?? DEFAULT_PIP_COLOR);
+  }, [ready, state.pip.color, state.profile]);
 
   const cleanAlias = alias.trim().slice(0, 12);
   const valid = cleanAlias.length >= 2;
@@ -82,7 +82,12 @@ function ProfilePage() {
         </h2>
         <p className="mt-1 text-muted-foreground">Va a acompañarte cuando hablás en inglés.</p>
         <div className="mt-4 flex flex-wrap items-center gap-3">
-          <Pip mood="happy" color={pipColor} className="mr-2 size-28" />
+          <Pip
+            mood="happy"
+            color={pipColor}
+            accessories={state.pip.accessories}
+            className="mr-2 size-28"
+          />
           {PIP_COLORS.map((color, index) => (
             <button
               key={color}
@@ -124,6 +129,7 @@ function ProfilePage() {
           update((prev) => ({
             ...prev,
             profile: { ...prev.profile, avatarId, alias: cleanAlias, pipColor },
+            pip: { ...prev.pip, color: pipColor },
           }));
           void navigate({ to: "/" });
         }}

@@ -213,6 +213,31 @@
   50% { transform: scale(1.05); box-shadow: 0 0 0 10px color-mix(in oklab, var(--accent) 22%, transparent); }
 }
 
+@keyframes pip-confetti-fall {
+  0% { transform: translateY(-10vh) rotate(0); opacity: 1; }
+  100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+}
+
+.pip-confetti {
+  position: absolute;
+  top: 0;
+  left: calc(6% * var(--pip-confetti-position, 1));
+  width: 0.75rem;
+  height: 1.25rem;
+  border-radius: 0.2rem;
+  animation: pip-confetti-fall 1.6s ease-in both;
+}
+
+.pip-confetti:nth-child(1n) { --pip-confetti-position: 1; animation-delay: 0s; }
+.pip-confetti:nth-child(2n) { --pip-confetti-position: 3; animation-delay: 0.12s; }
+.pip-confetti:nth-child(3n) { --pip-confetti-position: 7; animation-delay: 0.05s; }
+.pip-confetti:nth-child(4n) { --pip-confetti-position: 11; animation-delay: 0.2s; }
+.pip-confetti:nth-child(5n) { --pip-confetti-position: 15; animation-delay: 0.08s; }
+.pip-confetti-1 { background: var(--color-primary); }
+.pip-confetti-2 { background: var(--color-accent); }
+.pip-confetti-3 { background: var(--color-sun); }
+.pip-confetti-4 { background: var(--color-success); }
+
 @utility animate-pop {
   animation: island-pop 0.35s ease-out both;
 }
@@ -235,5 +260,10 @@
   .animate-nudge,
   .animate-mic-pulse {
     animation: none;
+  }
+
+  .pip-confetti {
+    animation: none;
+    display: none;
   }
 }

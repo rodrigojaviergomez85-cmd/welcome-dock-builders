@@ -29,6 +29,7 @@ import { MissionComplete } from "./MissionComplete";
 import { BlockIntro } from "./BlockIntro";
 import { BLOCK_INTROS } from "@/content/glossary";
 import { DEFAULT_PIP_COLOR, type PipMood } from "./Pip";
+import { playEvolution, playMunch } from "@/lib/feedback-sounds";
 
 type Props = {
   mission: Mission;
@@ -48,6 +49,7 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
   const [sunTime, setSunTime] = useState<TimeOfDay | null>(null);
   const [sunGold, setSunGold] = useState(0);
   const [pipMood, setPipMood] = useState<PipMood>("happy");
+  const [pipEvolving, setPipEvolving] = useState(false);
 
   // Recuperar dónde quedó el alumno, una sola vez.
   useEffect(() => {
@@ -57,7 +59,10 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
     setStepIndex(progress.stepIndex);
     setRestored(true);
     update((prev) =>
-      registerPlayDay(updateMission(prev, mission.id, (p) => ({ ...p, started: true }))),
+      registerPlayDay({
+        ...updateMission(prev, mission.id, (p) => ({ ...p, started: true })),
+        pip: progress.completed && progress.blockIndex === 0 ? { ...prev.pip, feeds: 0 } : prev.pip,
+      }),
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ready, restored]);
@@ -98,7 +103,32 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
   function onOral(status: "heard" | "practiced" | "pending") {
     setPipMood(status === "pending" ? "happy" : "eat");
     if (status !== "pending") {
-      window.setTimeout(() => setPipMood("happy"), 900);
+      playMunch();
+      window.setTimeout(() => setPipMood("happy"), 800);
+
+      const target = mission.pip?.feedsToEvolve ?? 0;
+      const nextFeeds = target > 0 ? Math.min(state.pip.feeds + 1, target) : state.pip.feeds + 1;
+      const evolves =
+        target > 0 && nextFeeds >= target && !state.pip.accessories.includes(mission.reward.id);
+
+      if (evolves) {
+        setPipEvolving(true);
+        playEvolution();
+        window.setTimeout(() => setPipEvolving(false), 1800);
+      }
+
+      update((prev) => ({
+        ...prev,
+        pip: {
+          ...prev.pip,
+          feeds: target > 0 ? Math.min(prev.pip.feeds + 1, target) : prev.pip.feeds + 1,
+          stage: evolves ? prev.pip.stage + 1 : prev.pip.stage,
+          accessories:
+            evolves && !prev.pip.accessories.includes(mission.reward.id)
+              ? [...prev.pip.accessories, mission.reward.id]
+              : prev.pip.accessories,
+        },
+      }));
     }
     update((prev) =>
       updateMission(prev, mission.id, (p) => {
@@ -164,6 +194,7 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
     setFinished(false);
     setBlockIndex(0);
     setStepIndex(0);
+    update((prev) => ({ ...prev, pip: { ...prev.pip, feeds: 0 } }));
     persist({ blockIndex: 0, stepIndex: 0 });
   }
 
@@ -229,7 +260,11 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
       counter={counter}
       pip={{
         mood: block.kind === "micCheck" ? "sleepy" : pipMood,
-        color: state.profile?.pipColor ?? DEFAULT_PIP_COLOR,
+        color: state.pip.color ?? DEFAULT_PIP_COLOR,
+        feeds: state.pip.feeds,
+        total: mission.pip?.feedsToEvolve ?? 0,
+        accessories: state.pip.accessories,
+        evolving: pipEvolving,
       }}
     >
       {showingIntro ? (
