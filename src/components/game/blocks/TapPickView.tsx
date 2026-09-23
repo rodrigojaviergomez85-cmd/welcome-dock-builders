@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { ArrowRight, Check } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Check } from "lucide-react";
 import { AudioButton } from "../AudioButton";
 import { CharacterFigure } from "../CharacterFigure";
 import type { TapPickBlock } from "@/content/missions/types";
@@ -68,6 +68,14 @@ export function TapPickView({
     setPicked(null);
     onRoundChange(nextIndex);
   }
+
+  const nextRef = useRef(next);
+  nextRef.current = next;
+  useEffect(() => {
+    if (!solved) return;
+    const timer = setTimeout(() => nextRef.current(), 1200);
+    return () => clearTimeout(timer);
+  }, [solved, index]);
 
   const bigSymbol = block.style === "number" || block.style === "letter";
 
@@ -139,16 +147,7 @@ export function TapPickView({
         })}
       </div>
 
-      {solved ? (
-        <button
-          type="button"
-          onClick={next}
-          className="tap-target inline-flex items-center gap-2 rounded-full bg-primary px-6 font-display text-lg text-primary-foreground shadow-[var(--shadow-pop)] active:translate-y-1 active:shadow-none"
-        >
-          {index + 1 < block.rounds.length ? "Seguir" : "Terminar"}{" "}
-          <ArrowRight className="size-5" aria-hidden />
-        </button>
-      ) : picked ? (
+      {solved ? null : picked ? (
         <p className="max-w-md rounded-2xl bg-card/95 px-4 py-3 text-center text-sm text-muted-foreground">
           Casi. Escuchá otra vez y probá de nuevo.
         </p>

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Hand, Sun } from "lucide-react";
+import { Hand, Moon, Sun } from "lucide-react";
 import type { SunClockBlock, TimeOfDay } from "@/content/missions/types";
 import { TIME_LABEL_ES } from "@/content/backgrounds";
 import { CharacterFigure } from "../CharacterFigure";
@@ -20,7 +20,17 @@ type Props = {
   /** Cuántos soles dorados lleva ganados (para el contador de arriba). */
   onGoldChange: (count: number) => void;
   onFinish: () => void;
+  /** Estado guardado: bits 0–3 paradas visitadas, bits 4–7 soles dorados. */
+  startIndex?: number;
+  onStepChange?: (value: number) => void;
 };
+
+function toBits(list: number[], shift: number) {
+  return list.reduce((acc, i) => acc | (1 << (i + shift)), 0);
+}
+function fromBits(value: number, shift: number, count: number) {
+  return Array.from({ length: count }, (_, i) => i).filter((i) => value & (1 << (i + shift)));
+}
 
 /** Posición de cada parada sobre el arco, en porcentaje de la caja del cielo. */
 function arcPoint(t: number) {
@@ -36,12 +46,20 @@ export function SunClockView({
   onTimeChange,
   onGoldChange,
   onFinish,
+  startIndex = 0,
+  onStepChange,
 }: Props) {
   const arcRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState<number | null>(null);
-  const [visited, setVisited] = useState<number[]>([]);
-  const [gold, setGold] = useState<number[]>([]);
-  const [phase, setPhase] = useState<"explore" | "repeat" | "done">("explore");
+  const [visited, setVisited] = useState<number[]>(() =>
+    fromBits(startIndex, 0, block.stops.length),
+  );
+  const [gold, setGold] = useState<number[]>(() => fromBits(startIndex, 4, block.stops.length));
+  const [phase, setPhase] = useState<"explore" | "repeat" | "done">(() =>
+    fromBits(startIndex, 0, block.stops.length).length === block.stops.length
+      ? "repeat"
+      : "explore",
+  );
   const [recordAt, setRecordAt] = useState<number | null>(null);
   const [dragT, setDragT] = useState<number | null>(null);
   const [showDemo, setShowDemo] = useState(true);
@@ -50,9 +68,19 @@ export function SunClockView({
   const stops = block.stops;
   const count = stops.length;
 
+  useEffect(() => {
+    onStepChange?.(toBits(visited, 0) | toBits(gold, 4));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [visited, gold]);
+
+  useEffect(() => {
+    if (gold.length > 0) onGoldChange(gold.length);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // Voz del guía en español + demo de la mano arrastrando el sol.
   useEffect(() => {
-    void playClip(block.introClip);
+    void playClip(phase === "repeat" ? "es-sun-repeat" : block.introClip);
     const timer = setTimeout(() => setShowDemo(false), 2000);
     return () => {
       clearTimeout(timer);
@@ -142,8 +170,13 @@ export function SunClockView({
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
         onPointerLeave={() => setDragT(null)}
-        className="relative h-40 w-full touch-none select-none sm:h-48"
+        className="fixed left-1/2 top-[11vh] z-10 h-[22vh] w-[min(92vw,42rem)] -translate-x-1/2 touch-none select-none"
       >
+        {phase === "repeat" ? (
+          <p className="absolute -top-8 left-1/2 z-30 -translate-x-1/2 whitespace-nowrap rounded-full bg-card/95 px-4 py-1 font-display text-base text-card-foreground shadow-[var(--shadow-soft)]">
+            Tocá un cielo y repetí
+          </p>
+        ) : null}
         <svg
           viewBox="0 0 100 100"
           preserveAspectRatio="none"
@@ -178,10 +211,18 @@ export function SunClockView({
                 phase === "repeat" && !isGold && "animate-pulse",
               )}
             >
-              <Sun
-                className={cn("size-7", isGold ? "text-[#FFD166]" : "text-muted-foreground/60")}
-                aria-hidden
-              />
+              {stop.time === "night" ? (
+                <Moon className="size-9 fill-current text-primary" aria-hidden />
+              ) : (
+                <Sun
+                  className={cn(
+                    stop.time === "evening"
+                      ? "size-9 fill-current text-accent"
+                      : "size-10 fill-current text-sun",
+                  )}
+                  aria-hidden
+                />
+              )}
             </button>
           );
         })}
@@ -216,6 +257,7 @@ export function SunClockView({
         </div>
       </div>
 
+      <div className="h-[20vh]" aria-hidden />
       <p className="rounded-full bg-card/85 px-4 py-1 text-center text-xs text-muted-foreground">
         {block.helpEs}
       </p>
@@ -264,13 +306,6 @@ export function SunClockView({
             onHelpUsed={onHelpUsed}
             onDone={(status) => winSun(recordAt, status)}
           />
-          <button
-            type="button"
-            onClick={() => winSun(recordAt, "pending")}
-            className="tap-target rounded-full bg-card/90 px-5 font-display text-base text-card-foreground shadow-[var(--shadow-soft)]"
-          >
-            Lo dije
-          </button>
         </div>
       ) : null}
     </div>

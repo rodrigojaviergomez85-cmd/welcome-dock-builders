@@ -1,6 +1,11 @@
 /** Reproducción de los clips ya producidos en /public/audio. Nunca se genera audio en el juego. */
 
 let current: HTMLAudioElement | null = null;
+let currentResolve: (() => void) | null = null;
+
+export function isPlaying() {
+  return current !== null;
+}
 
 export function clipUrl(clipId: string) {
   return `/audio/${clipId}.mp3`;
@@ -12,6 +17,9 @@ export function stopClip() {
     current.currentTime = 0;
     current = null;
   }
+  const resolve = currentResolve;
+  currentResolve = null;
+  resolve?.();
 }
 
 function playOne(clipId: string): Promise<void> {
@@ -20,6 +28,7 @@ function playOne(clipId: string): Promise<void> {
   const audio = new Audio(clipUrl(clipId));
   current = audio;
   return new Promise<void>((resolve) => {
+    currentResolve = resolve;
     audio.onended = () => {
       if (current === audio) current = null;
       resolve();
