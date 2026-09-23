@@ -169,7 +169,7 @@ export function PipHelp({
                   </p>
                   <p>{es}</p>
                 </div>
-                {esClip ? <AudioButton clipId={esClip} label="Escuchar" size="sm" /> : null}
+                {esClip ? <AudioButton clipId={esClip} label="Escuchar" size="sm" className="shrink-0" /> : null}
               </div>
             </div>
             <div className={stepBox(1)}>
@@ -185,7 +185,7 @@ export function PipHelp({
                   </span>
                   {ROLE_TEXT[role]}
                 </p>
-                <AudioButton clipId={ROLE_CLIP[role]} label="Escuchar" size="sm" />
+                <AudioButton clipId={ROLE_CLIP[role]} label="Escuchar" size="sm" className="shrink-0" />
               </div>
             </div>
             <div className={stepBox(2)}>
@@ -194,7 +194,7 @@ export function PipHelp({
                 <p lang="en" className="font-display text-xl">
                   {targetEn}
                 </p>
-                <AudioButton clipId={slowClip} label="Escuchar" size="sm" />
+                <AudioButton clipId={slowClip} label="Escuchar" size="sm" className="shrink-0" />
               </div>
             </div>
           </div>
