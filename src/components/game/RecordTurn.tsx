@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import { AudioButton } from "./AudioButton";
+import { PipHelp, type RecordRole } from "./PipHelp";
 import { micSupported, startRecording } from "@/lib/recorder";
 import { startWavRecording, wavRecordingSupported, blobToBase64 } from "@/lib/wav-recorder";
 import { saveRecording } from "@/lib/recordings";
@@ -34,7 +35,7 @@ type Props = {
   /** Guarda también la toma completa con una clave destacada para el panel adulto. */
   saveAs?: string;
   /** Significado en español ya armado (cuando la frase tiene país o edad). */
-  meaning?: { es: string; esClip?: string | undefined } | undefined;
+  meaning?: { es: string; esClip?: string | string[] | undefined } | undefined;
   support: "full" | "reduced";
   onHelpUsed?: () => void;
   /** "heard" = el juego lo entendió, "practiced" = habló, "pending" = queda pendiente. */
@@ -92,8 +93,22 @@ function startMicWithTimeout(): Promise<{ stop: () => Promise<Blob> }> {
   ]);
 }
 
-export function RecordTurn(props: Props) {
-  return props.mode === "guided" ? <GuidedRecordTurn {...props} /> : <QuickRecordTurn {...props} />;
+export function RecordTurn({ role, ...props }: Props & { role?: RecordRole | undefined }) {
+  const inner =
+    props.mode === "guided" ? <GuidedRecordTurn {...props} /> : <QuickRecordTurn {...props} />;
+  return (
+    <PipHelp
+      turnKey={`${props.missionId}-${props.turnId}`}
+      role={role ?? "repeat"}
+      targetEn={props.targetEn}
+      alias={props.alias ?? ""}
+      modelClip={props.modelClip}
+      meaning={props.meaning}
+      {...(props.onHelpUsed ? { onHelpUsed: props.onHelpUsed } : {})}
+    >
+      {inner}
+    </PipHelp>
+  );
 }
 
 function QuickRecordTurn({
@@ -241,6 +256,7 @@ function QuickRecordTurn({
               disabled={state === "starting"}
               onClick={() => void begin()}
               aria-label="Tocá y hablá"
+              data-mic=""
               className="tap-target flex size-24 items-center justify-center rounded-full bg-accent text-accent-foreground shadow-[var(--shadow-pop)] active:translate-y-1 active:shadow-none disabled:opacity-60"
             >
               {state === "starting" ? (
@@ -536,6 +552,7 @@ function GuidedRecordTurn({
           <button
             type="button"
             onClick={() => (micAvailable ? void begin(false) : setState("nomic"))}
+            data-mic=""
             className="tap-target mt-5 flex w-full items-center justify-center gap-2 rounded-2xl bg-accent px-6 font-display text-lg text-accent-foreground shadow-[var(--shadow-pop)] active:translate-y-1 active:shadow-none"
           >
             <Mic className="size-6" aria-hidden /> Repetí esta parte
@@ -565,6 +582,7 @@ function GuidedRecordTurn({
         <button
           type="button"
           onClick={() => (micAvailable ? void begin(true) : setState("nomic"))}
+          data-mic=""
           className="tap-target mx-auto mt-6 flex size-24 items-center justify-center rounded-full bg-accent text-accent-foreground shadow-[var(--shadow-pop)] active:translate-y-1 active:shadow-none"
           aria-label="Tocá y hablá"
         >
@@ -629,6 +647,7 @@ function GuidedRecordTurn({
                 <button
                   type="button"
                   onClick={() => setState(recordingFull ? "complete" : "fragment-echo")}
+                  data-mic=""
                   className="tap-target flex w-full items-center justify-center gap-2 rounded-2xl bg-accent px-6 font-display text-lg text-accent-foreground shadow-[var(--shadow-pop)]"
                 >
                   <RotateCcw className="size-5" aria-hidden /> Otra vez

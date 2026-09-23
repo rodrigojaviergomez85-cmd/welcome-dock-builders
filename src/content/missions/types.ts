@@ -22,6 +22,8 @@ export type RecordTurnSpec = {
   modelClip: string | string[];
   /** "quick" (por defecto): una pantalla. "guided": embudo con fragmentos. */
   mode?: "quick" | "guided";
+  /** Qué hace el niño: preguntar, responder o repetir. Se muestra como etiqueta grande. */
+  role?: "ask" | "answer" | "repeat";
 };
 
 /** Una línea hablada por un personaje. El clip ya está producido: nunca se genera en el juego. */

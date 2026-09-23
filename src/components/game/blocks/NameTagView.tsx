@@ -95,6 +95,7 @@ export function NameTagView({
             missionId={missionId}
             turnId={block.record.id}
             {...(block.record.mode ? { mode: block.record.mode } : {})}
+            role={block.record.role}
             promptEs={block.record.promptEs}
             targetEn={block.record.targetEn.split("{alias}").join(alias)}
             alias={alias}
@@ -117,10 +118,17 @@ export function NameTagView({
 
       {step === "swap" ? (
         <>
+          <div className="flex items-end gap-2">
+            <CharacterFigure id={block.swap.answer.speaker} size="md" />
+            <span className="mb-6 rounded-3xl bg-card px-5 py-2 font-display text-3xl text-card-foreground shadow-[var(--shadow-soft)]">
+              …
+            </span>
+          </div>
           <RecordTurn
             missionId={missionId}
             turnId={block.swap.record.id}
             {...(block.swap.record.mode ? { mode: block.swap.record.mode } : {})}
+            role={block.swap.record.role}
             promptEs={block.swap.record.promptEs}
             targetEn={block.swap.record.targetEn}
             alias={alias}

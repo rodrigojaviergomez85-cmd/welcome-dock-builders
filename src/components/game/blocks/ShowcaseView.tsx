@@ -174,6 +174,7 @@ export function ShowcaseView({
         missionId={missionId}
         turnId={step.id}
         {...(step.mode ? { mode: step.mode } : {})}
+        role={step.role}
         promptEs={step.promptEs}
         targetEn={fillText(step.targetEn, vars)}
         alias={alias}
@@ -183,7 +184,7 @@ export function ShowcaseView({
           template?.es
             ? {
                 es: fillText(template.es.split("{age}").join(vars.ageEs), vars),
-                esClip: template.esClip,
+                esClip: template.esClip ? [`es-${vars.greetingClip}`, template.esClip] : undefined,
               }
             : undefined
         }

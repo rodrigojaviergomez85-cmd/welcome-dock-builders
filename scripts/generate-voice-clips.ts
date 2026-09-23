@@ -22,9 +22,18 @@ const PITCH: Record<string, number> = {
 function raisePitch(path: string, factor: number) {
   const tmp = `${path}.tmp.mp3`;
   const r = spawnSync("ffmpeg", [
-    "-v", "error", "-y", "-i", path,
-    "-af", `asetrate=24000*${factor},aresample=24000,atempo=${(1 / factor).toFixed(4)}`,
-    "-codec:a", "libmp3lame", "-q:a", "4", tmp,
+    "-v",
+    "error",
+    "-y",
+    "-i",
+    path,
+    "-af",
+    `asetrate=24000*${factor},aresample=24000,atempo=${(1 / factor).toFixed(4)}`,
+    "-codec:a",
+    "libmp3lame",
+    "-q:a",
+    "4",
+    tmp,
   ]);
   if (r.status === 0) spawnSync("mv", [tmp, path]);
 }
@@ -61,7 +70,6 @@ function instructionsFor(speaker: string) {
 
 type Line = { id: string; speaker: keyof typeof VOICES | string; text: string };
 
-
 const COUNTRY_NAMES: [string, string][] = [
   ["c-el-salvador", "El Salvador"],
   ["c-mexico", "Mexico"],
@@ -72,10 +80,31 @@ const COUNTRY_NAMES: [string, string][] = [
   ["c-brazil", "Brazil"],
   ["c-united-states", "United States"],
 ];
-const COUNTRY_LINES: Line[] = COUNTRY_NAMES.map(([id, name]) => ({ id: `w-${id}`, speaker: "model", text: name }));
+const COUNTRY_LINES: Line[] = COUNTRY_NAMES.map(([id, name]) => ({
+  id: `w-${id}`,
+  speaker: "model",
+  text: name,
+}));
 
-const NUMBER_NAMES = ["One","Two","Three","Four","Five","Six","Seven","Eight","Nine","Ten","Eleven","Twelve"];
-const NUMBER_LINES: Line[] = NUMBER_NAMES.map((word, i) => ({ id: `w-n-${i + 1}`, speaker: "model", text: word }));
+const NUMBER_NAMES = [
+  "One",
+  "Two",
+  "Three",
+  "Four",
+  "Five",
+  "Six",
+  "Seven",
+  "Eight",
+  "Nine",
+  "Ten",
+  "Eleven",
+  "Twelve",
+];
+const NUMBER_LINES: Line[] = NUMBER_NAMES.map((word, i) => ({
+  id: `w-n-${i + 1}`,
+  speaker: "model",
+  text: word,
+}));
 
 const LETTER_LINES: Line[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").map((letter) => ({
   id: `w-l-${letter.toLowerCase()}`,
@@ -86,7 +115,11 @@ const LETTER_LINES: Line[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").map((letter)
 export const LINES: Line[] = [
   // Luna
   { id: "luna-hello-name", speaker: "luna", text: "Hello! My name is Luna." },
-  { id: "luna-welcome", speaker: "luna", text: "Hello! My name is Luna. Welcome to Explorer Island!" },
+  {
+    id: "luna-welcome",
+    speaker: "luna",
+    text: "Hello! My name is Luna. Welcome to Explorer Island!",
+  },
   { id: "luna-what-name", speaker: "luna", text: "What is your name?" },
   { id: "luna-how-are-you", speaker: "luna", text: "How are you?" },
   { id: "luna-i-am-fine", speaker: "luna", text: "I am fine, thank you!" },
@@ -113,7 +146,11 @@ export const LINES: Line[] = [
   { id: "boti-what-name", speaker: "boti", text: "What is your name?" },
   { id: "boti-how-are-you", speaker: "boti", text: "How are you?" },
   { id: "boti-i-am-fine", speaker: "boti", text: "I am fine." },
-  { id: "boti-greet-then-name", speaker: "boti", text: "Good afternoon! I am Boti. My name is Boti." },
+  {
+    id: "boti-greet-then-name",
+    speaker: "boti",
+    text: "Good afternoon! I am Boti. My name is Boti.",
+  },
   { id: "boti-intro-morning", speaker: "boti", text: "Good morning! My name is Boti." },
   { id: "boti-intro-afternoon", speaker: "boti", text: "Good afternoon! My name is Boti." },
   { id: "boti-intro-evening", speaker: "boti", text: "Good evening! My name is Boti." },
@@ -136,7 +173,11 @@ export const LINES: Line[] = [
 
   // Significados en español (modo "primero en español", como Dora)
   { id: "es-hello", speaker: "es", text: "¡Hola!" },
-  { id: "es-luna-welcome", speaker: "es", text: "¡Hola! Me llamo Luna. ¡Bienvenido a la Isla de los Exploradores!" },
+  {
+    id: "es-luna-welcome",
+    speaker: "es",
+    text: "¡Hola! Me llamo Luna. ¡Bienvenido a la Isla de los Exploradores!",
+  },
   { id: "es-what-name", speaker: "es", text: "¿Cómo te llamás?" },
   { id: "es-hello-what-name", speaker: "es", text: "¡Hola! ¿Cómo te llamás?" },
   { id: "es-leo-ask-first", speaker: "es", text: "¡Hola! ¿Cómo te llamás? Yo me llamo Leo." },
@@ -157,7 +198,11 @@ export const LINES: Line[] = [
   { id: "es-my-name-is", speaker: "es", text: "Me llamo… y acá decís tu nombre." },
   { id: "es-hello-my-name-is", speaker: "es", text: "¡Hola! Me llamo… y acá decís tu nombre." },
   { id: "es-hello-name-fine", speaker: "es", text: "¡Hola! Me llamo… y estoy bien." },
-  { id: "es-good-afternoon-name", speaker: "es", text: "¡Buenas tardes! Me llamo… y acá decís tu nombre." },
+  {
+    id: "es-good-afternoon-name",
+    speaker: "es",
+    text: "¡Buenas tardes! Me llamo… y acá decís tu nombre.",
+  },
   { id: "es-your-turn", speaker: "es", text: "¡Te toca!" },
 
   // Inglés muy lento, palabra por palabra
@@ -168,8 +213,16 @@ export const LINES: Line[] = [
   { id: "slow-good-afternoon", speaker: "slow", text: "Good... afternoon!" },
   { id: "slow-my-name-is", speaker: "slow", text: "My... name... is... Alex." },
   { id: "slow-hello-my-name-is", speaker: "slow", text: "Hello!... My... name... is... Alex." },
-  { id: "slow-hello-name-fine", speaker: "slow", text: "Hello!... My... name... is... Alex... I... am... fine." },
-  { id: "slow-good-afternoon-name", speaker: "slow", text: "Good... afternoon!... My... name... is... Alex." },
+  {
+    id: "slow-hello-name-fine",
+    speaker: "slow",
+    text: "Hello!... My... name... is... Alex... I... am... fine.",
+  },
+  {
+    id: "slow-good-afternoon-name",
+    speaker: "slow",
+    text: "Good... afternoon!... My... name... is... Alex.",
+  },
 
   // Frases puente de la guía
   { id: "bridge-en-ingles", speaker: "es", text: "En inglés se dice así:" },
@@ -177,11 +230,31 @@ export const LINES: Line[] = [
   { id: "bridge-muy-bien", speaker: "es", text: "¡Muy bien!" },
 
   // Instrucciones de cada parte de la misión
-  { id: "intro-story", speaker: "es", text: "Llegaste al muelle. Luna te va a saludar en inglés. Escuchá y después elegí tu respuesta." },
-  { id: "intro-listen", speaker: "es", text: "Vas a escuchar a alguien presentarse en inglés. Tocá quién habló." },
-  { id: "intro-bags", speaker: "es", text: "Cada explorador dice su nombre en inglés. Llevale la mochila a su dueño." },
-  { id: "intro-talk", speaker: "es", text: "Te van a saludar en inglés. Vos vas a contestar con tu nombre. Primero escuchás, después lo decís." },
-  { id: "intro-finale", speaker: "es", text: "Alguien nuevo te espera. Respondé en inglés y ganá tu etiqueta." },
+  {
+    id: "intro-story",
+    speaker: "es",
+    text: "Llegaste al muelle. Luna te va a saludar en inglés. Escuchá y después elegí tu respuesta.",
+  },
+  {
+    id: "intro-listen",
+    speaker: "es",
+    text: "Vas a escuchar a alguien presentarse en inglés. Tocá quién habló.",
+  },
+  {
+    id: "intro-bags",
+    speaker: "es",
+    text: "Cada explorador dice su nombre en inglés. Llevale la mochila a su dueño.",
+  },
+  {
+    id: "intro-talk",
+    speaker: "es",
+    text: "Te van a saludar en inglés. Vos vas a contestar con tu nombre. Primero escuchás, después lo decís.",
+  },
+  {
+    id: "intro-finale",
+    speaker: "es",
+    text: "Alguien nuevo te espera. Respondé en inglés y ganá tu etiqueta.",
+  },
 
   // --- Semana 1: vocabulario nuevo (países, números, alfabeto) y partes de frase ---
   ...COUNTRY_LINES,
@@ -207,18 +280,62 @@ export const LINES: Line[] = [
   { id: "es-years-old", speaker: "es", text: "Tengo… y acá decís tus años." },
   { id: "es-tell-me", speaker: "es", text: "¡Contame de vos!" },
 
-  { id: "intro-tue-flags", speaker: "es", text: "Llegó el barco y las banderas se mezclaron. Escuchá de dónde es cada explorador y tocá su bandera." },
-  { id: "intro-tue-mine", speaker: "es", text: "Ahora te toca a vos: elegí tu país y aprendé a decirlo en inglés." },
-  { id: "intro-tue-show", speaker: "es", text: "Luna te pregunta de dónde sos. Decí tu nombre y tu país en inglés." },
-  { id: "intro-wed-numbers", speaker: "es", text: "En el mercado se cayeron las cajas. Escuchá el número en inglés y tocalo." },
-  { id: "intro-wed-age", speaker: "es", text: "Elegí cuántos años tenés y aprendé a decirlo en inglés." },
-  { id: "intro-wed-show", speaker: "es", text: "Boti quiere saber tu edad. Decí tu nombre, tu país y tus años." },
-  { id: "intro-thu-letters", speaker: "es", text: "El faro perdió sus letras. Escuchá cada letra en inglés y tocala." },
-  { id: "intro-thu-bee", speaker: "es", text: "Ahora deletrean nombres. Escuchá letra por letra y tocá de quién es." },
-  { id: "intro-thu-spell", speaker: "es", text: "Armá tu propio nombre tocando sus letras en inglés." },
-  { id: "intro-fri-warmup", speaker: "es", text: "Repaso rápido de letras antes de salir al escenario." },
+  {
+    id: "intro-tue-flags",
+    speaker: "es",
+    text: "Llegó el barco y las banderas se mezclaron. Escuchá de dónde es cada explorador y tocá su bandera.",
+  },
+  {
+    id: "intro-tue-mine",
+    speaker: "es",
+    text: "Ahora te toca a vos: elegí tu país y aprendé a decirlo en inglés.",
+  },
+  {
+    id: "intro-tue-show",
+    speaker: "es",
+    text: "Luna te pregunta de dónde sos. Decí tu nombre y tu país en inglés.",
+  },
+  {
+    id: "intro-wed-numbers",
+    speaker: "es",
+    text: "En el mercado se cayeron las cajas. Escuchá el número en inglés y tocalo.",
+  },
+  {
+    id: "intro-wed-age",
+    speaker: "es",
+    text: "Elegí cuántos años tenés y aprendé a decirlo en inglés.",
+  },
+  {
+    id: "intro-wed-show",
+    speaker: "es",
+    text: "Boti quiere saber tu edad. Decí tu nombre, tu país y tus años.",
+  },
+  {
+    id: "intro-thu-letters",
+    speaker: "es",
+    text: "El faro perdió sus letras. Escuchá cada letra en inglés y tocala.",
+  },
+  {
+    id: "intro-thu-bee",
+    speaker: "es",
+    text: "Ahora deletrean nombres. Escuchá letra por letra y tocá de quién es.",
+  },
+  {
+    id: "intro-thu-spell",
+    speaker: "es",
+    text: "Armá tu propio nombre tocando sus letras en inglés.",
+  },
+  {
+    id: "intro-fri-warmup",
+    speaker: "es",
+    text: "Repaso rápido de letras antes de salir al escenario.",
+  },
   { id: "intro-fri-spell", speaker: "es", text: "Deletreá tu nombre para el público de la isla." },
-  { id: "intro-fri-show", speaker: "es", text: "¡Es tu show! Contá quién sos: nombre, país y edad, todo en inglés." },
+  {
+    id: "intro-fri-show",
+    speaker: "es",
+    text: "¡Es tu show! Contá quién sos: nombre, país y edad, todo en inglés.",
+  },
 
   // ── Lunes "El reloj del sol" (nuevos) ──
   { id: "boti-good-morning", speaker: "boti", text: "Good morning!" },
@@ -243,18 +360,61 @@ export const LINES: Line[] = [
   { id: "slow-good-evening", speaker: "slow", text: "Good... evening!" },
   { id: "slow-good-night", speaker: "slow", text: "Good... night!" },
   { id: "slow-i-am-fine-thank-you", speaker: "slow", text: "I... am... fine,... thank... you." },
-  { id: "es-pip-intro", speaker: "es", text: "Este es Pip. Pip solo entiende inglés y está dormido. Tocá el micrófono y decile: Hello!" },
-  { id: "es-sun-intro", speaker: "es", text: "El reloj del sol se rompió. Arrastrá el sol por el cielo y escuchá cómo saluda Boti a cada hora." },
-  { id: "es-sun-repeat", speaker: "es", text: "Ahora vos. Tocá un cielo y repetí el saludo para que Pip coma." },
-  { id: "es-radar-intro", speaker: "es", text: "Escuchá cómo saluda cada explorador y tocá el cielo de esa hora." },
-  { id: "es-tag-intro", speaker: "es", text: "Leo quiere saber tu nombre. Decilo al micrófono y la máquina de Boti imprime tu etiqueta." },
+  {
+    id: "es-pip-intro",
+    speaker: "es",
+    text: "Este es Pip. Pip solo entiende inglés y está dormido. Tocá el micrófono y decile: Hello!",
+  },
+  {
+    id: "es-sun-intro",
+    speaker: "es",
+    text: "El reloj del sol se rompió. Arrastrá el sol por el cielo y escuchá cómo saluda Boti a cada hora.",
+  },
+  {
+    id: "es-sun-repeat",
+    speaker: "es",
+    text: "Ahora vos. Tocá un cielo y repetí el saludo para que Pip coma.",
+  },
+  {
+    id: "es-radar-intro",
+    speaker: "es",
+    text: "Escuchá cómo saluda cada explorador y tocá el cielo de esa hora.",
+  },
+  {
+    id: "es-tag-intro",
+    speaker: "es",
+    text: "Leo quiere saber tu nombre. Decilo al micrófono y la máquina de Boti imprime tu etiqueta.",
+  },
   { id: "es-tag-swap", speaker: "es", text: "Ahora preguntá vos: What is your name?" },
-  { id: "es-roleplay-intro", speaker: "es", text: "Vamos a conversar con Luna. Primero respondés vos. Después preguntás vos." },
-  { id: "es-dock-intro", speaker: "es", text: "Mirá el cielo: es la hora de verdad. Saludá según la hora y decí tu nombre. Esta es tu presentación de hoy." },
+  {
+    id: "es-roleplay-intro",
+    speaker: "es",
+    text: "Vamos a conversar con Luna. Primero respondés vos. Después preguntás vos.",
+  },
+  {
+    id: "es-dock-intro",
+    speaker: "es",
+    text: "Mirá el cielo: es la hora de verdad. Saludá según la hora y decí tu nombre. Esta es tu presentación de hoy.",
+  },
   { id: "es-i-am-fine-thank-you", speaker: "es", text: "Estoy bien, gracias." },
   { id: "es-hello-how-are-you", speaker: "es", text: "¡Hola! ¿Cómo estás?" },
+  {
+    id: "es-help-ask",
+    speaker: "es",
+    text: "Ahora preguntás vos. Tocá el botón rojo y decí la frase en inglés.",
+  },
+  {
+    id: "es-help-answer",
+    speaker: "es",
+    text: "Ahora respondés vos. Tocá el botón rojo y decí la frase en inglés con tu nombre.",
+  },
+  {
+    id: "es-help-repeat",
+    speaker: "es",
+    text: "Repetí la frase. Tocá el botón rojo y decila en inglés.",
+  },
+  { id: "es-help-offer", speaker: "es", text: "¿Te ayudo? Tocá mi carita." },
 ];
-
 
 async function exists(path: string) {
   try {

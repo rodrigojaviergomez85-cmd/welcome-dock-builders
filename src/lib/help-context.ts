@@ -1,7 +1,7 @@
 import { useSyncExternalStore } from "react";
 
 /** Significado de la frase que se está practicando, para el botón "?" de la barra. */
-export type PhraseHelp = { en: string; es: string; esClip?: string | undefined } | null;
+export type PhraseHelp = { en: string; es: string; esClip?: string | string[] | undefined } | null;
 
 let current: PhraseHelp = null;
 const listeners = new Set<() => void>();
