@@ -498,15 +498,13 @@ function GuidedRecordTurn({
             />
           ) : null}
         </div>
-        {spanishPlayed || !g?.esClip ? (
-          <button
-            type="button"
-            onClick={() => setState("fragment-listen")}
-            className="tap-target mt-5 flex w-full items-center justify-center gap-2 rounded-2xl bg-primary px-6 font-display text-lg text-primary-foreground shadow-[var(--shadow-pop)] active:translate-y-1 active:shadow-none"
-          >
-            Ya entendí <ArrowRight className="size-5" aria-hidden />
-          </button>
-        ) : null}
+        <button
+          type="button"
+          onClick={() => setState("fragment-listen")}
+          className={`tap-target mt-5 flex w-full items-center justify-center gap-2 rounded-2xl bg-primary px-6 font-display text-lg text-primary-foreground shadow-[var(--shadow-pop)] active:translate-y-1 active:shadow-none ${spanishPlayed ? "animate-pop" : ""}`}
+        >
+          Ya entendí <ArrowRight className="size-5" aria-hidden />
+        </button>
         {saidIt}
       </div>
     );
@@ -533,7 +531,8 @@ function GuidedRecordTurn({
             onEnded={() => setState("fragment-echo")}
             className="mt-5 w-full justify-center rounded-2xl"
           />
-        ) : (
+        ) : null}
+        {
           <button
             type="button"
             onClick={() => (micAvailable ? void begin(false) : setState("nomic"))}
@@ -541,7 +540,7 @@ function GuidedRecordTurn({
           >
             <Mic className="size-6" aria-hidden /> Repetí esta parte
           </button>
-        )}
+        }
         <p className="mt-4 text-center text-sm text-muted-foreground">
           Parte {fragmentIndex + 1} de {fragments.length}
         </p>
