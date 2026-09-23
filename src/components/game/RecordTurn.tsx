@@ -507,7 +507,7 @@ function GuidedRecordTurn({
             Ya entendí <ArrowRight className="size-5" aria-hidden />
           </button>
         ) : null}
-        {state !== "result" && state !== "checking" ? saidIt : null}
+        {saidIt}
       </div>
     );
   }
@@ -545,7 +545,7 @@ function GuidedRecordTurn({
         <p className="mt-4 text-center text-sm text-muted-foreground">
           Parte {fragmentIndex + 1} de {fragments.length}
         </p>
-        {state !== "result" && state !== "checking" ? saidIt : null}
+        {saidIt}
       </div>
     );
   }
@@ -572,7 +572,7 @@ function GuidedRecordTurn({
           <Mic className="size-11" aria-hidden />
         </button>
         <p className="mt-3 font-display text-xl text-accent">Tocá y hablá</p>
-        {state !== "result" && state !== "checking" ? saidIt : null}
+        {saidIt}
       </div>
     );
   }
