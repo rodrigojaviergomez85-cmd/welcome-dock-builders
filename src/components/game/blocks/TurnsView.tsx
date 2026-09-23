@@ -55,6 +55,7 @@ export function TurnsView({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [index]);
 
+  advanceRef.current = advance;
   function advance() {
     if (index + 1 >= turns.length) onFinish();
     else setIndex(index + 1);

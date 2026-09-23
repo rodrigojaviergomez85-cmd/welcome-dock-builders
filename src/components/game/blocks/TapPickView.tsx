@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { ArrowRight, Check } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Check } from "lucide-react";
 import { AudioButton } from "../AudioButton";
 import { CharacterFigure } from "../CharacterFigure";
 import type { TapPickBlock } from "@/content/missions/types";
