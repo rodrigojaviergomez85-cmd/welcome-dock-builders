@@ -64,6 +64,7 @@ export const mondayMission: Mission = {
       introClip: "es-pip-intro",
       record: {
         id: "t0",
+        role: "repeat",
         promptEs: "Decile Hello a Pip.",
         targetEn: "Hello!",
         modelClip: "model-hello",
@@ -90,6 +91,7 @@ export const mondayMission: Mission = {
           },
           repeat: {
             id: "s1",
+            role: "repeat",
             promptEs: "Repetí: Good morning!",
             targetEn: "Good morning!",
             modelClip: "model-good-morning",
@@ -105,6 +107,7 @@ export const mondayMission: Mission = {
           },
           repeat: {
             id: "s2",
+            role: "repeat",
             promptEs: "Repetí: Good afternoon!",
             targetEn: "Good afternoon!",
             modelClip: "model-good-afternoon",
@@ -120,6 +123,7 @@ export const mondayMission: Mission = {
           },
           repeat: {
             id: "s3",
+            role: "repeat",
             promptEs: "Repetí: Good evening!",
             targetEn: "Good evening!",
             modelClip: "model-good-evening",
@@ -135,6 +139,7 @@ export const mondayMission: Mission = {
           },
           repeat: {
             id: "s4",
+            role: "repeat",
             promptEs: "Repetí: Good night!",
             targetEn: "Good night!",
             modelClip: "model-good-night",
@@ -215,6 +220,7 @@ export const mondayMission: Mission = {
       ],
       record: {
         id: "t1",
+        role: "answer",
         mode: "guided",
         promptEs: "Decí tu nombre.",
         targetEn: "My name is {alias}.",
@@ -232,6 +238,7 @@ export const mondayMission: Mission = {
       swap: {
         record: {
           id: "t2",
+          role: "ask",
           promptEs: "Ahora preguntale el nombre a Mia.",
           targetEn: "What is your name?",
           modelClip: "model-what-name",
@@ -267,6 +274,7 @@ export const mondayMission: Mission = {
             {
               type: "record",
               id: "t3",
+              role: "answer",
               mode: "guided",
               promptEs: "Decí que estás bien.",
               targetEn: "I am fine, thank you.",
@@ -281,6 +289,7 @@ export const mondayMission: Mission = {
             {
               type: "record",
               id: "t4",
+              role: "answer",
               promptEs: "Decí tu nombre.",
               targetEn: "My name is {alias}.",
               modelClip: "model-my-name-is",
@@ -296,6 +305,7 @@ export const mondayMission: Mission = {
             {
               type: "record",
               id: "t5",
+              role: "ask",
               promptEs: "Ahora preguntá vos: Hello! How are you?",
               targetEn: "Hello! How are you?",
               modelClip: "model-hello-how-are-you",
@@ -309,6 +319,7 @@ export const mondayMission: Mission = {
             {
               type: "record",
               id: "t6",
+              role: "ask",
               promptEs: "Preguntale el nombre.",
               targetEn: "What is your name?",
               modelClip: "model-what-name",
@@ -338,6 +349,7 @@ export const mondayMission: Mission = {
       steps: [
         {
           id: "t7",
+          role: "answer",
           promptEs: "Saludá según la hora y decí tu nombre.",
           /** {greeting} se resuelve con la hora real: Good morning / afternoon / evening / night. */
           targetEn: "{greeting} My name is {alias}.",
