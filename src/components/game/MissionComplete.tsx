@@ -1,4 +1,7 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { Pip } from "./Pip";
+import { listRecordings } from "@/lib/recordings";
+import { Sun, Ticket } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { Backpack, Check, Mic, Ear, RotateCcw, Volume2 } from "lucide-react";
 import type { Mission } from "@/content/missions/types";
@@ -22,6 +25,24 @@ export function MissionComplete({ mission, progress, alias, avatarImage, onRepla
   const { state } = useProgress();
   const vars = missionVars(state.profile, alias);
   const phrases = mission.reviewPhrases ?? REVIEW_PHRASES;
+  const [presentationUrl, setPresentationUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (mission.id !== "monday") return;
+    let url: string | null = null;
+    void listRecordings()
+      .then((all) => {
+        const rec = all.find((r) => r.key === "presentation-day1");
+        if (rec && rec.blob.size > 0) {
+          url = URL.createObjectURL(rec.blob);
+          setPresentationUrl(url);
+        }
+      })
+      .catch(() => undefined);
+    return () => {
+      if (url) URL.revokeObjectURL(url);
+    };
+  }, [mission.id]);
 
   useEffect(() => {
     playFanfare();
@@ -33,6 +54,77 @@ export function MissionComplete({ mission, progress, alias, avatarImage, onRepla
       : progress.oral.status === "pending-no-mic"
         ? "Práctica oral: pendiente (no se habló todavía)"
         : "Práctica oral: sin frases dichas todavía";
+
+  if (mission.id === "monday") {
+    const said = progress.oral.said ?? progress.oral.recordings;
+    return (
+      <div className="mx-auto flex min-h-screen max-w-md flex-col items-center gap-5 p-6 text-center">
+        <h1 className="font-display text-4xl">¡Misión completada!</h1>
+        <Pip
+          mood="happy"
+          color={state.pip.color}
+          accessories={state.pip.accessories}
+          className="h-36 w-36 animate-pop"
+        />
+        <div className="w-full rounded-2xl border-4 border-dashed border-accent bg-card px-5 py-4">
+          <p lang="en" className="font-display text-3xl">
+            {alias}
+          </p>
+          <p lang="en" className="text-sm text-muted-foreground">
+            My name is {alias}.
+          </p>
+        </div>
+        {presentationUrl ? (
+          <div className="w-full rounded-3xl bg-card p-4 shadow-[var(--shadow-soft)]">
+            <p className="mb-2 font-display text-lg">Tu presentación de hoy</p>
+            <audio
+              controls
+              src={presentationUrl}
+              aria-label="Escuchar tu presentación de hoy"
+              className="w-full"
+            />
+          </div>
+        ) : null}
+        <div className="w-full rounded-3xl bg-sun/40 p-5 shadow-[var(--shadow-soft)]">
+          <p className="flex items-center justify-center gap-2 font-display text-xl">
+            <Ticket className="size-6" aria-hidden /> Ticket para la clase
+          </p>
+          <div className="mt-3 flex justify-center gap-6 font-display text-2xl">
+            <span className="flex items-center gap-1">
+              <Sun className="size-7 fill-current text-accent" aria-hidden /> 4
+            </span>
+            <span className="flex items-center gap-1">
+              <Mic className="size-7" aria-hidden /> {said}
+            </span>
+          </div>
+          <p className="sr-only">4 soles ganados, {said} oraciones dichas.</p>
+          <p lang="en" className="mt-4 rounded-2xl bg-card px-4 py-3 font-display text-2xl">
+            Tomorrow: Where is Leo from?
+          </p>
+        </div>
+        <p className="text-sm text-muted-foreground">
+          Hoy tu hijo aprendió los cuatro saludos y a decir su nombre. Preguntale:{" "}
+          <span lang="en">What is your name?</span>
+        </p>
+        <div className="flex flex-wrap justify-center gap-3">
+          <Link
+            to="/"
+            className="tap-target inline-flex items-center rounded-full bg-primary px-6 font-display text-lg text-primary-foreground shadow-[var(--shadow-pop)]"
+          >
+            Volver al mapa
+          </Link>
+          <button
+            type="button"
+            onClick={onReplay}
+            aria-label="Jugar otra vez"
+            className="tap-target inline-flex items-center gap-2 rounded-full bg-secondary px-6 font-display text-lg text-secondary-foreground"
+          >
+            <RotateCcw className="size-5" aria-hidden />
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto flex min-h-screen max-w-2xl flex-col items-center justify-center gap-6 p-6 text-center">

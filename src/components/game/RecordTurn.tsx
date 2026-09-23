@@ -170,8 +170,7 @@ function QuickRecordTurn({
       } else if (failCount >= 2) {
         markSaved("practiced");
         doneRef.current("practiced");
-      }
-      else setState("idle");
+      } else setState("idle");
     }, 1200);
   }
 

@@ -139,8 +139,7 @@ function AdultPanel() {
               <li key={rec.key} className="rounded-2xl bg-muted p-3">
                 {rec.key === "presentation-day1" ? (
                   <p className="mb-1 font-display text-lg text-primary">
-                    Presentación del día 1 · {new Date(rec.createdAt).toLocaleDateString("es-AR")}{" "}
-                    ·{" "}
+                    Presentación del día 1 · {new Date(rec.createdAt).toLocaleDateString("es-AR")} ·{" "}
                     {rec.status === "heard"
                       ? "te escuché"
                       : rec.status === "pending"
@@ -155,16 +154,16 @@ function AdultPanel() {
                   {new Date(rec.createdAt).toLocaleString("es-AR")} · marcada como practicada
                 </p>
                 {rec.blob.size > 0 ? (
-                <audio
-                  controls
-                  aria-label={
-                    rec.key === "presentation-day1"
-                      ? "Reproducir presentación del día 1"
-                      : "Reproducir grabación"
-                  }
-                  src={URL.createObjectURL(rec.blob)}
-                  className="mt-2 w-full"
-                />
+                  <audio
+                    controls
+                    aria-label={
+                      rec.key === "presentation-day1"
+                        ? "Reproducir presentación del día 1"
+                        : "Reproducir grabación"
+                    }
+                    src={URL.createObjectURL(rec.blob)}
+                    className="mt-2 w-full"
+                  />
                 ) : null}
               </li>
             ))}
