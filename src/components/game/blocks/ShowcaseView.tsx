@@ -39,6 +39,29 @@ export function ShowcaseView({
   const [stage, setStage] = useState<"intro" | "step" | "cheer" | "teaser">("intro");
   const [index, setIndex] = useState(Math.min(startIndex, block.steps.length - 1));
   const vars = missionVars(state.profile, alias, block.time);
+  const [showSkip, setShowSkip] = useState(false);
+
+  // "Seguir" de respaldo a los 3 s en intro y teaser, por si el audio tarda.
+  useEffect(() => {
+    setShowSkip(false);
+    if (stage !== "intro" && stage !== "teaser") return;
+    const t = window.setTimeout(() => setShowSkip(true), 3000);
+    return () => window.clearTimeout(t);
+  }, [stage]);
+
+  const skipButton = showSkip ? (
+    <button
+      type="button"
+      onClick={() => {
+        stopClip();
+        if (stage === "intro") setStage("step");
+        else finishRef.current();
+      }}
+      className="tap-target animate-pop rounded-full bg-primary px-8 font-display text-lg text-primary-foreground shadow-[var(--shadow-pop)]"
+    >
+      Seguir
+    </button>
+  ) : null;
 
   useEffect(() => {
     let active = true;
@@ -95,6 +118,7 @@ export function ShowcaseView({
           <p className="mt-1 text-muted-foreground">{block.intro.es}</p>
           <AudioButton clipId={block.intro.clip} label="Escuchar" className="mt-4" />
         </div>
+        {skipButton}
       </div>
     );
   }
@@ -109,6 +133,7 @@ export function ShowcaseView({
           </p>
           <p className="mt-1 text-muted-foreground">{block.teaser.es}</p>
         </div>
+        {skipButton}
       </div>
     );
   }
