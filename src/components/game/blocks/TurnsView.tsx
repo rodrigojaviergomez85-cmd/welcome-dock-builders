@@ -67,11 +67,7 @@ export function TurnsView({
         <CharacterFigure id={partner} size="lg" />
         <div className="flex flex-col items-start gap-3 pb-6">
           {turn.type === "character" ? (
-            <BilingualLine
-              en={turn.en}
-              alias={alias}
-              clip={turn.clip}
-            />
+            <BilingualLine en={turn.en} alias={alias} clip={turn.clip} />
           ) : (
             <SpeechBubble en="¡Ahora practicamos!" />
           )}
