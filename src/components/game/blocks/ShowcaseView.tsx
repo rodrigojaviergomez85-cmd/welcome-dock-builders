@@ -33,6 +33,7 @@ export function ShowcaseView({
   onFinish,
 }: Props) {
   const { state } = useProgress();
+  const unmountedRef = useRef(false);
   const finishRef = useRef(onFinish);
   finishRef.current = onFinish;
   const [stage, setStage] = useState<"intro" | "step" | "cheer" | "teaser">("intro");
@@ -55,21 +56,25 @@ export function ShowcaseView({
 
   useEffect(() => {
     if (stage !== "cheer") return;
-    let active = true;
+    // No se cancela al pasar a "teaser": solo al salir del bloque (ver unmountedRef).
     void (async () => {
       playFanfare();
       await playClip(block.cheer.clip);
-      if (!active) return;
+      if (unmountedRef.current) return;
       if (block.teaser) {
         setStage("teaser");
         await playClip(block.teaser.clip);
       }
-      if (active) finishRef.current();
+      if (!unmountedRef.current) finishRef.current();
     })();
-    return () => {
-      active = false;
-    };
   }, [block.cheer.clip, block.teaser, stage]);
+
+  useEffect(
+    () => () => {
+      unmountedRef.current = true;
+    },
+    [],
+  );
 
   const audience = (
     <div className="flex items-end justify-center gap-1">
