@@ -69,7 +69,7 @@ export function TurnsView({
           {turn.type === "character" ? (
             <BilingualLine en={turn.en} alias={alias} clip={turn.clip} />
           ) : (
-            <SpeechBubble en="¡Ahora practicamos!" />
+            <SpeechBubble en={turn.role === "ask" ? "…" : "¡Ahora practicamos!"} />
           )}
         </div>
       </div>
@@ -82,6 +82,7 @@ export function TurnsView({
           missionId={missionId}
           turnId={`${conversationId}-${turn.id}`}
           {...(turn.mode ? { mode: turn.mode } : {})}
+          role={turn.role}
           promptEs={turn.promptEs}
           targetEn={turn.targetEn.replace("{alias}", alias)}
           alias={alias}
