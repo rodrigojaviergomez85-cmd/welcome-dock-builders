@@ -1,5 +1,8 @@
 /** Reproducción de los clips ya producidos en /public/audio. Nunca se genera audio en el juego. */
 
+/** Tope de seguridad: ningún clip bloquea más de esto aunque no dispare "ended". */
+export const CLIP_MAX_MS = 10_000;
+
 let current: HTMLAudioElement | null = null;
 let currentResolve: (() => void) | null = null;
 
@@ -28,13 +31,23 @@ function playOne(clipId: string): Promise<void> {
   const audio = new Audio(clipUrl(clipId));
   current = audio;
   return new Promise<void>((resolve) => {
-    currentResolve = resolve;
-    audio.onended = () => {
+    let settled = false;
+    const done = () => {
+      if (settled) return;
+      settled = true;
+      window.clearTimeout(timer);
       if (current === audio) current = null;
+      if (currentResolve === done) currentResolve = null;
       resolve();
     };
-    audio.onerror = () => resolve();
-    audio.play().catch(() => resolve());
+    const timer = window.setTimeout(() => {
+      if (current === audio) audio.pause();
+      done();
+    }, CLIP_MAX_MS);
+    currentResolve = done;
+    audio.onended = done;
+    audio.onerror = done;
+    audio.play().catch(done);
   });
 }
 
