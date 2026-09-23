@@ -35,7 +35,12 @@ export function ShowcaseView({
   const { state } = useProgress();
   const unmountedRef = useRef(false);
   const finishRef = useRef(onFinish);
-  finishRef.current = onFinish;
+  const finishedRef = useRef(false);
+  finishRef.current = () => {
+    if (finishedRef.current) return;
+    finishedRef.current = true;
+    onFinish();
+  };
   const [stage, setStage] = useState<"intro" | "step" | "cheer" | "teaser">("intro");
   const [index, setIndex] = useState(Math.min(startIndex, block.steps.length - 1));
   const vars = missionVars(state.profile, alias, block.time);
