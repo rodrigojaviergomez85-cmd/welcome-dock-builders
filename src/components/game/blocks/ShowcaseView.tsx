@@ -184,9 +184,7 @@ export function ShowcaseView({
           template?.es
             ? {
                 es: fillText(template.es.split("{age}").join(vars.ageEs), vars),
-                esClip: template.esClip
-                  ? [`es-${vars.greetingClip}`, template.esClip]
-                  : undefined,
+                esClip: template.esClip ? [`es-${vars.greetingClip}`, template.esClip] : undefined,
               }
             : undefined
         }

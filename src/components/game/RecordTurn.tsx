@@ -256,7 +256,8 @@ function QuickRecordTurn({
               disabled={state === "starting"}
               onClick={() => void begin()}
               aria-label="Tocá y hablá"
-              data-mic="" className="tap-target flex size-24 items-center justify-center rounded-full bg-accent text-accent-foreground shadow-[var(--shadow-pop)] active:translate-y-1 active:shadow-none disabled:opacity-60"
+              data-mic=""
+              className="tap-target flex size-24 items-center justify-center rounded-full bg-accent text-accent-foreground shadow-[var(--shadow-pop)] active:translate-y-1 active:shadow-none disabled:opacity-60"
             >
               {state === "starting" ? (
                 <Loader2 className="size-10 animate-spin" aria-hidden />
@@ -551,7 +552,8 @@ function GuidedRecordTurn({
           <button
             type="button"
             onClick={() => (micAvailable ? void begin(false) : setState("nomic"))}
-            data-mic="" className="tap-target mt-5 flex w-full items-center justify-center gap-2 rounded-2xl bg-accent px-6 font-display text-lg text-accent-foreground shadow-[var(--shadow-pop)] active:translate-y-1 active:shadow-none"
+            data-mic=""
+            className="tap-target mt-5 flex w-full items-center justify-center gap-2 rounded-2xl bg-accent px-6 font-display text-lg text-accent-foreground shadow-[var(--shadow-pop)] active:translate-y-1 active:shadow-none"
           >
             <Mic className="size-6" aria-hidden /> Repetí esta parte
           </button>
@@ -580,7 +582,8 @@ function GuidedRecordTurn({
         <button
           type="button"
           onClick={() => (micAvailable ? void begin(true) : setState("nomic"))}
-          data-mic="" className="tap-target mx-auto mt-6 flex size-24 items-center justify-center rounded-full bg-accent text-accent-foreground shadow-[var(--shadow-pop)] active:translate-y-1 active:shadow-none"
+          data-mic=""
+          className="tap-target mx-auto mt-6 flex size-24 items-center justify-center rounded-full bg-accent text-accent-foreground shadow-[var(--shadow-pop)] active:translate-y-1 active:shadow-none"
           aria-label="Tocá y hablá"
         >
           <Mic className="size-11" aria-hidden />
@@ -644,7 +647,8 @@ function GuidedRecordTurn({
                 <button
                   type="button"
                   onClick={() => setState(recordingFull ? "complete" : "fragment-echo")}
-                  data-mic="" className="tap-target flex w-full items-center justify-center gap-2 rounded-2xl bg-accent px-6 font-display text-lg text-accent-foreground shadow-[var(--shadow-pop)]"
+                  data-mic=""
+                  className="tap-target flex w-full items-center justify-center gap-2 rounded-2xl bg-accent px-6 font-display text-lg text-accent-foreground shadow-[var(--shadow-pop)]"
                 >
                   <RotateCcw className="size-5" aria-hidden /> Otra vez
                 </button>

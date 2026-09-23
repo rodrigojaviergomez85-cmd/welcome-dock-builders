@@ -113,7 +113,9 @@ export function PipHelp({
     `rounded-2xl p-3 transition ${step === i ? "bg-sun/50 ring-4 ring-sun" : "bg-background/70"}`;
 
   return (
-    <div className={`flex w-full max-w-xl flex-col items-center gap-2 ${step === 1 ? "help-point-mic" : ""}`}>
+    <div
+      className={`flex w-full max-w-xl flex-col items-center gap-2 ${step === 1 ? "help-point-mic" : ""}`}
+    >
       <div className="flex w-full items-center justify-between gap-2">
         <span
           className={`rounded-full px-5 py-2 font-display text-xl shadow-[var(--shadow-soft)] ${
