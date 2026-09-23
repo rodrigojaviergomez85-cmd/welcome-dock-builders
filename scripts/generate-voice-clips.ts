@@ -253,6 +253,10 @@ export const LINES: Line[] = [
   { id: "es-dock-intro", speaker: "es", text: "Mirá el cielo: es la hora de verdad. Saludá según la hora y decí tu nombre. Esta es tu presentación de hoy." },
   { id: "es-i-am-fine-thank-you", speaker: "es", text: "Estoy bien, gracias." },
   { id: "es-hello-how-are-you", speaker: "es", text: "¡Hola! ¿Cómo estás?" },
+  { id: "es-help-ask", speaker: "es", text: "Ahora preguntás vos. Tocá el botón rojo y decí la frase en inglés." },
+  { id: "es-help-answer", speaker: "es", text: "Ahora respondés vos. Tocá el botón rojo y decí la frase en inglés con tu nombre." },
+  { id: "es-help-repeat", speaker: "es", text: "Repetí la frase. Tocá el botón rojo y decila en inglés." },
+  { id: "es-help-offer", speaker: "es", text: "¿Te ayudo? Tocá mi carita." },
 ];
 
 

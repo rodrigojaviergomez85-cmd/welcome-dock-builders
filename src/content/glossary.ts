@@ -131,7 +131,7 @@ export const GLOSSARY: Record<string, Gloss> = {
   },
   "Yay! Welcome to Explorer Island!": { es: "¡Bien! ¡Bienvenido a la Isla de los Exploradores!" },
   "Tomorrow I will tell you where I am from!": { es: "¡Mañana te cuento de dónde soy!" },
-  "{greeting} My name is {alias}.": { es: "{greeting} Me llamo {alias}." },
+  "{greeting} My name is {alias}.": { es: "{greeting} Me llamo {alias}.", esClip: "es-my-name-is" },
 };
 
 /** Clips puente que usa el modo "primero en español". */
