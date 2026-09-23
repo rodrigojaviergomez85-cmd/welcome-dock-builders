@@ -255,6 +255,7 @@ export function SunClockView({
             key={stops[recordAt]!.repeat.id}
             missionId={missionId}
             turnId={stops[recordAt]!.repeat.id}
+            {...(stops[recordAt]!.repeat.mode ? { mode: stops[recordAt]!.repeat.mode } : {})}
             promptEs={stops[recordAt]!.repeat.promptEs}
             targetEn={stops[recordAt]!.repeat.targetEn}
             alias={alias}

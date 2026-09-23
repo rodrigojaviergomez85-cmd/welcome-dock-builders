@@ -83,6 +83,7 @@ export function SpellView({ missionId, block, alias, onHelpUsed, onOral, onFinis
       <RecordTurn
         missionId={missionId}
         turnId={block.record.id}
+        {...(block.record.mode ? { mode: block.record.mode } : {})}
         promptEs={block.record.promptEs}
         targetEn={fillText(block.record.targetEn, vars)}
         alias={alias}

@@ -138,6 +138,7 @@ export function ShowcaseView({
         key={step.id}
         missionId={missionId}
         turnId={step.id}
+        {...(step.mode ? { mode: step.mode } : {})}
         promptEs={step.promptEs}
         targetEn={fillText(step.targetEn, vars)}
         alias={alias}

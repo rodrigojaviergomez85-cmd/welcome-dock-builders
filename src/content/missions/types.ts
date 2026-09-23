@@ -20,6 +20,8 @@ export type RecordTurnSpec = {
   promptEs: string;
   targetEn: string;
   modelClip: string | string[];
+  /** "quick" (por defecto): una pantalla. "guided": embudo con fragmentos. */
+  mode?: "quick" | "guided";
 };
 
 /** Una línea hablada por un personaje. El clip ya está producido: nunca se genera en el juego. */

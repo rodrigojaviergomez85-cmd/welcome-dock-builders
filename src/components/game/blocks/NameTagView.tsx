@@ -94,6 +94,7 @@ export function NameTagView({
           <RecordTurn
             missionId={missionId}
             turnId={block.record.id}
+            {...(block.record.mode ? { mode: block.record.mode } : {})}
             promptEs={block.record.promptEs}
             targetEn={block.record.targetEn.split("{alias}").join(alias)}
             alias={alias}
@@ -126,6 +127,7 @@ export function NameTagView({
           <RecordTurn
             missionId={missionId}
             turnId={block.swap.record.id}
+            {...(block.swap.record.mode ? { mode: block.swap.record.mode } : {})}
             promptEs={block.swap.record.promptEs}
             targetEn={block.swap.record.targetEn}
             alias={alias}

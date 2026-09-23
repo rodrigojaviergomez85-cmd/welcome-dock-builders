@@ -64,6 +64,7 @@ export function MicCheckView({
           <RecordTurn
             missionId={missionId}
             turnId={block.record.id}
+            {...(block.record.mode ? { mode: block.record.mode } : {})}
             promptEs={block.record.promptEs}
             targetEn={block.record.targetEn}
             alias={alias}

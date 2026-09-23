@@ -72,6 +72,7 @@ export function TurnsView({
           key={`${conversationId}-${turn.id}`}
           missionId={missionId}
           turnId={`${conversationId}-${turn.id}`}
+          {...(turn.mode ? { mode: turn.mode } : {})}
           promptEs={turn.promptEs}
           targetEn={turn.targetEn.replace("{alias}", alias)}
           alias={alias}

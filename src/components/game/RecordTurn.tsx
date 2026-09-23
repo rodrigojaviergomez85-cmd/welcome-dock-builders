@@ -1,11 +1,22 @@
 import { useEffect, useRef, useState } from "react";
-import { Mic, Square, RotateCcw, ArrowRight, MicOff, Ear, Loader2 } from "lucide-react";
+import {
+  Mic,
+  Square,
+  RotateCcw,
+  ArrowRight,
+  MicOff,
+  Ear,
+  Loader2,
+  Volume2,
+  Check,
+} from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import { AudioButton } from "./AudioButton";
 import { micSupported, startRecording } from "@/lib/recorder";
 import { startWavRecording, wavRecordingSupported, blobToBase64 } from "@/lib/wav-recorder";
 import { saveRecording } from "@/lib/recordings";
-import { stopClip } from "@/lib/audio";
+import { playClip, stopClip } from "@/lib/audio";
+import { setPhraseHelp } from "@/lib/help-context";
 import { gloss } from "@/content/glossary";
 import { transcribeAttempt } from "@/lib/speech.functions";
 import { matchSpeech, type MatchResult } from "@/lib/speech-match";
@@ -28,6 +39,8 @@ type Props = {
   onHelpUsed?: () => void;
   /** "heard" = el juego lo entendió, "practiced" = habló, "pending" = queda pendiente. */
   onDone: (status: "heard" | "practiced" | "pending") => void;
+  /** "quick" por defecto; "guided" usa el embudo con fragmentos. */
+  mode?: "quick" | "guided" | undefined;
 };
 
 type State =
@@ -47,26 +60,228 @@ function practiceFragments(
   alias: string,
   modelClip: string | string[],
 ): PracticeFragment[] {
-  const fragments: PracticeFragment[] = [];
-  if (/hello/i.test(targetEn)) fragments.push({ en: "Hello!", es: "¡Hola!", clip: "model-hello" });
-  if (/good afternoon/i.test(targetEn)) {
-    fragments.push({ en: "Good afternoon!", es: "¡Buenas tardes!", clip: "model-good-afternoon" });
+  const sentences = (targetEn.match(/[^.!?]+[.!?]*/g) ?? [targetEn])
+    .map((part) => part.trim())
+    .filter(Boolean);
+  const clips = Array.isArray(modelClip) ? modelClip : [modelClip];
+  if (sentences.length <= 1) {
+    return [
+      {
+        en: targetEn,
+        es: gloss(targetEn, alias)?.es?.split("{alias}").join(alias) ?? "",
+        clip: modelClip,
+      },
+    ];
   }
-  if (/my name is/i.test(targetEn)) {
-    fragments.push({
-      en: `My name is ${alias}.`,
-      es: `Me llamo ${alias}.`,
-      clip: "model-my-name-is",
-    });
-  }
-  if (/i am fine/i.test(targetEn))
-    fragments.push({ en: "I am fine.", es: "Estoy bien.", clip: "model-i-am-fine" });
-  return fragments.length > 0
-    ? fragments
-    : [{ en: targetEn, es: gloss(targetEn, alias)?.es ?? targetEn, clip: modelClip }];
+  return sentences.map((en, i) => {
+    const g = gloss(en, alias);
+    const clip = clips.length === sentences.length ? clips[i]! : (g?.slowClip ?? modelClip);
+    return { en, es: g?.es?.split("{alias}").join(alias) ?? "", clip };
+  });
 }
 
-export function RecordTurn({
+const MIC_TIMEOUT_MS = 6000;
+
+function startMicWithTimeout(): Promise<{ stop: () => Promise<Blob> }> {
+  const start = wavRecordingSupported() ? startWavRecording() : startRecording();
+  return Promise.race([
+    start,
+    new Promise<never>((_, reject) =>
+      setTimeout(() => reject(new Error("mic-timeout")), MIC_TIMEOUT_MS),
+    ),
+  ]);
+}
+
+export function RecordTurn(props: Props) {
+  return props.mode === "guided" ? <GuidedRecordTurn {...props} /> : <QuickRecordTurn {...props} />;
+}
+
+function QuickRecordTurn({
+  missionId,
+  turnId,
+  targetEn,
+  alias = "",
+  modelClip,
+  saveAs,
+  meaning,
+  onDone,
+}: Props) {
+  const { state: progress } = useProgress();
+  const [state, setState] = useState<
+    "idle" | "starting" | "recording" | "checking" | "result" | "nomic"
+  >("idle");
+  const [heard, setHeard] = useState(false);
+  const [fails, setFails] = useState(0);
+  const stopperRef = useRef<{ stop: () => Promise<Blob> } | null>(null);
+  const doneRef = useRef(onDone);
+  doneRef.current = onDone;
+  const transcribe = useServerFn(transcribeAttempt);
+  const listenEnabled = progress.listenEnabled !== false;
+  const g = meaning ?? gloss(targetEn, alias);
+
+  useEffect(() => {
+    setPhraseHelp(
+      g?.es ? { en: targetEn, es: g.es.split("{alias}").join(alias), esClip: g.esClip } : null,
+    );
+    return () => setPhraseHelp(null);
+  }, [targetEn, alias, g?.es, g?.esClip]);
+
+  useEffect(() => {
+    if (!micSupported() && !wavRecordingSupported()) setState("nomic");
+    void playClip(modelClip);
+    return () => stopClip();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [turnId]);
+
+  async function begin() {
+    stopClip();
+    setState("starting");
+    try {
+      stopperRef.current = await startMicWithTimeout();
+      setState("recording");
+    } catch {
+      setState("nomic");
+    }
+  }
+
+  function showResult(ok: boolean, failCount: number) {
+    setHeard(ok);
+    setState("result");
+    if (ok) playSuccess();
+    else playTryAgain();
+    setTimeout(() => {
+      if (ok) doneRef.current("heard");
+      else if (failCount >= 2) doneRef.current("practiced");
+      else setState("idle");
+    }, 1200);
+  }
+
+  async function finish() {
+    const stopper = stopperRef.current;
+    if (!stopper) return;
+    stopperRef.current = null;
+    const blob = await stopper.stop();
+    try {
+      const base = { missionId, targetEn, createdAt: new Date().toISOString(), blob };
+      await saveRecording({ ...base, key: `${missionId}:${turnId}:complete`, turnId });
+      if (saveAs) await saveRecording({ ...base, key: saveAs, turnId: saveAs });
+    } catch {
+      /* la práctica sigue contando */
+    }
+    if (!listenEnabled || blob.type !== "audio/wav") {
+      playSuccess();
+      setHeard(true);
+      setState("result");
+      setTimeout(() => doneRef.current("practiced"), 1200);
+      return;
+    }
+    setState("checking");
+    try {
+      const result = await transcribe({ data: { audioBase64: await blobToBase64(blob) } });
+      if (result.ok) {
+        const ok = matchSpeech(result.text, targetEn, alias).kind === "heard";
+        const next = ok ? fails : fails + 1;
+        setFails(next);
+        showResult(ok, next);
+        return;
+      }
+      if (result.reason === "no-se-entendio" || result.reason === "audio-vacio") {
+        const next = fails + 1;
+        setFails(next);
+        showResult(false, next);
+        return;
+      }
+    } catch {
+      /* servicio caído: cuenta como practicado */
+    }
+    playSuccess();
+    setHeard(true);
+    setState("result");
+    setTimeout(() => doneRef.current("practiced"), 1200);
+  }
+
+  return (
+    <div className="w-full max-w-xl rounded-3xl bg-card/95 p-5 text-center text-card-foreground shadow-[var(--shadow-soft)]">
+      <p lang="en" className="font-display text-3xl leading-tight sm:text-4xl">
+        {targetEn}
+      </p>
+      <button
+        type="button"
+        onClick={() => void playClip(modelClip)}
+        className="mt-2 inline-flex items-center gap-1 rounded-full bg-secondary px-3 py-1 text-sm font-semibold text-secondary-foreground"
+      >
+        <Volume2 className="size-4" aria-hidden /> Escuchar otra vez
+      </button>
+
+      <div className="mt-4 flex min-h-32 flex-col items-center justify-center gap-2">
+        {state === "idle" || state === "starting" ? (
+          <>
+            <button
+              type="button"
+              disabled={state === "starting"}
+              onClick={() => void begin()}
+              aria-label="Tocá y hablá"
+              className="tap-target flex size-24 items-center justify-center rounded-full bg-accent text-accent-foreground shadow-[var(--shadow-pop)] active:translate-y-1 active:shadow-none disabled:opacity-60"
+            >
+              {state === "starting" ? (
+                <Loader2 className="size-10 animate-spin" aria-hidden />
+              ) : (
+                <Mic className="size-11" aria-hidden />
+              )}
+            </button>
+            <p className="font-display text-xl text-accent">
+              {fails > 0 ? "Probemos otra vez" : "Tocá y hablá"}
+            </p>
+          </>
+        ) : null}
+        {state === "recording" ? (
+          <button
+            type="button"
+            onClick={() => void finish()}
+            aria-label="Listo, terminé de hablar"
+            className="tap-target flex size-24 animate-mic-pulse items-center justify-center rounded-full bg-destructive text-destructive-foreground shadow-[var(--shadow-pop)]"
+          >
+            <Square className="size-10" aria-hidden />
+          </button>
+        ) : null}
+        {state === "checking" ? (
+          <p className="flex items-center gap-2 font-display text-lg text-muted-foreground">
+            <Loader2 className="size-6 animate-spin" aria-hidden /> Te estoy escuchando…
+          </p>
+        ) : null}
+        {state === "result" ? (
+          <p
+            className={`animate-pop rounded-2xl px-5 py-3 font-display text-2xl ${heard ? "bg-success/15 text-success" : "bg-muted"}`}
+          >
+            <Ear className="mr-2 inline size-6" aria-hidden />
+            {heard ? "¡Te escuché!" : "Probemos otra vez"}
+          </p>
+        ) : null}
+        {state === "nomic" ? (
+          <p className="flex items-center gap-2 font-display text-lg text-muted-foreground">
+            <MicOff className="size-5" aria-hidden /> Decilo en voz alta y tocá “Lo dije”
+          </p>
+        ) : null}
+      </div>
+
+      {state !== "result" && state !== "checking" ? (
+        <button
+          type="button"
+          onClick={() => {
+            stopperRef.current = null;
+            stopClip();
+            onDone("pending");
+          }}
+          className="tap-target mt-2 inline-flex items-center gap-2 rounded-full bg-primary px-6 font-display text-lg text-primary-foreground shadow-[var(--shadow-pop)] active:translate-y-1 active:shadow-none"
+        >
+          <Check className="size-5" aria-hidden /> Lo dije
+        </button>
+      ) : null}
+    </div>
+  );
+}
+
+function GuidedRecordTurn({
   missionId,
   turnId,
   promptEs,
@@ -116,9 +331,7 @@ export function RecordTurn({
     setMatch(null);
     setServiceNote(null);
     try {
-      stopperRef.current = wavRecordingSupported()
-        ? await startWavRecording()
-        : await startRecording();
+      stopperRef.current = await startMicWithTimeout();
       setState("recording");
     } catch {
       setState("nomic");
