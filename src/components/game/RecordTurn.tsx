@@ -532,7 +532,7 @@ function GuidedRecordTurn({
             className="mt-5 w-full justify-center rounded-2xl"
           />
         ) : null}
-        {(
+        {
           <button
             type="button"
             onClick={() => (micAvailable ? void begin(false) : setState("nomic"))}
@@ -540,7 +540,7 @@ function GuidedRecordTurn({
           >
             <Mic className="size-6" aria-hidden /> Repetí esta parte
           </button>
-        )}
+        }
         <p className="mt-4 text-center text-sm text-muted-foreground">
           Parte {fragmentIndex + 1} de {fragments.length}
         </p>
