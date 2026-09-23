@@ -13,6 +13,8 @@ export type StoredRecording = {
   targetEn: string;
   createdAt: string;
   blob: Blob;
+  /** Resultado del intento (para la presentación del día). */
+  status?: "heard" | "practiced" | "pending";
 };
 
 function openDb(): Promise<IDBDatabase> {

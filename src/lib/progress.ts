@@ -19,7 +19,7 @@ export type MissionProgress = {
   stepIndex: number;
   helpsUsed: number;
   comprehension: { correct: number; attempts: number };
-  oral: { recordings: number; understood: number; status: OralStatus };
+  oral: { recordings: number; understood: number; status: OralStatus; said?: number };
   rewards: string[];
   /** Cuántas veces se terminó: repetir cuenta como práctica, no como misión nueva. */
   completions: number;

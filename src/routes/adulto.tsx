@@ -138,7 +138,15 @@ function AdultPanel() {
             {recordings.map((rec) => (
               <li key={rec.key} className="rounded-2xl bg-muted p-3">
                 {rec.key === "presentation-day1" ? (
-                  <p className="mb-1 font-display text-lg text-primary">Presentación del día 1</p>
+                  <p className="mb-1 font-display text-lg text-primary">
+                    Presentación del día 1 · {new Date(rec.createdAt).toLocaleDateString("es-AR")}{" "}
+                    ·{" "}
+                    {rec.status === "heard"
+                      ? "te escuché"
+                      : rec.status === "pending"
+                        ? "sin micrófono"
+                        : "practicó"}
+                  </p>
                 ) : null}
                 <p lang="en" className="font-display">
                   {rec.targetEn}
@@ -146,6 +154,7 @@ function AdultPanel() {
                 <p className="text-xs text-muted-foreground">
                   {new Date(rec.createdAt).toLocaleString("es-AR")} · marcada como practicada
                 </p>
+                {rec.blob.size > 0 ? (
                 <audio
                   controls
                   aria-label={
@@ -156,6 +165,7 @@ function AdultPanel() {
                   src={URL.createObjectURL(rec.blob)}
                   className="mt-2 w-full"
                 />
+                ) : null}
               </li>
             ))}
           </ul>

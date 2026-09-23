@@ -133,6 +133,20 @@ function QuickRecordTurn({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [turnId]);
 
+  const lastBlobRef = useRef<Blob | null>(null);
+  function markSaved(status: "heard" | "practiced" | "pending") {
+    if (!saveAs) return;
+    void saveRecording({
+      key: saveAs,
+      missionId,
+      turnId: saveAs,
+      targetEn,
+      createdAt: new Date().toISOString(),
+      blob: lastBlobRef.current ?? new Blob([], { type: "audio/wav" }),
+      status,
+    }).catch(() => undefined);
+  }
+
   async function begin() {
     stopClip();
     setState("starting");
@@ -150,8 +164,13 @@ function QuickRecordTurn({
     if (ok) playSuccess();
     else playTryAgain();
     setTimeout(() => {
-      if (ok) doneRef.current("heard");
-      else if (failCount >= 2) doneRef.current("practiced");
+      if (ok) {
+        markSaved("heard");
+        doneRef.current("heard");
+      } else if (failCount >= 2) {
+        markSaved("practiced");
+        doneRef.current("practiced");
+      }
       else setState("idle");
     }, 1200);
   }
@@ -161,10 +180,12 @@ function QuickRecordTurn({
     if (!stopper) return;
     stopperRef.current = null;
     const blob = await stopper.stop();
+    lastBlobRef.current = blob;
     try {
       const base = { missionId, targetEn, createdAt: new Date().toISOString(), blob };
       await saveRecording({ ...base, key: `${missionId}:${turnId}:complete`, turnId });
-      if (saveAs) await saveRecording({ ...base, key: saveAs, turnId: saveAs });
+      if (saveAs)
+        await saveRecording({ ...base, key: saveAs, turnId: saveAs, status: "practiced" });
     } catch {
       /* la práctica sigue contando */
     }
@@ -270,6 +291,7 @@ function QuickRecordTurn({
           onClick={() => {
             stopperRef.current = null;
             stopClip();
+            if (!lastBlobRef.current) markSaved("pending");
             onDone("pending");
           }}
           className="tap-target mt-2 inline-flex items-center gap-2 rounded-full bg-primary px-6 font-display text-lg text-primary-foreground shadow-[var(--shadow-pop)] active:translate-y-1 active:shadow-none"
