@@ -136,13 +136,6 @@ export function NameTagView({
             onHelpUsed={onHelpUsed}
             onDone={answer}
           />
-          <button
-            type="button"
-            onClick={() => answer("pending")}
-            className="tap-target w-full max-w-xl rounded-2xl bg-card/95 px-6 font-display text-xl text-card-foreground shadow-[var(--shadow-pop)]"
-          >
-            Lo dije
-          </button>
         </>
       ) : null}
 

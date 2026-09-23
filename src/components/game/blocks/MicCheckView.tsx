@@ -73,13 +73,6 @@ export function MicCheckView({
             onHelpUsed={onHelpUsed}
             onDone={wake}
           />
-          <button
-            type="button"
-            onClick={() => wake("pending")}
-            className="tap-target w-full max-w-xl rounded-2xl bg-card/95 px-6 font-display text-xl text-card-foreground shadow-[var(--shadow-pop)] active:translate-y-1 active:shadow-none"
-          >
-            Lo dije
-          </button>
         </>
       ) : (
         <p className="animate-pop rounded-full bg-success px-6 py-3 font-display text-xl text-success-foreground shadow-[var(--shadow-soft)]">

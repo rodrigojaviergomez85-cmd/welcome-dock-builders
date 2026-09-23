@@ -306,13 +306,6 @@ export function SunClockView({
             onHelpUsed={onHelpUsed}
             onDone={(status) => winSun(recordAt, status)}
           />
-          <button
-            type="button"
-            onClick={() => winSun(recordAt, "pending")}
-            className="tap-target rounded-full bg-card/90 px-5 font-display text-base text-card-foreground shadow-[var(--shadow-soft)]"
-          >
-            Lo dije
-          </button>
         </div>
       ) : null}
     </div>
