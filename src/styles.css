@@ -326,3 +326,15 @@
     display: none;
   }
 }
+
+@keyframes help-point {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(-6px, -6px); }
+}
+@utility animate-help-point {
+  animation: help-point 0.7s ease-in-out infinite;
+}
+.help-point-mic [data-mic] {
+  outline: 4px solid var(--sun);
+  outline-offset: 4px;
+}
