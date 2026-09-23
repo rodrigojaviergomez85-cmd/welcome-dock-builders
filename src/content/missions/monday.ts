@@ -215,6 +215,7 @@ export const mondayMission: Mission = {
       ],
       record: {
         id: "t1",
+        mode: "guided",
         promptEs: "Decí tu nombre.",
         targetEn: "My name is {alias}.",
         modelClip: "model-my-name-is",
@@ -266,6 +267,7 @@ export const mondayMission: Mission = {
             {
               type: "record",
               id: "t3",
+        mode: "guided",
               promptEs: "Decí que estás bien.",
               targetEn: "I am fine, thank you.",
               modelClip: "model-i-am-fine-thank-you",
