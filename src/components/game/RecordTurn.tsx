@@ -462,7 +462,22 @@ function GuidedRecordTurn({
           </span>
         </div>
       ))}
+      {state !== "result" && state !== "checking" ? saidIt : null}
     </div>
+  );
+
+  const saidIt = (
+    <button
+      type="button"
+      onClick={() => {
+        stopperRef.current = null;
+        stopClip();
+        onDone("pending");
+      }}
+      className="tap-target mx-auto mt-4 flex items-center justify-center gap-2 rounded-full bg-primary px-6 font-display text-lg text-primary-foreground shadow-[var(--shadow-pop)] active:translate-y-1 active:shadow-none"
+    >
+      <Check className="size-5" aria-hidden /> Lo dije
+    </button>
   );
 
   if (state === "intent") {
@@ -492,6 +507,7 @@ function GuidedRecordTurn({
             Ya entendí <ArrowRight className="size-5" aria-hidden />
           </button>
         ) : null}
+        {state !== "result" && state !== "checking" ? saidIt : null}
       </div>
     );
   }
@@ -529,6 +545,7 @@ function GuidedRecordTurn({
         <p className="mt-4 text-center text-sm text-muted-foreground">
           Parte {fragmentIndex + 1} de {fragments.length}
         </p>
+        {state !== "result" && state !== "checking" ? saidIt : null}
       </div>
     );
   }
@@ -555,6 +572,7 @@ function GuidedRecordTurn({
           <Mic className="size-11" aria-hidden />
         </button>
         <p className="mt-3 font-display text-xl text-accent">Tocá y hablá</p>
+        {state !== "result" && state !== "checking" ? saidIt : null}
       </div>
     );
   }
@@ -671,6 +689,7 @@ function GuidedRecordTurn({
             "Guardado como practicado. El juego no escuchó este intento porque la escucha está apagada en el panel de adultos."}
         </p>
       ) : null}
+      {state !== "result" && state !== "checking" ? saidIt : null}
     </div>
   );
 }
