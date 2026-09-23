@@ -209,19 +209,41 @@
 }
 
 @keyframes mic-pulse {
-  0%, 100% { transform: scale(1); box-shadow: var(--shadow-pop); }
-  50% { transform: scale(1.05); box-shadow: 0 0 0 10px color-mix(in oklab, var(--accent) 22%, transparent); }
+  0%,
+  100% {
+    transform: scale(1);
+    box-shadow: var(--shadow-pop);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 10px color-mix(in oklab, var(--accent) 22%, transparent);
+  }
 }
 
 @keyframes pip-confetti-fall {
-  0% { transform: translateY(-10vh) rotate(0); opacity: 1; }
-  100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+  0% {
+    transform: translateY(-10vh) rotate(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(110vh) rotate(720deg);
+    opacity: 0;
+  }
 }
 
 @keyframes tag-print {
-  0% { transform: translateY(-2.5rem); opacity: 0; }
-  65% { transform: translateY(0.35rem); opacity: 1; }
-  100% { transform: translateY(0); opacity: 1; }
+  0% {
+    transform: translateY(-2.5rem);
+    opacity: 0;
+  }
+  65% {
+    transform: translateY(0.35rem);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 @utility animate-tag-print {
@@ -238,15 +260,38 @@
   animation: pip-confetti-fall 1.6s ease-in both;
 }
 
-.pip-confetti:nth-child(1n) { --pip-confetti-position: 1; animation-delay: 0s; }
-.pip-confetti:nth-child(2n) { --pip-confetti-position: 3; animation-delay: 0.12s; }
-.pip-confetti:nth-child(3n) { --pip-confetti-position: 7; animation-delay: 0.05s; }
-.pip-confetti:nth-child(4n) { --pip-confetti-position: 11; animation-delay: 0.2s; }
-.pip-confetti:nth-child(5n) { --pip-confetti-position: 15; animation-delay: 0.08s; }
-.pip-confetti-1 { background: var(--color-primary); }
-.pip-confetti-2 { background: var(--color-accent); }
-.pip-confetti-3 { background: var(--color-sun); }
-.pip-confetti-4 { background: var(--color-success); }
+.pip-confetti:nth-child(1n) {
+  --pip-confetti-position: 1;
+  animation-delay: 0s;
+}
+.pip-confetti:nth-child(2n) {
+  --pip-confetti-position: 3;
+  animation-delay: 0.12s;
+}
+.pip-confetti:nth-child(3n) {
+  --pip-confetti-position: 7;
+  animation-delay: 0.05s;
+}
+.pip-confetti:nth-child(4n) {
+  --pip-confetti-position: 11;
+  animation-delay: 0.2s;
+}
+.pip-confetti:nth-child(5n) {
+  --pip-confetti-position: 15;
+  animation-delay: 0.08s;
+}
+.pip-confetti-1 {
+  background: var(--color-primary);
+}
+.pip-confetti-2 {
+  background: var(--color-accent);
+}
+.pip-confetti-3 {
+  background: var(--color-sun);
+}
+.pip-confetti-4 {
+  background: var(--color-success);
+}
 
 @utility animate-pop {
   animation: island-pop 0.35s ease-out both;

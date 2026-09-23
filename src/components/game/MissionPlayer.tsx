@@ -138,6 +138,7 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
             ...p,
             oral: {
               ...p.oral,
+              said: (p.oral.said ?? 0) + 1,
               status: p.oral.status === "none" ? "pending-no-mic" : p.oral.status,
             },
           };
@@ -145,6 +146,7 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
         return {
           ...p,
           oral: {
+            said: (p.oral.said ?? 0) + 1,
             recordings: p.oral.recordings + 1,
             understood: p.oral.understood + (status === "heard" ? 1 : 0),
             status: status === "heard" || p.oral.status === "heard" ? "heard" : "practiced",
