@@ -102,8 +102,8 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
   }
 
   function onOral(status: "heard" | "practiced" | "pending") {
-    setPipMood(status === "pending" ? "happy" : "eat");
-    if (status !== "pending") {
+    setPipMood("eat");
+    {
       playMunch();
       window.setTimeout(() => setPipMood("happy"), 800);
 
@@ -383,6 +383,8 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
           alias={alias}
           onHelpUsed={onHelpUsed}
           onOral={onOral}
+          startIndex={stepIndex}
+          onStepChange={goToStep}
           onTimeChange={setSunTime}
           onGoldChange={setSunGold}
           onFinish={() => {

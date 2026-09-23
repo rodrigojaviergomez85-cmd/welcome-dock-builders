@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { ArrowRight } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { playClip, isPlaying } from "@/lib/audio";
 import { CharacterFigure } from "../CharacterFigure";
 import { SpeechBubble } from "../SpeechBubble";
 import { BilingualLine } from "../BilingualLine";
@@ -36,6 +36,25 @@ export function TurnsView({
   const [index, setIndex] = useState(0);
   const turn = turns[index]!;
 
+  const advanceRef = useRef<() => void>(() => {});
+
+  // Cuando habla un personaje, el turno avanza solo al terminar el clip
+  // (si el niño tocó "Escuchar otra vez", espera a que termine esa repetición).
+  useEffect(() => {
+    if (turn.type !== "character") return;
+    let active = true;
+    void (async () => {
+      await playClip(turn.clip);
+      await new Promise((r) => setTimeout(r, 400));
+      while (active && isPlaying()) await new Promise((r) => setTimeout(r, 250));
+      if (active) advanceRef.current();
+    })();
+    return () => {
+      active = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [index]);
+
   function advance() {
     if (index + 1 >= turns.length) onFinish();
     else setIndex(index + 1);
@@ -51,7 +70,6 @@ export function TurnsView({
               en={turn.en}
               alias={alias}
               clip={turn.clip}
-              autoPlayKey={`${conversationId}-${index}`}
             />
           ) : (
             <SpeechBubble en="¡Ahora practicamos!" />
@@ -60,13 +78,7 @@ export function TurnsView({
       </div>
 
       {turn.type === "character" ? (
-        <button
-          type="button"
-          onClick={advance}
-          className="tap-target inline-flex items-center gap-2 rounded-full bg-primary px-6 font-display text-lg text-primary-foreground shadow-[var(--shadow-pop)] active:translate-y-1 active:shadow-none"
-        >
-          Seguir <ArrowRight className="size-5" aria-hidden />
-        </button>
+        <span className="sr-only">Escuchá; sigue solo.</span>
       ) : (
         <RecordTurn
           key={`${conversationId}-${turn.id}`}
