@@ -162,7 +162,6 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
   }
 
   function nextBlock() {
-    console.log("NEXTBLOCK", blockIndex);
     stopClip();
     if (blockIndex + 1 >= mission.blocks.length) {
       completeMission();
