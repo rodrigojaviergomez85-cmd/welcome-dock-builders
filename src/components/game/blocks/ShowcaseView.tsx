@@ -69,12 +69,12 @@ export function ShowcaseView({
     })();
   }, [block.cheer.clip, block.teaser, stage]);
 
-  useEffect(
-    () => () => {
+  useEffect(() => {
+    unmountedRef.current = false;
+    return () => {
       unmountedRef.current = true;
-    },
-    [],
-  );
+    };
+  }, []);
 
   const audience = (
     <div className="flex items-end justify-center gap-1">
