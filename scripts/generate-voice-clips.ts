@@ -436,12 +436,12 @@ export const LINES: Line[] = [
   },
   { id: "es-ask-repeat", speaker: "es", text: "Ahora repetilo vos." },
   {
-    id: "es-ask-luna-how-full",
+    id: "es-ask-luna-how-full-v2",
     speaker: "es",
     text: "Luna está esperando, saludala y preguntale cómo está diciendo: Hello! How are you? Ahora repetilo vos.",
   },
   {
-    id: "es-ask-luna-name-full",
+    id: "es-ask-luna-name-full-v2",
     speaker: "es",
     text: "Ahora preguntale el nombre a Luna diciendo: What is your name? Ahora repetilo vos.",
   },
