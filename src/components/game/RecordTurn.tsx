@@ -802,7 +802,13 @@ function AskRecordTurn({
   useEffect(() => {
     if (!micSupported() && !wavRecordingSupported()) setState("nomic");
     setLastTake({ clip: modelClip });
-    void playAskSequence();
+    {
+      const model = Array.isArray(modelClip) ? modelClip : [modelClip];
+      void queueClip(
+        askSequenceClip ??
+          (promptClip ? [promptClip, ...model, "es-ask-repeat"] : [...model, "es-ask-repeat"]),
+      );
+    }
     return () => {
       stopClip();
     };
