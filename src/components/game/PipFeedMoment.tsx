@@ -78,7 +78,10 @@ export function PipFeedMoment({
       {phase === "evolve" ? <div className="pip-evolution-flash" aria-hidden /> : null}
       {phase === "evolve"
         ? CONFETTI.map((_, index) => (
-            <i key={index} className={`pip-moment-confetti pip-moment-confetti-${(index % 4) + 1}`} />
+            <i
+              key={index}
+              className={`pip-moment-confetti pip-moment-confetti-${(index % 4) + 1}`}
+            />
           ))
         : null}
 
@@ -110,7 +113,10 @@ export function PipFeedMoment({
       </div>
 
       {phase === "cookie" ? (
-        <div lang="en" className="pip-phrase-cookie max-w-[80vw] rounded-full bg-sun px-6 py-4 font-display text-2xl text-sun-foreground shadow-[var(--shadow-pop)]">
+        <div
+          lang="en"
+          className="pip-phrase-cookie max-w-[80vw] rounded-full bg-sun px-6 py-4 font-display text-2xl text-sun-foreground shadow-[var(--shadow-pop)]"
+        >
           {phrase}
         </div>
       ) : null}
@@ -122,9 +128,14 @@ export function PipFeedMoment({
           </p>
           {phase === "evolve" ? <p className="mt-1 text-lg">{rewardLabel}</p> : null}
           <div className="mx-auto mt-3 h-3 w-48 overflow-hidden rounded-full bg-muted">
-            <div className="h-full animate-pip-meter rounded-full bg-success" style={{ width: `${fill}%` }} />
+            <div
+              className="h-full animate-pip-meter rounded-full bg-success"
+              style={{ width: `${fill}%` }}
+            />
           </div>
-          <p className="mt-1 font-display text-lg">{after.feeds} / {feedsToEvolve}</p>
+          <p className="mt-1 font-display text-lg">
+            {after.feeds} / {feedsToEvolve}
+          </p>
           {phase === "evolve" ? (
             <button
               type="button"

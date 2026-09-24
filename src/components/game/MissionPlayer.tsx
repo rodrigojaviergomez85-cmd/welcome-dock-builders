@@ -277,190 +277,190 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
 
   return (
     <>
-    <SceneShell
-      background={BACKGROUNDS[time]}
-      title={mission.title}
-      helpEs={block.helpEs}
-      onHelpUsed={onHelpUsed}
-      counter={counter}
-      pip={{
-        mood: block.kind === "micCheck" ? "sleepy" : pipMood,
-        color: state.pip.color ?? DEFAULT_PIP_COLOR,
-        feeds: state.pip.feeds,
-        total: mission.pip?.feedsToEvolve ?? 0,
-        totalFeeds: state.pip.totalFeeds,
-        stage: state.pip.stage,
-        accessories: state.pip.accessories,
-        bounceKey: pipBounceKey,
-      }}
-    >
-      {showingIntro ? (
-        <BlockIntro blockId={block.id} onStart={() => setIntroFor(block.id)} />
-      ) : null}
+      <SceneShell
+        background={BACKGROUNDS[time]}
+        title={mission.title}
+        helpEs={block.helpEs}
+        onHelpUsed={onHelpUsed}
+        counter={counter}
+        pip={{
+          mood: block.kind === "micCheck" ? "sleepy" : pipMood,
+          color: state.pip.color ?? DEFAULT_PIP_COLOR,
+          feeds: state.pip.feeds,
+          total: mission.pip?.feedsToEvolve ?? 0,
+          totalFeeds: state.pip.totalFeeds,
+          stage: state.pip.stage,
+          accessories: state.pip.accessories,
+          bounceKey: pipBounceKey,
+        }}
+      >
+        {showingIntro ? (
+          <BlockIntro blockId={block.id} onStart={() => setIntroFor(block.id)} />
+        ) : null}
 
-      {!showingIntro && block.kind === "story" ? (
-        <StoryView
-          block={block}
-          alias={alias}
-          onComprehension={onComprehension}
-          onFinish={nextBlock}
+        {!showingIntro && block.kind === "story" ? (
+          <StoryView
+            block={block}
+            alias={alias}
+            onComprehension={onComprehension}
+            onFinish={nextBlock}
+          />
+        ) : null}
+
+        {!showingIntro && block.kind === "listenPick" ? (
+          <ListenPickView
+            block={block}
+            startIndex={stepIndex}
+            onComprehension={onComprehension}
+            onRoundChange={goToStep}
+            onFinish={nextBlock}
+          />
+        ) : null}
+
+        {!showingIntro && block.kind === "bagMatch" ? (
+          <BagMatchView
+            block={block}
+            alias={alias}
+            avatarImage={avatarImage}
+            startIndex={stepIndex}
+            onComprehension={onComprehension}
+            onItemChange={goToStep}
+            onFinish={nextBlock}
+          />
+        ) : null}
+
+        {!showingIntro && block.kind === "dialogue" ? (
+          <DialogueView
+            missionId={mission.id}
+            block={block}
+            alias={alias}
+            startIndex={stepIndex}
+            onHelpUsed={onHelpUsed}
+            onOral={onOral}
+            onConversationChange={goToStep}
+            onFinish={nextBlock}
+          />
+        ) : null}
+
+        {!showingIntro && block.kind === "tapPick" ? (
+          <TapPickView
+            block={block}
+            startIndex={stepIndex}
+            onComprehension={onComprehension}
+            onRoundChange={goToStep}
+            onSkyChange={setSkyTime}
+            onFinish={nextBlock}
+          />
+        ) : null}
+
+        {!showingIntro && block.kind === "pickProfile" ? (
+          <PickProfileView
+            missionId={mission.id}
+            block={block}
+            alias={alias}
+            onHelpUsed={onHelpUsed}
+            onOral={onOral}
+            onFinish={nextBlock}
+          />
+        ) : null}
+
+        {!showingIntro && block.kind === "spell" ? (
+          <SpellView
+            missionId={mission.id}
+            block={block}
+            alias={alias}
+            onHelpUsed={onHelpUsed}
+            onOral={onOral}
+            onFinish={nextBlock}
+          />
+        ) : null}
+
+        {!showingIntro && block.kind === "showcase" ? (
+          <ShowcaseView
+            missionId={mission.id}
+            block={block}
+            alias={alias}
+            startIndex={stepIndex}
+            onHelpUsed={onHelpUsed}
+            onOral={onOral}
+            onStepChange={goToStep}
+            onFinish={nextBlock}
+          />
+        ) : null}
+
+        {!showingIntro && block.kind === "micCheck" ? (
+          <MicCheckView
+            missionId={mission.id}
+            block={block}
+            alias={alias}
+            pipColor={state.pip.color}
+            pipAccessories={state.pip.accessories}
+            onHelpUsed={onHelpUsed}
+            onOral={onOral}
+            onFinish={nextBlock}
+          />
+        ) : null}
+
+        {!showingIntro && block.kind === "sunClock" ? (
+          <SunClockView
+            missionId={mission.id}
+            block={block}
+            alias={alias}
+            onHelpUsed={onHelpUsed}
+            onOral={onOral}
+            startIndex={stepIndex}
+            onStepChange={goToStep}
+            onTimeChange={setSunTime}
+            onGoldChange={setSunGold}
+            onFinish={() => {
+              setSunTime(null);
+              setSunGold(0);
+              nextBlock();
+            }}
+          />
+        ) : null}
+
+        {!showingIntro && block.kind === "nameTag" ? (
+          <NameTagView
+            missionId={mission.id}
+            block={block}
+            alias={alias}
+            onHelpUsed={onHelpUsed}
+            onOral={onOral}
+            onReward={() =>
+              update((prev) =>
+                updateMission(prev, mission.id, (missionProgress) =>
+                  addReward(missionProgress, mission.reward.id),
+                ),
+              )
+            }
+            onFinish={nextBlock}
+          />
+        ) : null}
+
+        {!showingIntro && block.kind === "finale" ? (
+          <FinaleView
+            missionId={mission.id}
+            block={block}
+            alias={alias}
+            avatarImage={avatarImage}
+            onHelpUsed={onHelpUsed}
+            onOral={onOral}
+            onFinish={nextBlock}
+          />
+        ) : null}
+      </SceneShell>
+      {feedMoment ? (
+        <PipFeedMoment
+          phrase={feedMoment.phrase}
+          before={feedMoment.before}
+          after={feedMoment.after}
+          feedsToEvolve={mission.pip?.feedsToEvolve ?? 0}
+          evolved={feedMoment.evolved}
+          rewardLabel={mission.pip?.rewardLabel ?? mission.reward.label}
+          onClose={closeFeedMoment}
         />
       ) : null}
-
-      {!showingIntro && block.kind === "listenPick" ? (
-        <ListenPickView
-          block={block}
-          startIndex={stepIndex}
-          onComprehension={onComprehension}
-          onRoundChange={goToStep}
-          onFinish={nextBlock}
-        />
-      ) : null}
-
-      {!showingIntro && block.kind === "bagMatch" ? (
-        <BagMatchView
-          block={block}
-          alias={alias}
-          avatarImage={avatarImage}
-          startIndex={stepIndex}
-          onComprehension={onComprehension}
-          onItemChange={goToStep}
-          onFinish={nextBlock}
-        />
-      ) : null}
-
-      {!showingIntro && block.kind === "dialogue" ? (
-        <DialogueView
-          missionId={mission.id}
-          block={block}
-          alias={alias}
-          startIndex={stepIndex}
-          onHelpUsed={onHelpUsed}
-          onOral={onOral}
-          onConversationChange={goToStep}
-          onFinish={nextBlock}
-        />
-      ) : null}
-
-      {!showingIntro && block.kind === "tapPick" ? (
-        <TapPickView
-          block={block}
-          startIndex={stepIndex}
-          onComprehension={onComprehension}
-          onRoundChange={goToStep}
-          onSkyChange={setSkyTime}
-          onFinish={nextBlock}
-        />
-      ) : null}
-
-      {!showingIntro && block.kind === "pickProfile" ? (
-        <PickProfileView
-          missionId={mission.id}
-          block={block}
-          alias={alias}
-          onHelpUsed={onHelpUsed}
-          onOral={onOral}
-          onFinish={nextBlock}
-        />
-      ) : null}
-
-      {!showingIntro && block.kind === "spell" ? (
-        <SpellView
-          missionId={mission.id}
-          block={block}
-          alias={alias}
-          onHelpUsed={onHelpUsed}
-          onOral={onOral}
-          onFinish={nextBlock}
-        />
-      ) : null}
-
-      {!showingIntro && block.kind === "showcase" ? (
-        <ShowcaseView
-          missionId={mission.id}
-          block={block}
-          alias={alias}
-          startIndex={stepIndex}
-          onHelpUsed={onHelpUsed}
-          onOral={onOral}
-          onStepChange={goToStep}
-          onFinish={nextBlock}
-        />
-      ) : null}
-
-      {!showingIntro && block.kind === "micCheck" ? (
-        <MicCheckView
-          missionId={mission.id}
-          block={block}
-          alias={alias}
-          pipColor={state.pip.color}
-          pipAccessories={state.pip.accessories}
-          onHelpUsed={onHelpUsed}
-          onOral={onOral}
-          onFinish={nextBlock}
-        />
-      ) : null}
-
-      {!showingIntro && block.kind === "sunClock" ? (
-        <SunClockView
-          missionId={mission.id}
-          block={block}
-          alias={alias}
-          onHelpUsed={onHelpUsed}
-          onOral={onOral}
-          startIndex={stepIndex}
-          onStepChange={goToStep}
-          onTimeChange={setSunTime}
-          onGoldChange={setSunGold}
-          onFinish={() => {
-            setSunTime(null);
-            setSunGold(0);
-            nextBlock();
-          }}
-        />
-      ) : null}
-
-      {!showingIntro && block.kind === "nameTag" ? (
-        <NameTagView
-          missionId={mission.id}
-          block={block}
-          alias={alias}
-          onHelpUsed={onHelpUsed}
-          onOral={onOral}
-          onReward={() =>
-            update((prev) =>
-              updateMission(prev, mission.id, (missionProgress) =>
-                addReward(missionProgress, mission.reward.id),
-              ),
-            )
-          }
-          onFinish={nextBlock}
-        />
-      ) : null}
-
-      {!showingIntro && block.kind === "finale" ? (
-        <FinaleView
-          missionId={mission.id}
-          block={block}
-          alias={alias}
-          avatarImage={avatarImage}
-          onHelpUsed={onHelpUsed}
-          onOral={onOral}
-          onFinish={nextBlock}
-        />
-      ) : null}
-    </SceneShell>
-    {feedMoment ? (
-      <PipFeedMoment
-        phrase={feedMoment.phrase}
-        before={feedMoment.before}
-        after={feedMoment.after}
-        feedsToEvolve={mission.pip?.feedsToEvolve ?? 0}
-        evolved={feedMoment.evolved}
-        rewardLabel={mission.pip?.rewardLabel ?? mission.reward.label}
-        onClose={closeFeedMoment}
-      />
-    ) : null}
     </>
   );
 }

@@ -94,21 +94,41 @@ export function SceneShell({
                     className="shrink-0"
                   />
                 </button>
-                <div className="flex flex-col items-center" aria-label={`${pip.feeds} de ${pip.total}`}>
+                <div
+                  className="flex flex-col items-center"
+                  aria-label={`${pip.feeds} de ${pip.total}`}
+                >
                   <div className="relative size-9">
-                    <Pip mood="happy" color="var(--color-muted-foreground)" className="absolute inset-0 size-9 opacity-25" />
-                    <div className="absolute inset-0 overflow-hidden" style={{ clipPath: `inset(${100 - feedFill}% 0 0 0)` }}>
+                    <Pip
+                      mood="happy"
+                      color="var(--color-muted-foreground)"
+                      className="absolute inset-0 size-9 opacity-25"
+                    />
+                    <div
+                      className="absolute inset-0 overflow-hidden"
+                      style={{ clipPath: `inset(${100 - feedFill}% 0 0 0)` }}
+                    >
                       <Pip mood="happy" color={pip.color} className="size-9" />
                     </div>
                   </div>
-                  <span className="font-display text-xs text-card-foreground">{pip.feeds} / {pip.total}</span>
+                  <span className="font-display text-xs text-card-foreground">
+                    {pip.feeds} / {pip.total}
+                  </span>
                 </div>
                 {pipCard ? (
                   <div className="absolute left-0 top-full z-40 mt-2 w-64 animate-pop rounded-2xl bg-card p-4 text-center text-card-foreground shadow-[var(--shadow-soft)]">
-                    <Pip mood="happy" color={pip.color} accessories={pip.accessories} size={Math.min(150, pipLogicalSize)} className="mx-auto" />
+                    <Pip
+                      mood="happy"
+                      color={pip.color}
+                      accessories={pip.accessories}
+                      size={Math.min(150, pipLogicalSize)}
+                      className="mx-auto"
+                    />
                     <p className="font-display text-lg">Pip ha comido {pip.totalFeeds} frases</p>
                     <p className="text-sm text-muted-foreground">
-                      {pip.feeds >= pip.total ? "¡Hoy ya creció!" : `Le faltan ${Math.max(0, pip.total - pip.feeds)} para crecer`}
+                      {pip.feeds >= pip.total
+                        ? "¡Hoy ya creció!"
+                        : `Le faltan ${Math.max(0, pip.total - pip.feeds)} para crecer`}
                     </p>
                   </div>
                 ) : null}
