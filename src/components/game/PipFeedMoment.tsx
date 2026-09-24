@@ -68,7 +68,7 @@ export function PipFeedMoment({
   }, [evolved, onClose]);
 
   const shownPip = phase === "evolve" ? after : before;
-  const logicalSize = pipSizeFor(shownPip);
+  const logicalSize = Math.round(pipSizeFor(shownPip) * 1.08);
   const stageChanged = after.stage > before.stage;
 
   return (
