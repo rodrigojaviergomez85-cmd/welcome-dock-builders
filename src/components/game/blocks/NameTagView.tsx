@@ -51,7 +51,6 @@ export function NameTagView({
     setStep("printed");
     void playClip(block.printed.clip);
     window.setTimeout(() => {
-      void playClip("es-tag-swap");
       setStep("swap");
     }, 1900);
   }
@@ -133,6 +132,8 @@ export function NameTagView({
             targetEn={block.swap.record.targetEn}
             alias={alias}
             modelClip={block.swap.record.modelClip}
+            promptClip={block.swap.record.promptClip}
+            confusedWith={block.swap.record.confusedWith}
             support="reduced"
             onHelpUsed={onHelpUsed}
             onDone={answer}

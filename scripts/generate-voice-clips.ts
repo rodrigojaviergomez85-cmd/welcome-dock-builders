@@ -401,7 +401,7 @@ export const LINES: Line[] = [
   {
     id: "es-help-ask",
     speaker: "es",
-    text: "Ahora preguntás vos. Tocá el botón rojo y decí la frase en inglés.",
+    text: "Ahora te toca preguntar a vos. Escuchá la frase y decila en inglés.",
   },
   {
     id: "es-help-answer",
@@ -414,6 +414,19 @@ export const LINES: Line[] = [
     text: "Repetí la frase. Tocá el botón rojo y decila en inglés.",
   },
   { id: "es-help-offer", speaker: "es", text: "¿Te ayudo? Tocá mi carita." },
+  { id: "es-ask-mia-name", speaker: "es", text: "¡Mirá, llegó Mia! Preguntale cómo se llama." },
+  {
+    id: "es-ask-luna-how",
+    speaker: "es",
+    text: "Luna está esperando. Saludala y preguntale cómo está.",
+  },
+  { id: "es-ask-luna-name", speaker: "es", text: "Ahora preguntale el nombre a Luna." },
+  { id: "es-ask-hint", speaker: "es", text: "Escuchá y decilo vos." },
+  {
+    id: "es-ask-confused",
+    speaker: "es",
+    text: "¡Esa es la respuesta! Ahora te toca preguntar a vos. Escuchá.",
+  },
 ];
 
 async function exists(path: string) {

@@ -24,6 +24,10 @@ export type RecordTurnSpec = {
   mode?: "quick" | "guided";
   /** Qué hace el niño: preguntar, responder o repetir. Se muestra como etiqueta grande. */
   role?: "ask" | "answer" | "repeat";
+  /** Clip en español con el motivo; en role "ask" suena al entrar en lugar del modelo. */
+  promptClip?: string;
+  /** La RESPUESTA que el niño podría decir por error (para detectar y corregir la confusión). */
+  confusedWith?: string;
 };
 
 /** Una línea hablada por un personaje. El clip ya está producido: nunca se genera en el juego. */

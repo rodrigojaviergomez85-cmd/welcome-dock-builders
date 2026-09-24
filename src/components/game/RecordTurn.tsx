@@ -13,6 +13,7 @@ import {
 import { useServerFn } from "@tanstack/react-start";
 import { AudioButton } from "./AudioButton";
 import { PipHelp, type RecordRole } from "./PipHelp";
+import { Pip } from "./Pip";
 import { micSupported, startRecording } from "@/lib/recorder";
 import { startWavRecording, wavRecordingSupported, blobToBase64 } from "@/lib/wav-recorder";
 import { saveRecording } from "@/lib/recordings";
@@ -42,6 +43,10 @@ type Props = {
   onDone: (status: "heard" | "practiced" | "pending") => void;
   /** "quick" por defecto; "guided" usa el embudo con fragmentos. */
   mode?: "quick" | "guided" | undefined;
+  /** Clip en español con el motivo (solo role "ask"). */
+  promptClip?: string | undefined;
+  /** Respuesta que el niño podría decir por error (solo role "ask"). */
+  confusedWith?: string | undefined;
 };
 
 type State =
@@ -95,7 +100,13 @@ function startMicWithTimeout(): Promise<{ stop: () => Promise<Blob> }> {
 
 export function RecordTurn({ role, ...props }: Props & { role?: RecordRole | undefined }) {
   const inner =
-    props.mode === "guided" ? <GuidedRecordTurn {...props} /> : <QuickRecordTurn {...props} />;
+    role === "ask" ? (
+      <AskRecordTurn {...props} />
+    ) : props.mode === "guided" ? (
+      <GuidedRecordTurn {...props} />
+    ) : (
+      <QuickRecordTurn {...props} />
+    );
   return (
     <PipHelp
       turnKey={`${props.missionId}-${props.turnId}`}
@@ -708,6 +719,275 @@ function GuidedRecordTurn({
         </p>
       ) : null}
       {state !== "result" && state !== "checking" ? saidIt : null}
+    </div>
+  );
+}
+
+const HINT_STEP_MS = 4000;
+
+/**
+ * Turno "Vos preguntás": no suena la pregunta al entrar (el niño la contestaría).
+ * Suena el motivo en español; la pista aparece sola (primera palabra → frase completa + modelo).
+ * Si el niño dice la respuesta en vez de la pregunta, Pip lo corrige con cariño.
+ */
+function AskRecordTurn({
+  missionId,
+  turnId,
+  promptEs,
+  targetEn,
+  alias = "",
+  modelClip,
+  saveAs,
+  promptClip,
+  confusedWith,
+  onDone,
+}: Props) {
+  const { state: progress } = useProgress();
+  const [state, setState] = useState<
+    "idle" | "starting" | "recording" | "checking" | "result" | "nomic"
+  >("idle");
+  const [heard, setHeard] = useState(false);
+  const [hint, setHint] = useState<0 | 1 | 2>(0);
+  const [confused, setConfused] = useState(false);
+  const failsRef = useRef(0);
+  const attemptsRef = useRef(0);
+  const timersRef = useRef<number[]>([]);
+  const stopperRef = useRef<{ stop: () => Promise<Blob> } | null>(null);
+  const lastBlobRef = useRef<Blob | null>(null);
+  const doneRef = useRef(onDone);
+  doneRef.current = onDone;
+  const transcribe = useServerFn(transcribeAttempt);
+  const listenEnabled = progress.listenEnabled !== false;
+  const firstWord = (targetEn.match(/^[A-Za-z']+/)?.[0] ?? targetEn) + "…";
+  const confusedTarget = confusedWith?.split("{alias}").join(alias);
+
+  function clearTimers() {
+    timersRef.current.forEach((t) => window.clearTimeout(t));
+    timersRef.current = [];
+  }
+
+  function showFullHint(clips: string[]) {
+    setHint(2);
+    const model = Array.isArray(modelClip) ? modelClip : [modelClip];
+    void playClip([...clips, ...model]);
+  }
+
+  useEffect(() => {
+    if (!micSupported() && !wavRecordingSupported()) setState("nomic");
+    if (promptClip) void playClip(promptClip);
+    timersRef.current = [
+      window.setTimeout(() => setHint((h) => (h < 1 ? 1 : h)), HINT_STEP_MS),
+      window.setTimeout(() => showFullHint(["es-ask-hint"]), HINT_STEP_MS * 2),
+    ];
+    return () => {
+      clearTimers();
+      stopClip();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [turnId]);
+
+  function markSaved(status: "heard" | "practiced" | "pending") {
+    if (!saveAs) return;
+    void saveRecording({
+      key: saveAs,
+      missionId,
+      turnId: saveAs,
+      targetEn,
+      createdAt: new Date().toISOString(),
+      blob: lastBlobRef.current ?? new Blob([], { type: "audio/wav" }),
+      status,
+    }).catch(() => undefined);
+  }
+
+  async function begin() {
+    clearTimers();
+    stopClip();
+    setConfused(false);
+    setState("starting");
+    try {
+      stopperRef.current = await startMicWithTimeout();
+      setState("recording");
+    } catch {
+      setState("nomic");
+    }
+  }
+
+  function succeed(status: "heard" | "practiced") {
+    playSuccess();
+    setHeard(true);
+    setState("result");
+    setTimeout(() => {
+      markSaved(status);
+      doneRef.current(status);
+    }, 1200);
+  }
+
+  function fail() {
+    failsRef.current += 1;
+    setHeard(false);
+    setState("result");
+    playTryAgain();
+    setTimeout(() => {
+      if (failsRef.current >= 2) {
+        markSaved("practiced");
+        doneRef.current("practiced");
+      } else setState("idle");
+    }, 1200);
+  }
+
+  async function finish() {
+    const stopper = stopperRef.current;
+    if (!stopper) return;
+    stopperRef.current = null;
+    const blob = await stopper.stop();
+    lastBlobRef.current = blob;
+    attemptsRef.current += 1;
+    try {
+      await saveRecording({
+        key: `${missionId}:${turnId}:complete`,
+        missionId,
+        turnId,
+        targetEn,
+        createdAt: new Date().toISOString(),
+        blob,
+      });
+    } catch {
+      /* la práctica sigue contando */
+    }
+    if (!listenEnabled || blob.type !== "audio/wav") return succeed("practiced");
+    setState("checking");
+    try {
+      const result = await transcribe({ data: { audioBase64: await blobToBase64(blob) } });
+      if (result.ok) {
+        if (matchSpeech(result.text, targetEn, alias).kind === "heard") return succeed("heard");
+        if (
+          confusedTarget &&
+          matchSpeech(result.text, confusedTarget, alias).kind === "heard" &&
+          attemptsRef.current < 4
+        ) {
+          // Dijo la respuesta: cuenta como intento, no como fallo.
+          setConfused(true);
+          setState("idle");
+          showFullHint(["es-ask-confused"]);
+          return;
+        }
+        return fail();
+      }
+      if (result.reason === "no-se-entendio" || result.reason === "audio-vacio") return fail();
+    } catch {
+      /* servicio caído: cuenta como practicado */
+    }
+    succeed("practiced");
+  }
+
+  return (
+    <div className="w-full max-w-xl rounded-3xl bg-card/95 p-5 text-center text-card-foreground shadow-[var(--shadow-soft)]">
+      <p className="font-display text-2xl leading-snug sm:text-3xl">{promptEs}</p>
+      {promptClip ? (
+        <button
+          type="button"
+          onClick={() => void playClip(promptClip)}
+          className="mt-2 inline-flex items-center gap-1 rounded-full bg-secondary px-3 py-1 text-sm font-semibold text-secondary-foreground"
+        >
+          <Volume2 className="size-4" aria-hidden /> Escuchar otra vez
+        </button>
+      ) : null}
+
+      {confused ? (
+        <div className="mx-auto mt-3 flex max-w-md animate-pop items-center gap-3 rounded-2xl border-2 border-sun bg-sun/15 p-3 text-left">
+          <Pip mood="happy" color={progress.pip.color} accessories={progress.pip.accessories} className="size-12 shrink-0" />
+          <p className="font-display text-lg leading-snug">
+            ¡Esa es la respuesta! Ahora te toca preguntar a vos. Escuchá.
+          </p>
+        </div>
+      ) : null}
+
+      <div className="mt-4 flex min-h-32 flex-col items-center justify-center gap-2">
+        {state === "idle" || state === "starting" ? (
+          <>
+            <button
+              type="button"
+              disabled={state === "starting"}
+              onClick={() => void begin()}
+              aria-label="Tocá y hablá"
+              data-mic=""
+              className="tap-target flex size-24 items-center justify-center rounded-full bg-accent text-accent-foreground shadow-[var(--shadow-pop)] active:translate-y-1 active:shadow-none disabled:opacity-60"
+            >
+              {state === "starting" ? (
+                <Loader2 className="size-10 animate-spin" aria-hidden />
+              ) : (
+                <Mic className="size-11" aria-hidden />
+              )}
+            </button>
+            <p className="font-display text-xl text-accent">
+              {failsRef.current > 0 ? "Probemos otra vez" : "Tocá y preguntá"}
+            </p>
+          </>
+        ) : null}
+        {state === "recording" ? (
+          <button
+            type="button"
+            onClick={() => void finish()}
+            aria-label="Listo, terminé de hablar"
+            className="tap-target flex size-24 animate-mic-pulse items-center justify-center rounded-full bg-destructive text-destructive-foreground shadow-[var(--shadow-pop)]"
+          >
+            <Square className="size-10" aria-hidden />
+          </button>
+        ) : null}
+        {state === "checking" ? (
+          <p className="flex items-center gap-2 font-display text-lg text-muted-foreground">
+            <Loader2 className="size-6 animate-spin" aria-hidden /> Te estoy escuchando…
+          </p>
+        ) : null}
+        {state === "result" ? (
+          <p
+            className={`animate-pop rounded-2xl px-5 py-3 font-display text-2xl ${heard ? "bg-success/15 text-success" : "bg-muted"}`}
+          >
+            <Ear className="mr-2 inline size-6" aria-hidden />
+            {heard ? "¡Te escuché!" : "Probemos otra vez"}
+          </p>
+        ) : null}
+        {state === "nomic" ? (
+          <p className="flex items-center gap-2 font-display text-lg text-muted-foreground">
+            <MicOff className="size-5" aria-hidden /> Decilo en voz alta y tocá “Lo dije”
+          </p>
+        ) : null}
+      </div>
+
+      {/* Zona de pista: vacía al principio, se llena sola. */}
+      <div className="mt-2 flex min-h-20 flex-col items-center justify-center" aria-live="polite">
+        {hint === 1 ? (
+          <p lang="en" className="animate-pop font-display text-4xl text-accent">
+            {firstWord}
+          </p>
+        ) : null}
+        {hint === 2 ? (
+          <>
+            <p lang="en" className="animate-pop font-display text-3xl text-accent sm:text-4xl">
+              {targetEn}
+            </p>
+            {!confused ? (
+              <p className="text-base font-semibold text-muted-foreground">Escuchá y decilo vos</p>
+            ) : null}
+          </>
+        ) : null}
+      </div>
+
+      {state !== "result" && state !== "checking" ? (
+        <button
+          type="button"
+          onClick={() => {
+            clearTimers();
+            stopperRef.current = null;
+            stopClip();
+            if (!lastBlobRef.current) markSaved("pending");
+            onDone("pending");
+          }}
+          className="tap-target mt-2 inline-flex items-center gap-2 rounded-full bg-primary px-6 font-display text-lg text-primary-foreground shadow-[var(--shadow-pop)] active:translate-y-1 active:shadow-none"
+        >
+          <Check className="size-5" aria-hidden /> Lo dije
+        </button>
+      ) : null}
     </div>
   );
 }
