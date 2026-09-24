@@ -51,7 +51,6 @@ export function NameTagView({
     setStep("printed");
     void playClip(block.printed.clip);
     window.setTimeout(() => {
-      void playClip("es-tag-swap");
       setStep("swap");
     }, 1900);
   }
