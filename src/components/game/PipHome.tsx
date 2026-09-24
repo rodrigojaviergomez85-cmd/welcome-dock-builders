@@ -83,7 +83,7 @@ export function PipHome({ pip, day, feedsToEvolve, asleep, missionPath }: Props)
         className="pointer-events-auto absolute max-w-[220px] rounded-full focus-visible:outline-4 focus-visible:outline-primary"
         style={{
           width: `${pipWidths[stage]}%`,
-          left: `${GARDEN.x + 6 - pipWidths[stage] / 2}%`,
+          left: `${GARDEN.x + 6 - (pipWidths[stage] ?? 0) / 2}%`,
           bottom: `${100 - GARDEN.bottom + 1}%`,
         }}
       >
