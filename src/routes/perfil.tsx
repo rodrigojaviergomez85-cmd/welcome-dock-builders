@@ -16,7 +16,7 @@ export const Route = createFileRoute("/perfil")({
       {
         name: "description",
         content:
-          "Elegí un avatar y un alias corto de explorador. No hace falta el nombre real ni ningún dato personal.",
+          "Elegí un avatar y un nombre corto de explorador. No hace falta el nombre real ni ningún dato personal.",
       },
       { property: "og:title", content: "Tu avatar de explorador — Explorer Island" },
       {
@@ -131,7 +131,7 @@ function ProfilePage() {
       </section>
 
       <label className="mt-8 block font-display text-xl" htmlFor="alias">
-        Tu alias (2 a 12 letras)
+        Tu nombre (2 a 12 letras)
       </label>
       <input
         id="alias"
