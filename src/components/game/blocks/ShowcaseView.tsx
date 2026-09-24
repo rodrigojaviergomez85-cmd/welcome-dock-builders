@@ -42,10 +42,18 @@ export function ShowcaseView({
     finishedRef.current = true;
     onFinish();
   };
-  const [stage, setStage] = useState<"intro" | "step" | "cheer" | "teaser">("intro");
-  const [index, setIndex] = useState(Math.min(startIndex, block.steps.length - 1));
+  // Estado guardado: 0 = introducción, n = paso n-1 (la intro ya se oyó).
+  const [stage, setStage] = useState<"intro" | "step" | "cheer" | "teaser">(
+    startIndex > 0 ? "step" : "intro",
+  );
+  const [index, setIndex] = useState(Math.min(Math.max(0, startIndex - 1), block.steps.length - 1));
   const vars = missionVars(state.profile, alias, block.time);
   const [showSkip, setShowSkip] = useState(false);
+
+  useEffect(() => {
+    if (stage === "step") onStepChange(index + 1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stage]);
 
   // "Seguir" de respaldo a los 3 s en intro y teaser, por si el audio tarda.
   useEffect(() => {
@@ -70,6 +78,7 @@ export function ShowcaseView({
   ) : null;
 
   useEffect(() => {
+    if (startIndex > 0) return;
     let active = true;
     void (async () => {
       await playClip("es-dock-intro");
@@ -81,6 +90,7 @@ export function ShowcaseView({
       active = false;
       stopClip();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [block.intro.clip]);
 
   useEffect(() => {
@@ -200,7 +210,7 @@ export function ShowcaseView({
             }
             const next = index + 1;
             setIndex(next);
-            onStepChange(next);
+            onStepChange(next + 1);
           });
         }}
       />

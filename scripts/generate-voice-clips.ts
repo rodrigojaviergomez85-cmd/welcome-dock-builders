@@ -415,6 +415,7 @@ export const LINES: Line[] = [
     text: "Repetí la frase. Tocá el botón rojo y decila en inglés.",
   },
   { id: "es-help-offer", speaker: "es", text: "¿Te ayudo? Tocá mi carita." },
+  { id: "es-welcome-back", speaker: "es", text: "¡Volviste! Seguimos donde quedaste." },
   {
     id: "es-ask-mia-name-v2",
     speaker: "es",

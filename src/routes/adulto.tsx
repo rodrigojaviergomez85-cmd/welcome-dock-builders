@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft, Mic, Trash2, ShieldCheck, RotateCcw, Ear } from "lucide-react";
-import { useProgress } from "@/lib/useProgress";
+import { useProgress, storageWorks } from "@/lib/useProgress";
 import { getMissionProgress } from "@/lib/progress";
 import { mondayMission } from "@/content/missions";
 import { deleteAllRecordings, listRecordings, type StoredRecording } from "@/lib/recordings";
@@ -33,6 +33,7 @@ function AdultPanel() {
   const [recordings, setRecordings] = useState<StoredRecording[]>([]);
   const [loadError, setLoadError] = useState(false);
   const [canRecord, setCanRecord] = useState<boolean | null>(null);
+  const [storageOk, setStorageOk] = useState<boolean | null>(null);
   const monday = getMissionProgress(state, mondayMission.id);
 
   async function refresh() {
@@ -46,6 +47,7 @@ function AdultPanel() {
   useEffect(() => {
     void refresh();
     setCanRecord(micSupported());
+    setStorageOk(storageWorks());
   }, []);
 
   return (
@@ -60,6 +62,20 @@ function AdultPanel() {
       <h1 className="mt-6 flex items-center gap-2 font-display text-3xl">
         <ShieldCheck className="size-7" aria-hidden /> Panel para adultos
       </h1>
+
+      {storageOk !== null ? (
+        <section className="mt-4 rounded-3xl bg-card p-4 shadow-[var(--shadow-soft)]">
+          <p className="font-display text-lg">
+            Progreso guardado en este navegador: {storageOk ? "sí" : "no"}
+          </p>
+          {!storageOk ? (
+            <p className="mt-1 text-sm text-destructive">
+              Este navegador no guarda el progreso: abrí la app en Chrome normal, no en modo
+              incógnito ni dentro de otra app.
+            </p>
+          ) : null}
+        </section>
+      ) : null}
 
       <section className="mt-6 rounded-3xl border-2 border-destructive/40 bg-card p-5 shadow-[var(--shadow-soft)]">
         <h2 className="font-display text-xl">Reiniciar el juego</h2>

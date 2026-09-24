@@ -14,6 +14,9 @@ type Props = {
   onOral: OralHandler;
   onReward: () => void;
   onFinish: () => void;
+  /** 1 = la etiqueta ya se imprimió. */
+  startIndex?: number;
+  onStepChange?: (value: number) => void;
 };
 
 type Step = "ask" | "name" | "printed" | "swap" | "answer";
@@ -26,12 +29,22 @@ export function NameTagView({
   onOral,
   onReward,
   onFinish,
+  startIndex = 0,
+  onStepChange,
 }: Props) {
-  const [step, setStep] = useState<Step>("ask");
+  const alreadyPrinted = startIndex >= 1;
+  const [step, setStep] = useState<Step>(
+    alreadyPrinted ? (block.swap ? "swap" : "printed") : "ask",
+  );
   const swap = block.swap;
   const askClips = block.ask.map((line) => line.clip);
 
   useEffect(() => {
+    if (alreadyPrinted) {
+      // La etiqueta ya estaba impresa: no se vuelve a pedir.
+      if (!swap) window.setTimeout(onFinish, 600);
+      return;
+    }
     let active = true;
     void (async () => {
       await playClip(block.introClip);
@@ -50,6 +63,7 @@ export function NameTagView({
   function printTag(status: "heard" | "practiced" | "pending") {
     onOral(status, block.record.targetEn.split("{alias}").join(alias), () => {
       onReward();
+      onStepChange?.(1);
       setStep("printed");
       void playClip(block.printed.clip);
       window.setTimeout(() => (swap ? setStep("swap") : onFinish()), 1900);

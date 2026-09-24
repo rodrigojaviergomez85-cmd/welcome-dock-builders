@@ -10,8 +10,9 @@ import {
   type PipProgress,
   addLearned,
 } from "@/lib/progress";
+import { cn } from "@/lib/utils";
 import { useProgress } from "@/lib/useProgress";
-import { stopClip } from "@/lib/audio";
+import { playClip, stopClip } from "@/lib/audio";
 import { SceneShell } from "./SceneShell";
 import { StoryView } from "./blocks/StoryView";
 import { ListenPickView } from "./blocks/ListenPickView";
@@ -36,7 +37,8 @@ import {
 import { MissionComplete } from "./MissionComplete";
 import { BlockIntro } from "./BlockIntro";
 import { BLOCK_INTROS } from "@/content/glossary";
-import { DEFAULT_PIP_COLOR, type PipMood } from "./Pip";
+import { DEFAULT_PIP_COLOR, Pip, type PipMood } from "./Pip";
+import { DIALOGUE_STEP } from "./blocks/DialogueView";
 import { PipFeedMoment } from "./PipFeedMoment";
 import { takeLastTake, type PipVoiceSource } from "@/lib/pip-voice";
 
@@ -84,7 +86,9 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
     setStepIndex(progress.stepIndex);
     if (!progress.completed && (progress.blockIndex > 0 || progress.stepIndex > 0)) {
       setResumed(true);
-      window.setTimeout(() => setResumed(false), 3500);
+      // A mitad de un bloque, su explicación ya se vio.
+      const current = mission.blocks[Math.min(progress.blockIndex, mission.blocks.length - 1)];
+      if (current && progress.stepIndex > 0) setIntroFor(current.id);
     }
     setRestored(true);
     setStageAtStart(state.pip.stage);
@@ -258,6 +262,30 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
     );
   }
 
+  if (resumed) {
+    return (
+      <ResumeScreen
+        mission={mission}
+        blockIndex={blockIndex}
+        pipColor={state.pip.color ?? DEFAULT_PIP_COLOR}
+        pipStage={state.pip.stage}
+        pipAccessories={state.pip.accessories}
+        onContinue={() => {
+          stopClip();
+          setResumed(false);
+        }}
+        onRestart={() => {
+          stopClip();
+          setIntroFor(null);
+          setSunTime(null);
+          setSunGold(0);
+          replay();
+          setResumed(false);
+        }}
+      />
+    );
+  }
+
   if (finished) {
     return (
       <MissionComplete
@@ -279,7 +307,10 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
     time = block.rounds[Math.min(stepIndex, block.rounds.length - 1)]!.time;
   if (block.kind === "bagMatch") time = "afternoon";
   if (block.kind === "dialogue")
-    time = block.conversations[Math.min(stepIndex, block.conversations.length - 1)]!.time;
+    time =
+      block.conversations[
+        Math.min(Math.floor(stepIndex / DIALOGUE_STEP), block.conversations.length - 1)
+      ]!.time;
   if (block.kind === "finale") time = block.time;
   if (
     block.kind === "tapPick" ||
@@ -329,14 +360,6 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
           bounceKey: pipBounceKey,
         }}
       >
-        {resumed ? (
-          <p
-            role="status"
-            className="animate-pop fixed left-1/2 top-20 z-40 -translate-x-1/2 rounded-full bg-success px-6 py-3 font-display text-xl text-success-foreground shadow-[var(--shadow-soft)]"
-          >
-            ¡Seguís donde te quedaste!
-          </p>
-        ) : null}
         {showingIntro ? (
           <BlockIntro blockId={block.id} onStart={() => setIntroFor(block.id)} />
         ) : null}
@@ -477,6 +500,8 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
                 ),
               )
             }
+            startIndex={stepIndex}
+            onStepChange={goToStep}
             onFinish={nextBlock}
           />
         ) : null}
@@ -507,5 +532,108 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
         />
       ) : null}
     </>
+  );
+}
+
+const BLOCK_LABEL: Record<string, string> = {
+  micCheck: "Pip",
+  sunClock: "Reloj del sol",
+  tapPick: "Cielos",
+  nameTag: "Etiqueta",
+  dialogue: "Charla",
+  showcase: "Presentación",
+};
+
+function ResumeScreen({
+  mission,
+  blockIndex,
+  pipColor,
+  pipStage,
+  pipAccessories,
+  onContinue,
+  onRestart,
+}: {
+  mission: Mission;
+  blockIndex: number;
+  pipColor: string;
+  pipStage: number;
+  pipAccessories: string[];
+  onContinue: () => void;
+  onRestart: () => void;
+}) {
+  const [confirming, setConfirming] = useState(false);
+  useEffect(() => {
+    void playClip("es-welcome-back");
+    return () => stopClip();
+  }, []);
+  return (
+    <div className="flex min-h-screen flex-col items-center justify-center gap-5 bg-background p-6 text-center">
+      <div className="animate-[boti-hop_1.2s_ease-in-out_infinite]">
+        <Pip
+          mood="happy"
+          color={pipColor}
+          stage={pipStage}
+          accessories={pipAccessories}
+          size={180}
+        />
+      </div>
+      <h1 className="font-display text-3xl sm:text-4xl">¡Volviste! Seguimos donde quedaste</h1>
+      <ol
+        className="flex w-full max-w-xl flex-wrap justify-center gap-2"
+        aria-label="Partes de la misión"
+      >
+        {mission.blocks.map((b, i) => (
+          <li
+            key={b.id}
+            aria-current={i === blockIndex ? "step" : undefined}
+            className={cn(
+              "rounded-full px-3 py-1 text-sm",
+              i < blockIndex && "bg-success text-success-foreground",
+              i === blockIndex &&
+                "bg-primary font-display text-base text-primary-foreground ring-4 ring-primary/40",
+              i > blockIndex && "bg-muted text-muted-foreground",
+            )}
+          >
+            {BLOCK_LABEL[b.kind] ?? `Parte ${i + 1}`}
+          </li>
+        ))}
+      </ol>
+      <button
+        type="button"
+        onClick={onContinue}
+        className="tap-target rounded-full bg-primary px-12 py-4 font-display text-2xl text-primary-foreground shadow-[var(--shadow-pop)]"
+      >
+        Continuar
+      </button>
+      {confirming ? (
+        <div className="flex flex-col items-center gap-2 rounded-2xl bg-card p-3 shadow-[var(--shadow-soft)]">
+          <p className="text-sm">¿Seguro? Vas a empezar la misión desde el principio.</p>
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={onRestart}
+              className="rounded-full bg-destructive px-4 py-2 text-sm text-destructive-foreground"
+            >
+              Sí, de nuevo
+            </button>
+            <button
+              type="button"
+              onClick={() => setConfirming(false)}
+              className="rounded-full bg-muted px-4 py-2 text-sm"
+            >
+              No
+            </button>
+          </div>
+        </div>
+      ) : (
+        <button
+          type="button"
+          onClick={() => setConfirming(true)}
+          className="text-sm text-muted-foreground underline"
+        >
+          Empezar de nuevo
+        </button>
+      )}
+    </div>
   );
 }

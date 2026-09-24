@@ -17,6 +17,8 @@ type Props = {
   turns: Turn[];
   alias: string;
   support: "full" | "reduced";
+  startTurn?: number;
+  onTurnChange?: (turn: number) => void;
   onHelpUsed: () => void;
   onOral: OralHandler;
   onFinish: () => void;
@@ -30,11 +32,13 @@ export function TurnsView({
   turns,
   alias,
   support,
+  startTurn = 0,
+  onTurnChange,
   onHelpUsed,
   onOral,
   onFinish,
 }: Props) {
-  const [index, setIndex] = useState(0);
+  const [index, setIndex] = useState(Math.min(startTurn, turns.length - 1));
   const turn = turns[index]!;
 
   const advanceRef = useRef<() => void>(() => {});
@@ -59,7 +63,10 @@ export function TurnsView({
   advanceRef.current = advance;
   function advance() {
     if (index + 1 >= turns.length) onFinish();
-    else setIndex(index + 1);
+    else {
+      setIndex(index + 1);
+      onTurnChange?.(index + 1);
+    }
   }
 
   return (
@@ -95,6 +102,8 @@ export function TurnsView({
           support={support}
           onHelpUsed={onHelpUsed}
           onDone={(status) => {
+            // Se guarda ya: si cierra durante el festejo de Pip, no se vuelve a pedir.
+            if (index + 1 < turns.length) onTurnChange?.(index + 1);
             onOral(status, turn.targetEn.replace("{alias}", alias), advance);
           }}
         />

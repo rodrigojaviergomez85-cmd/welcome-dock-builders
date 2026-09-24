@@ -153,7 +153,12 @@ export function SunClockView({
   }, []);
 
   // Voz del guía en español + demo de la mano arrastrando el sol.
+  // Al retomar a mitad no se repite la introducción.
   useEffect(() => {
+    const resuming = startIndex > 0;
+    if (resuming) setShowDemo(false);
+    if (resuming && phase === "explore") return;
+    if (resuming && gold.length > 0) return;
     void playClip(phase === "repeat" ? "es-sun-repeat" : block.introClip);
     return () => {
       stopClip();
