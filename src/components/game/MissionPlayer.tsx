@@ -6,6 +6,7 @@ import {
   getMissionProgress,
   updateMission,
   type OralResult,
+  PIP_DAYS,
   type PipProgress,
 } from "@/lib/progress";
 import { useProgress } from "@/lib/useProgress";
@@ -124,21 +125,21 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
     if (shouldFeed) {
       const before = state.pip;
       const nextFeeds = target > 0 ? Math.min(before.feeds + 1, target) : before.feeds + 1;
-      const evolves =
+      const earnsReward =
         target > 0 && nextFeeds >= target && !before.accessories.includes(mission.reward.id);
       const after: PipProgress = {
         ...before,
         feeds: nextFeeds,
         totalFeeds: before.totalFeeds + 1,
-        stage: evolves ? before.stage + 1 : before.stage,
-        accessories: evolves ? [...before.accessories, mission.reward.id] : before.accessories,
+        stage: earnsReward ? Math.min(4, before.stage + 1) : before.stage,
+        accessories: earnsReward ? [...before.accessories, mission.reward.id] : before.accessories,
       };
       update((prev) => ({ ...prev, pip: after }));
       setFeedMoment({
         phrase,
         before,
         after,
-        evolved: evolves,
+        evolved: earnsReward,
         ...(continueAfter ? { continueAfter } : {}),
       });
     }
@@ -195,7 +196,16 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
   }
 
   function completeMission() {
-    update((prev) => addPassPiece(addCoins(prev, COINS_PER_MISSION), mission.id));
+    update((prev) => {
+      const day = PIP_DAYS.find((candidate) => candidate === mission.id);
+      const marks = day
+        ? [...prev.pip.marks.filter((mark) => mark.day !== day), { day, feeds: prev.pip.feeds }]
+        : prev.pip.marks;
+      return {
+        ...addPassPiece(addCoins(prev, COINS_PER_MISSION), mission.id),
+        pip: { ...prev.pip, marks },
+      };
+    });
     update((prev) =>
       updateMission(prev, mission.id, (p) =>
         addReward(
@@ -291,6 +301,8 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
           totalFeeds: state.pip.totalFeeds,
           stage: state.pip.stage,
           accessories: state.pip.accessories,
+          marks: state.pip.marks,
+          day={PIP_DAYS.find((candidate) => candidate === mission.id) ?? "monday"}
           bounceKey: pipBounceKey,
         }}
       >
@@ -457,6 +469,7 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
           after={feedMoment.after}
           feedsToEvolve={mission.pip?.feedsToEvolve ?? 0}
           evolved={feedMoment.evolved}
+          day={PIP_DAYS.find((candidate) => candidate === mission.id) ?? "monday"}
           rewardLabel={mission.pip?.rewardLabel ?? mission.reward.label}
           onClose={closeFeedMoment}
         />

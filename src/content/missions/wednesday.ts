@@ -18,6 +18,7 @@ export const wednesdayMission: Mission = {
   reward: { id: "wednesday-number", label: "Tu edad en el pase" },
   evidence: "Reconoce los números 1 a 12 en inglés y dice su edad.",
   counter: { icon: "star", label: "Cajas ordenadas" },
+  pip: { feedsToEvolve: 8, rewardLabel: "Pip aprende tu edad" },
   reviewPhrases: [
     "Hello! My name is {alias}.",
     "I am from {country}.",

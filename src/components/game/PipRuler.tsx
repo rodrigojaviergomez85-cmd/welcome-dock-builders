@@ -6,7 +6,7 @@ type Props = {
   currentDay: PipDay;
   feeds: number;
   total?: number;
-  height?: number;
+  height?: number | string;
   animate?: boolean;
   className?: string;
 };
