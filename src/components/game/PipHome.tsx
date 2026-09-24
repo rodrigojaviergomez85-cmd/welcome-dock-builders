@@ -77,7 +77,9 @@ export function PipHome({ pip, day, feedsToEvolve, asleep, missionPath }: Props)
           <button
             type="button"
             onClick={onPip}
-            aria-label={sleeping ? "Pip está dormido. Tocalo para despertarlo." : "Ver las frases de Pip"}
+            aria-label={
+              sleeping ? "Pip está dormido. Tocalo para despertarlo." : "Ver las frases de Pip"
+            }
             className="absolute bottom-1 right-0 rounded-full focus-visible:outline-4 focus-visible:outline-primary sm:right-2"
           >
             <Pip
@@ -90,14 +92,22 @@ export function PipHome({ pip, day, feedsToEvolve, asleep, missionPath }: Props)
             />
           </button>
         </div>
-        <PipRuler marks={pip.marks} currentDay={day} feeds={pip.feeds} total={feedsToEvolve} height={200} />
+        <PipRuler
+          marks={pip.marks}
+          currentDay={day}
+          feeds={pip.feeds}
+          total={feedsToEvolve}
+          height={200}
+        />
       </div>
       <p className="mt-3 text-center font-display text-lg">
         Pip sabe {pip.learned.length} {pip.learned.length === 1 ? "frase" : "frases"} ·{" "}
         {stage >= 4 ? "ya es gigante" : `le faltan ${missing} para crecer`}
       </p>
       {sleeping ? (
-        <p className="text-center text-sm text-muted-foreground">Pip está dormido. Tocalo para jugar.</p>
+        <p className="text-center text-sm text-muted-foreground">
+          Pip está dormido. Tocalo para jugar.
+        </p>
       ) : null}
 
       {panel ? (
@@ -147,7 +157,9 @@ export function PipHome({ pip, day, feedsToEvolve, asleep, missionPath }: Props)
                             />
                           ) : null}
                         </div>
-                        <span className="mt-1 font-display text-xs sm:text-sm">{HOME_NAMES[index]}</span>
+                        <span className="mt-1 font-display text-xs sm:text-sm">
+                          {HOME_NAMES[index]}
+                        </span>
                         {locked ? (
                           <span className="text-[0.65rem] leading-tight text-muted-foreground sm:text-xs">
                             Se abre cuando Pip crezca

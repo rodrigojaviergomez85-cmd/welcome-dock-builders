@@ -9,3 +9,10 @@ Prompt:
 
 La pose "feliz" no se generó como hoja aparte: se hace con animación y cachetes superpuestos en `Pip.tsx`
 para no arriesgar diferencias entre dos hojas. El color del niño se aplica con `hue-rotate` desde el naranja (28°).
+
+## Casas de Pip
+
+Hoja generada (1920×640, standard), recortada en `pip-home-0.png` … `pip-home-4.png` (512×512, transparente,
+misma escala y línea de suelo para que cada casa se vea más grande que la anterior).
+
+> Game asset sheet, five homes for a small cute orange fox-like creature, side by side left to right, evenly spaced with clear white gaps, same three-quarter front view angle, all sitting on the same ground line: (1) a small round nest of leaves and twigs on a wooden dock plank; (2) an open wooden crate with a soft blanket inside and a tiny glowing lantern; (3) a small wooden cottage with a round door; (4) a treehouse on a short palm-like tree with a rope ladder; (5) a small red-and-white lighthouse with its light glowing warm yellow. Each home clearly bigger than the previous. Kids' cartoon explorer island illustration style, soft painterly shading, clean dark outlines, warm tropical palette. Plain pure white background, no ground shadows, no text, no characters.

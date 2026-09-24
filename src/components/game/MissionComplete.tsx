@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Pip } from "./Pip";
+import { PipMoveScene } from "./PipMoveScene";
 import { listRecordings } from "@/lib/recordings";
 import { Sun, Ticket } from "lucide-react";
 import { Link } from "@tanstack/react-router";
@@ -19,10 +20,20 @@ type Props = {
   alias: string;
   avatarImage: string;
   onReplay: () => void;
+  /** Si Pip evolucionó en esta misión: etapa (casa) anterior. */
+  homeFrom?: number;
 };
 
-export function MissionComplete({ mission, progress, alias, avatarImage, onReplay }: Props) {
+export function MissionComplete({
+  mission,
+  progress,
+  alias,
+  avatarImage,
+  onReplay,
+  homeFrom,
+}: Props) {
   const { state } = useProgress();
+  const [movingDone, setMovingDone] = useState(homeFrom === undefined);
   const vars = missionVars(state.profile, alias);
   const phrases = mission.reviewPhrases ?? REVIEW_PHRASES;
   const [presentationUrl, setPresentationUrl] = useState<string | null>(null);
@@ -54,6 +65,17 @@ export function MissionComplete({ mission, progress, alias, avatarImage, onRepla
       : progress.oral.status === "pending-no-mic"
         ? "Práctica oral: pendiente (no se habló todavía)"
         : "Práctica oral: sin frases dichas todavía";
+
+  if (!movingDone && homeFrom !== undefined) {
+    return (
+      <PipMoveScene
+        from={homeFrom}
+        to={state.pip.stage}
+        pip={state.pip}
+        onContinue={() => setMovingDone(true)}
+      />
+    );
+  }
 
   if (mission.id === "monday") {
     const said = progress.oral.said ?? progress.oral.recordings;
