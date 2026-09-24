@@ -11,7 +11,7 @@ export function addCoins(state: ProgressState, amount: number): ProgressState {
   return { ...state, coins: (state.coins ?? 0) + amount };
 }
 
-function today(): string {
+export function today(): string {
   return new Date().toISOString().slice(0, 10);
 }
 
