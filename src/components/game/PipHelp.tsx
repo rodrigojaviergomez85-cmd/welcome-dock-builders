@@ -3,7 +3,7 @@ import { Hand, Mic, X } from "lucide-react";
 import { Pip } from "./Pip";
 import { AudioButton } from "./AudioButton";
 import { gloss } from "@/content/glossary";
-import { playClip, stopClip } from "@/lib/audio";
+import { isPlaying, playClip, stopClip } from "@/lib/audio";
 import { useProgress } from "@/lib/useProgress";
 import { pipSizeFor } from "@/lib/progress";
 
@@ -63,25 +63,31 @@ export function PipHelp({
   const esClip = meaning?.esClip ?? g?.esClip;
   const slowClip = g?.slowClip ?? modelClip;
 
-  // Oferta automática: una sola vez por turno si pasan 8 s sin ningún toque.
+  // Oferta automática: una sola vez por turno, 8 s después de que termina el
+  // último audio y sin ningún toque. Nunca se superpone con otro clip.
   useEffect(() => {
     offeredRef.current = false;
-    let timer = 0;
-    const arm = () => {
-      window.clearTimeout(timer);
-      if (offeredRef.current) return;
-      timer = window.setTimeout(() => {
-        if (offeredRef.current) return;
-        offeredRef.current = true;
-        setNudge(true);
-        void playClip("es-help-offer").then(() => setNudge(false));
-      }, IDLE_MS);
+    let idleSince = Date.now();
+    const touch = () => {
+      idleSince = Date.now();
     };
-    arm();
-    window.addEventListener("pointerdown", arm);
+    const tick = window.setInterval(() => {
+      if (offeredRef.current) return;
+      if (isPlaying()) {
+        idleSince = Date.now();
+        return;
+      }
+      if (Date.now() - idleSince < IDLE_MS) return;
+      offeredRef.current = true;
+      setNudge(true);
+      void playClip("es-help-offer").then(() => setNudge(false));
+    }, 200);
+    window.addEventListener("pointerdown", touch);
+    window.addEventListener("keydown", touch);
     return () => {
-      window.clearTimeout(timer);
-      window.removeEventListener("pointerdown", arm);
+      window.clearInterval(tick);
+      window.removeEventListener("pointerdown", touch);
+      window.removeEventListener("keydown", touch);
     };
   }, [turnKey]);
 

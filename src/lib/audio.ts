@@ -14,7 +14,15 @@ export function clipUrl(clipId: string) {
   return `/audio/${clipId}.mp3`;
 }
 
+/** Sube con cada stopClip() externo: cancela secuencias y clips encolados. */
+let generation = 0;
+
 export function stopClip() {
+  generation += 1;
+  stopCurrent();
+}
+
+function stopCurrent() {
   if (current) {
     current.pause();
     current.currentTime = 0;
@@ -27,7 +35,7 @@ export function stopClip() {
 
 function playOne(clipId: string): Promise<void> {
   if (typeof window === "undefined") return Promise.resolve();
-  stopClip();
+  stopCurrent();
   const audio = new Audio(clipUrl(clipId));
   current = audio;
   return new Promise<void>((resolve) => {
@@ -58,7 +66,25 @@ export function playClip(clipId: string | string[]): Promise<void> {
 }
 
 export async function playSequence(clips: string[]): Promise<void> {
+  const gen = generation;
   for (const clip of clips) {
+    if (gen !== generation) return;
     await playOne(clip);
   }
+}
+
+/**
+ * Audio automático encadenado: espera a que termine lo que esté sonando y recién
+ * entonces reproduce. Se cancela si alguien llama stopClip() antes de empezar.
+ */
+export async function queueClip(clipId: string | string[]): Promise<void> {
+  if (typeof window === "undefined") return;
+  const gen = generation;
+  await new Promise((r) => setTimeout(r, 80));
+  while (isPlaying()) {
+    if (gen !== generation) return;
+    await new Promise((r) => setTimeout(r, 120));
+  }
+  if (gen !== generation) return;
+  await playClip(clipId);
 }
