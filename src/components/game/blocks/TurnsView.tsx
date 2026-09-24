@@ -102,6 +102,8 @@ export function TurnsView({
           support={support}
           onHelpUsed={onHelpUsed}
           onDone={(status) => {
+            // Se guarda ya: si cierra durante el festejo de Pip, no se vuelve a pedir.
+            if (index + 1 < turns.length) onTurnChange?.(index + 1);
             onOral(status, turn.targetEn.replace("{alias}", alias), advance);
           }}
         />
