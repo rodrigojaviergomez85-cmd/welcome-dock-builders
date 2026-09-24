@@ -10,6 +10,7 @@ type Props = {
   color: string;
   accessories?: string[];
   className?: string;
+  size?: number;
 };
 
 export const PIP_COLORS = ["#FF8A3D", "#FF5FA2", "#2ECC8E", "#5AA9FF", "#B478FF"] as const;
@@ -38,7 +39,7 @@ export function pipSvg(mood: PipMood, color: string) {
     ${eyes}${mouth}</svg>`;
 }
 
-export function Pip({ mood, color, accessories = [], className }: Props) {
+export function Pip({ mood, color, accessories = [], className, size }: Props) {
   const titleId = useId();
   const sleepy = mood === "sleepy";
 
@@ -47,6 +48,8 @@ export function Pip({ mood, color, accessories = [], className }: Props) {
       viewBox="0 0 100 100"
       role="img"
       aria-labelledby={titleId}
+      {...(size ? { width: size, height: size } : {})}
+      style={size ? { width: size, height: size } : undefined}
       className={cn(
         "size-24 drop-shadow-lg motion-safe:animate-bob",
         mood === "eat" && "motion-safe:animate-pop",

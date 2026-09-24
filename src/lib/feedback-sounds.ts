@@ -89,6 +89,15 @@ export function playMunch() {
   ]);
 }
 
+/** Pip crece: arpegio corto y luminoso de 260 ms. */
+export function playGrow() {
+  playNotes([
+    { freq: 523, start: 0, duration: 0.11, volume: 0.16, type: "triangle" },
+    { freq: 659, start: 0.075, duration: 0.12, volume: 0.18, type: "triangle" },
+    { freq: 784, start: 0.15, duration: 0.11, volume: 0.2, type: "triangle" },
+  ]);
+}
+
 /** Pip evoluciona: destello ascendente distinto de la recompensa final. */
 export function playEvolution() {
   playNotes([
