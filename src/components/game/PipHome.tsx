@@ -34,7 +34,7 @@ export function PipHome({ pip, day, feedsToEvolve, asleep, missionPath }: Props)
   const sleeping = asleep && !awake;
   const missing = Math.max(0, feedsToEvolve - pip.feeds);
   // Pip a su tamaño de etapa, acotado para que quepa en 400 px.
-  const pipSize = Math.min(pipSizeFor(pip), 150);
+  const pipSize = Math.min(pipSizeFor(pip), 110);
 
   function onPip() {
     if (sleeping) {
@@ -58,12 +58,12 @@ export function PipHome({ pip, day, feedsToEvolve, asleep, missionPath }: Props)
     >
       <h2 className="font-display text-2xl">La casa de Pip</h2>
       <div className="mt-2 flex items-end justify-center gap-2 sm:gap-6">
-        <div className="relative flex min-w-0 flex-1 items-end justify-center">
+        <div className="flex min-w-0 flex-1 items-end justify-center gap-1">
           <button
             type="button"
             onClick={() => setPanel("homes")}
             aria-label={`Casa de Pip: ${HOME_NAMES[stage]}. Ver todas las casas.`}
-            className="block w-full max-w-[18rem] rounded-2xl focus-visible:outline-4 focus-visible:outline-primary"
+            className="block min-w-0 flex-1 max-w-[18rem] rounded-2xl focus-visible:outline-4 focus-visible:outline-primary"
           >
             <img
               src={PIP_HOMES[stage]}
@@ -80,7 +80,7 @@ export function PipHome({ pip, day, feedsToEvolve, asleep, missionPath }: Props)
             aria-label={
               sleeping ? "Pip está dormido. Tocalo para despertarlo." : "Ver las frases de Pip"
             }
-            className="absolute bottom-1 right-0 rounded-full focus-visible:outline-4 focus-visible:outline-primary sm:right-2"
+            className="mb-1 shrink-0 rounded-full focus-visible:outline-4 focus-visible:outline-primary"
           >
             <Pip
               mood={sleeping ? "sleepy" : "happy"}
