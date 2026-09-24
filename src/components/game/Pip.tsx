@@ -400,7 +400,7 @@ export function Pip({
         {accessories.includes("sun-tag") && idx > 0 ? (
           <g
             aria-label="Gorra de explorador"
-            transform={`translate(${(eyes.x[0] + eyes.x[1]) * 50 - 50} ${eyes.y * 100 - 36}) scale(0.6) translate(33 10)`}
+            transform={`translate(${(eyes.x[0] + eyes.x[1]) * 50 - 50} ${eyes.y * 100 - 44}) scale(0.6) translate(33 10)`}
           >
             <path d="M24 30Q50 5 76 30L70 38H30Z" fill="var(--color-sun)" />
             <path d="M20 36Q50 28 82 37Q70 43 38 41Z" fill="var(--color-sun-foreground)" />

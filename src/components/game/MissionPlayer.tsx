@@ -63,6 +63,8 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
   const [stepIndex, setStepIndex] = useState(0);
   const [finished, setFinished] = useState(false);
   const [restored, setRestored] = useState(false);
+  /** Etapa de Pip al empezar a jugar, para mostrar la mudanza si evoluciona. */
+  const [stageAtStart, setStageAtStart] = useState<number | null>(null);
   /** Id del bloque cuya explicación en español ya se vio. */
   const [introFor, setIntroFor] = useState<string | null>(null);
   /** Hora del cielo mientras se juega el reloj del sol, y soles dorados ganados. */
@@ -80,6 +82,7 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
     setBlockIndex(Math.min(progress.blockIndex, mission.blocks.length - 1));
     setStepIndex(progress.stepIndex);
     setRestored(true);
+    setStageAtStart(state.pip.stage);
     update((prev) =>
       registerPlayDay({
         ...updateMission(prev, mission.id, (p) => ({ ...p, started: true })),
@@ -261,6 +264,9 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
         alias={alias}
         avatarImage={avatarImage}
         onReplay={replay}
+        {...(stageAtStart !== null && state.pip.stage > stageAtStart
+          ? { homeFrom: stageAtStart }
+          : {})}
       />
     );
   }

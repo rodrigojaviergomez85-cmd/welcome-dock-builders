@@ -1,12 +1,13 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
-import { Backpack, Star, Volume2, X } from "lucide-react";
+import { Backpack, Star, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { HelpBubble } from "./HelpBubble";
 import { Pip, type PipMood } from "./Pip";
 import { pipSizeFor } from "@/lib/progress";
 import type { PipDay, PipLearned, PipMark } from "@/lib/progress";
-import { playPipVoice, stopPipVoice } from "@/lib/pip-voice";
+import { stopPipVoice } from "@/lib/pip-voice";
+import { PipBelly } from "./PipBelly";
 import { playSuccess } from "@/lib/feedback-sounds";
 import { PipRuler } from "./PipRuler";
 
@@ -154,31 +155,7 @@ export function SceneShell({
                         </p>
                       </div>
                     </div>
-                    {learned.length ? (
-                      <ul className="mt-3 max-h-[45vh] space-y-2 overflow-y-auto">
-                        {[...learned].reverse().map((item) => (
-                          <li key={item.phrase}>
-                            <button
-                              type="button"
-                              onClick={() =>
-                                void playPipVoice({
-                                  clip: item.clip,
-                                  ...(item.recordingKey ? { recordingKey: item.recordingKey } : {}),
-                                })
-                              }
-                              className="tap-target flex w-full items-center gap-3 rounded-xl bg-muted px-3 text-left font-display text-lg"
-                            >
-                              <Volume2 className="size-6 shrink-0 text-primary" aria-hidden />
-                              <span lang="en">{item.phrase}</span>
-                            </button>
-                          </li>
-                        ))}
-                      </ul>
-                    ) : (
-                      <p className="mt-3 text-muted-foreground">
-                        Hablá para darle su primera frase.
-                      </p>
-                    )}
+                    <PipBelly learned={learned} />
                   </div>
                 ) : null}
               </div>
