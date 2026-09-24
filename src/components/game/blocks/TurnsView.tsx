@@ -6,6 +6,7 @@ import { BilingualLine } from "../BilingualLine";
 import { RecordTurn } from "../RecordTurn";
 import type { DialogueBlock } from "@/content/missions/types";
 import type { CharacterId } from "@/content/characters";
+import type { OralHandler } from "../MissionPlayer";
 
 export type Turn = DialogueBlock["conversations"][number]["turns"][number];
 
@@ -17,7 +18,7 @@ type Props = {
   alias: string;
   support: "full" | "reduced";
   onHelpUsed: () => void;
-  onOral: (status: "heard" | "practiced" | "pending") => void;
+  onOral: OralHandler;
   onFinish: () => void;
 };
 
@@ -92,8 +93,7 @@ export function TurnsView({
           support={support}
           onHelpUsed={onHelpUsed}
           onDone={(status) => {
-            onOral(status);
-            advance();
+            onOral(status, turn.targetEn.replace("{alias}", alias), advance);
           }}
         />
       )}

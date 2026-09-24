@@ -7,6 +7,7 @@ import { playClip, stopClip } from "@/lib/audio";
 import { playSnore } from "@/lib/feedback-sounds";
 import { useProgress } from "@/lib/useProgress";
 import { pipSizeFor } from "@/lib/progress";
+import type { OralHandler } from "../MissionPlayer";
 
 type Props = {
   missionId: string;
@@ -15,7 +16,7 @@ type Props = {
   pipColor: string;
   pipAccessories: string[];
   onHelpUsed: () => void;
-  onOral: (status: "heard" | "practiced" | "pending") => void;
+  onOral: OralHandler;
   onFinish: () => void;
 };
 
@@ -43,9 +44,8 @@ export function MicCheckView({
     if (done) return;
     setDone(true);
     setMood(status === "pending" ? "happy" : "eat");
-    onOral(status);
+    onOral(status, block.record.targetEn, onFinish);
     window.setTimeout(() => setMood("happy"), 800);
-    window.setTimeout(onFinish, 1400);
   }
 
   return (

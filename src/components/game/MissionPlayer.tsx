@@ -1,7 +1,13 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { BACKGROUNDS } from "@/content/backgrounds";
 import type { Mission, TimeOfDay } from "@/content/missions/types";
-import { addReward, getMissionProgress, updateMission } from "@/lib/progress";
+import {
+  addReward,
+  getMissionProgress,
+  updateMission,
+  type OralResult,
+  type PipProgress,
+} from "@/lib/progress";
 import { useProgress } from "@/lib/useProgress";
 import { stopClip } from "@/lib/audio";
 import { SceneShell } from "./SceneShell";
@@ -29,12 +35,22 @@ import { MissionComplete } from "./MissionComplete";
 import { BlockIntro } from "./BlockIntro";
 import { BLOCK_INTROS } from "@/content/glossary";
 import { DEFAULT_PIP_COLOR, type PipMood } from "./Pip";
-import { playEvolution, playMunch } from "@/lib/feedback-sounds";
+import { PipFeedMoment } from "./PipFeedMoment";
 
 type Props = {
   mission: Mission;
   alias: string;
   avatarImage: string;
+};
+
+export type OralHandler = (status: OralResult, phrase: string, after?: () => void) => void;
+
+type FeedMoment = {
+  phrase: string;
+  before: PipProgress;
+  after: PipProgress;
+  evolved: boolean;
+  continueAfter?: () => void;
 };
 
 export function MissionPlayer({ mission, alias, avatarImage }: Props) {
@@ -49,8 +65,9 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
   const [sunTime, setSunTime] = useState<TimeOfDay | null>(null);
   const [skyTime, setSkyTime] = useState<TimeOfDay | null>(null);
   const [sunGold, setSunGold] = useState(0);
-  const [pipMood, setPipMood] = useState<PipMood>("happy");
-  const [pipEvolving, setPipEvolving] = useState(false);
+  const [pipMood] = useState<PipMood>("happy");
+  const [feedMoment, setFeedMoment] = useState<FeedMoment | null>(null);
+  const [pipBounceKey, setPipBounceKey] = useState(0);
 
   // Recuperar dónde quedó el alumno, una sola vez.
   useEffect(() => {
@@ -101,35 +118,23 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
     );
   }
 
-  function onOral(status: "heard" | "practiced" | "pending") {
-    setPipMood("eat");
-    {
-      playMunch();
-      window.setTimeout(() => setPipMood("happy"), 800);
-
-      const target = mission.pip?.feedsToEvolve ?? 0;
-      const nextFeeds = target > 0 ? Math.min(state.pip.feeds + 1, target) : state.pip.feeds + 1;
+  function onOral(status: OralResult, phrase: string, continueAfter?: () => void) {
+    const target = mission.pip?.feedsToEvolve ?? 0;
+    const shouldFeed = status !== "pending";
+    if (shouldFeed) {
+      const before = state.pip;
+      const nextFeeds = target > 0 ? Math.min(before.feeds + 1, target) : before.feeds + 1;
       const evolves =
-        target > 0 && nextFeeds >= target && !state.pip.accessories.includes(mission.reward.id);
-
-      if (evolves) {
-        setPipEvolving(true);
-        playEvolution();
-        window.setTimeout(() => setPipEvolving(false), 1800);
-      }
-
-      update((prev) => ({
-        ...prev,
-        pip: {
-          ...prev.pip,
-          feeds: target > 0 ? Math.min(prev.pip.feeds + 1, target) : prev.pip.feeds + 1,
-          stage: evolves ? prev.pip.stage + 1 : prev.pip.stage,
-          accessories:
-            evolves && !prev.pip.accessories.includes(mission.reward.id)
-              ? [...prev.pip.accessories, mission.reward.id]
-              : prev.pip.accessories,
-        },
-      }));
+        target > 0 && nextFeeds >= target && !before.accessories.includes(mission.reward.id);
+      const after: PipProgress = {
+        ...before,
+        feeds: nextFeeds,
+        totalFeeds: before.totalFeeds + 1,
+        stage: evolves ? before.stage + 1 : before.stage,
+        accessories: evolves ? [...before.accessories, mission.reward.id] : before.accessories,
+      };
+      update((prev) => ({ ...prev, pip: after }));
+      setFeedMoment({ phrase, before, after, evolved: evolves, continueAfter });
     }
     update((prev) =>
       updateMission(prev, mission.id, (p) => {
@@ -154,7 +159,16 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
         };
       }),
     );
+    if (!shouldFeed) continueAfter?.();
   }
+
+  const closeFeedMoment = useCallback(() => {
+    setFeedMoment((current) => {
+      window.setTimeout(() => current?.continueAfter?.(), 0);
+      return null;
+    });
+    setPipBounceKey((value) => value + 1);
+  }, []);
 
   function goToStep(index: number) {
     setStepIndex(index);
@@ -256,6 +270,7 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
       : { icon: "star" as const, total: mission.blocks.length, current: blockIndex };
 
   return (
+    <>
     <SceneShell
       background={BACKGROUNDS[time]}
       title={mission.title}
@@ -267,8 +282,10 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
         color: state.pip.color ?? DEFAULT_PIP_COLOR,
         feeds: state.pip.feeds,
         total: mission.pip?.feedsToEvolve ?? 0,
+        totalFeeds: state.pip.totalFeeds,
+        stage: state.pip.stage,
         accessories: state.pip.accessories,
-        evolving: pipEvolving,
+        bounceKey: pipBounceKey,
       }}
     >
       {showingIntro ? (
@@ -427,5 +444,17 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
         />
       ) : null}
     </SceneShell>
+    {feedMoment ? (
+      <PipFeedMoment
+        phrase={feedMoment.phrase}
+        before={feedMoment.before}
+        after={feedMoment.after}
+        feedsToEvolve={mission.pip?.feedsToEvolve ?? 0}
+        evolved={feedMoment.evolved}
+        rewardLabel={mission.pip?.rewardLabel ?? mission.reward.label}
+        onClose={closeFeedMoment}
+      />
+    ) : null}
+    </>
   );
 }

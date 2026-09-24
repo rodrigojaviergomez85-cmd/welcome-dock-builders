@@ -8,13 +8,14 @@ import { RecordTurn } from "../RecordTurn";
 import { playClip, stopClip } from "@/lib/audio";
 import { playFanfare, playSuccess } from "@/lib/feedback-sounds";
 import { cn } from "@/lib/utils";
+import type { OralHandler } from "../MissionPlayer";
 
 type Props = {
   missionId: string;
   block: SunClockBlock;
   alias: string;
   onHelpUsed: () => void;
-  onOral: (status: "heard" | "practiced" | "pending") => void;
+  onOral: OralHandler;
   /** Cambia el cielo de la escena. */
   onTimeChange: (time: TimeOfDay) => void;
   /** Cuántos soles dorados lleva ganados (para el contador de arriba). */
@@ -123,19 +124,21 @@ export function SunClockView({
   }
 
   function winSun(index: number, status: "heard" | "practiced" | "pending") {
-    onOral(status);
-    setRecordAt(null);
-    if (gold.includes(index)) return;
-    const next = [...gold, index];
-    setGold(next);
-    onGoldChange(next.length);
-    if (next.length === count) {
-      setPhase("done");
-      setSpin(true);
-      playFanfare();
-      void playClip(block.done.clip);
-      setTimeout(onFinish, 3200);
-    }
+    const spoken = stops[index]?.repeat.targetEn ?? "";
+    onOral(status, spoken, () => {
+      setRecordAt(null);
+      if (gold.includes(index)) return;
+      const next = [...gold, index];
+      setGold(next);
+      onGoldChange(next.length);
+      if (next.length === count) {
+        setPhase("done");
+        setSpin(true);
+        playFanfare();
+        void playClip(block.done.clip);
+        setTimeout(onFinish, 3200);
+      }
+    });
   }
 
   /** Arrastre del sol: convierte la posición del dedo en un punto del arco. */
