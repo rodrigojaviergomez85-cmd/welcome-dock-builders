@@ -450,7 +450,7 @@ export const LINES: Line[] = [
     id: "es-ask-confused",
     speaker: "es",
     text: "¡Esa es la respuesta! Ahora te toca preguntar a vos. Escuchá.",
-  },  // Celebraciones por personaje
+  }, // Celebraciones por personaje
   { id: "luna-cheer-fantastic", speaker: "luna", text: "Fantastic!" },
   { id: "luna-cheer-awesome", speaker: "luna", text: "Awesome!" },
   { id: "luna-cheer-great-job", speaker: "luna", text: "Great job!" },
