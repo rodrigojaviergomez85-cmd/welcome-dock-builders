@@ -36,7 +36,7 @@ export const mondayMission: Mission = {
     "Good night!",
     "What is your name?",
     "My name is {alias}.",
-    "How are you?",
+    "Hello! How are you?",
     "I am fine, thank you.",
     "Good afternoon! My name is {alias}.",
   ],
@@ -49,10 +49,13 @@ export const mondayMission: Mission = {
     "Good afternoon!",
     "Good evening!",
     "Good night!",
+    "Hello! How are you?",
+    "I am fine, thank you.",
+    "What is your name?",
     "My name is {alias}.",
   ],
-  /** Pip come 8 oraciones en la misión: 4 saludos + etiqueta + 2 turnos del role play + presentación. */
-  pip: { feedsToEvolve: 8, rewardLabel: "Pip aprende a saludar" },
+  /** Pip come 10 frases: Hello + 4 saludos + etiqueta + 3 turnos del role play + presentación. */
+  pip: { feedsToEvolve: 10, rewardLabel: "Pip aprende a saludar" },
   blocks: [
     /* ───────────── 0. Arranque: adoptar a Pip y probar el micrófono (1 min) ───────────── */
     {
@@ -234,25 +237,6 @@ export const mondayMission: Mission = {
         en: "Your tag is ready!",
         es: "¡Tu etiqueta está lista!",
       },
-      /** Cambio de rol: ahora el niño pregunta y Mia responde. */
-      swap: {
-        record: {
-          id: "t2",
-          role: "ask",
-          promptEs: "¡Mirá, llegó Mia! Preguntale cómo se llama diciendo:",
-          promptClip: "es-ask-mia-name-v2",
-          askSequenceClip: "es-ask-mia-name-full",
-          confusedWith: "My name is {alias}.",
-          targetEn: "What is your name?",
-          modelClip: "model-what-name",
-        },
-        answer: {
-          speaker: "mia",
-          clip: "mia-my-name-is",
-          en: "My name is Mia!",
-          es: "¡Me llamo Mia!",
-        },
-      },
     },
 
     /* ───────────── 4. ROLE PLAY con Pip (3 min) · PRACTICE (diálogo exacto de la currícula) ───────────── */
@@ -283,20 +267,7 @@ export const mondayMission: Mission = {
               targetEn: "I am fine, thank you.",
               modelClip: "model-i-am-fine-thank-you",
             },
-            {
-              type: "character",
-              speaker: "luna",
-              clip: "luna-what-name",
-              en: "What is your name?",
-            },
-            {
-              type: "record",
-              id: "t4",
-              role: "answer",
-              promptEs: "Decí tu nombre.",
-              targetEn: "My name is {alias}.",
-              modelClip: "model-my-name-is",
-            },
+            { type: "character", speaker: "luna", clip: "luna-great", en: "Great!" },
           ],
         },
         {

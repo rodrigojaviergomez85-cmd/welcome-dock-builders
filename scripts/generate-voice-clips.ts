@@ -121,6 +121,7 @@ export const LINES: Line[] = [
     text: "Hello! My name is Luna. Welcome to Explorer Island!",
   },
   { id: "luna-what-name", speaker: "luna", text: "What is your name?" },
+  { id: "luna-great", speaker: "luna", text: "Great!" },
   { id: "luna-how-are-you", speaker: "luna", text: "How are you?" },
   { id: "luna-i-am-fine", speaker: "luna", text: "I am fine, thank you!" },
   { id: "luna-nice", speaker: "luna", text: "Nice to meet you!" },

@@ -564,7 +564,7 @@ function GuidedRecordTurn({
         </div>
         <button
           type="button"
-          onClick={() => setState("fragment-listen")}
+          onClick={() => setState(fragments.length === 1 ? "complete" : "fragment-listen")}
           className={`tap-target mt-5 flex w-full items-center justify-center gap-2 rounded-2xl bg-primary px-6 font-display text-lg text-primary-foreground shadow-[var(--shadow-pop)] active:translate-y-1 active:shadow-none ${spanishPlayed ? "animate-pop" : ""}`}
         >
           Ya entendí <ArrowRight className="size-5" aria-hidden />
