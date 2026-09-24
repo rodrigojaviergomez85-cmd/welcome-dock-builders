@@ -77,7 +77,8 @@ function IslandMap() {
             to="/adulto"
             className="tap-target inline-flex h-10 items-center gap-2 rounded-full bg-secondary px-2 font-display text-secondary-foreground sm:px-3"
           >
-            <ShieldCheck className="size-5" aria-hidden /> <span className="hidden sm:inline">Adulto</span>
+            <ShieldCheck className="size-5" aria-hidden />{" "}
+            <span className="hidden sm:inline">Adulto</span>
           </Link>
         </div>
       </header>
@@ -122,7 +123,9 @@ function IslandMap() {
           </div>
           <section aria-labelledby="week-title" className="min-w-0">
             <div className="flex flex-wrap items-center justify-between gap-2 md:block">
-              <h2 id="week-title" className="font-display text-xl md:sr-only">Los cinco días de la semana</h2>
+              <h2 id="week-title" className="font-display text-xl md:sr-only">
+                Los cinco días de la semana
+              </h2>
               <p className="flex items-center gap-1 rounded-full bg-card px-3 py-2 text-xs shadow-[var(--shadow-soft)] md:justify-center md:text-sm">
                 Pase de la semana:
                 {missions.map((mission) => (
@@ -139,60 +142,67 @@ function IslandMap() {
               </p>
             </div>
             <ul className="mt-3 grid gap-3 sm:grid-cols-2 md:grid-cols-1 md:gap-2">
-          {missions.map((mission, index) => {
-            const progress = getMissionProgress(state, mission.id);
-            const previous = missions[index - 1];
-            const unlocked =
-              !previous || getMissionProgress(state, previous.id).completed || progress.started;
+              {missions.map((mission, index) => {
+                const progress = getMissionProgress(state, mission.id);
+                const previous = missions[index - 1];
+                const unlocked =
+                  !previous || getMissionProgress(state, previous.id).completed || progress.started;
 
-            return (
-              <li
-                key={mission.id}
-                className={
-                  unlocked
-                    ? "rounded-2xl bg-card p-4 shadow-[var(--shadow-soft)] md:p-3"
-                    : "rounded-2xl border-2 border-dashed border-border bg-muted/60 p-4 md:p-3"
-                }
-              >
-                <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2">
-                  <div className="min-w-0">
-                    <p className="truncate text-xs text-muted-foreground">
-                      {mission.dayEs} · {unlocked ? "Zona abierta" : "Zona cerrada"}
-                    </p>
-                    <h3 className="truncate font-display text-lg sm:text-xl md:text-lg">{mission.title}</h3>
-                    <p className="mt-1 text-sm text-muted-foreground md:hidden">{mission.objective}</p>
-
-                    {ready && unlocked ? (
-                      <p className="mt-2 text-sm md:hidden">
-                    {progress.completed
-                      ? `Terminada ${progress.completions} vez(ces). Podés repetirla para practicar.`
-                      : progress.started
-                        ? "Empezada: podés continuar donde quedaste."
-                        : "Sin empezar."}
-                      </p>
-                    ) : null}
-                  </div>
-
-                {unlocked ? (
-                  <Link
-                    to={PATHS[mission.id as keyof typeof PATHS]}
-                    className="tap-target inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-primary px-4 font-display text-primary-foreground shadow-[var(--shadow-pop)] active:translate-y-1 active:shadow-none md:size-11 md:px-0"
-                    aria-label={`${progress.started && !progress.completed ? "Continuar" : "Jugar"}: ${mission.title}`}
+                return (
+                  <li
+                    key={mission.id}
+                    className={
+                      unlocked
+                        ? "rounded-2xl bg-card p-4 shadow-[var(--shadow-soft)] md:p-3"
+                        : "rounded-2xl border-2 border-dashed border-border bg-muted/60 p-4 md:p-3"
+                    }
                   >
-                    <Play className="size-5" aria-hidden />
-                    <span className="md:hidden">
-                      {progress.started && !progress.completed ? "Continuar" : "Jugar"}
-                    </span>
-                  </Link>
-                ) : (
-                  <p className="inline-flex size-11 shrink-0 items-center justify-center rounded-full bg-card text-muted-foreground" aria-label="Se abre al terminar el día anterior">
-                    <Lock className="size-4" aria-hidden />
-                  </p>
-                )}
-                </div>
-              </li>
-            );
-          })}
+                    <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2">
+                      <div className="min-w-0">
+                        <p className="truncate text-xs text-muted-foreground">
+                          {mission.dayEs} · {unlocked ? "Zona abierta" : "Zona cerrada"}
+                        </p>
+                        <h3 className="truncate font-display text-lg sm:text-xl md:text-lg">
+                          {mission.title}
+                        </h3>
+                        <p className="mt-1 text-sm text-muted-foreground md:hidden">
+                          {mission.objective}
+                        </p>
+
+                        {ready && unlocked ? (
+                          <p className="mt-2 text-sm md:hidden">
+                            {progress.completed
+                              ? `Terminada ${progress.completions} vez(ces). Podés repetirla para practicar.`
+                              : progress.started
+                                ? "Empezada: podés continuar donde quedaste."
+                                : "Sin empezar."}
+                          </p>
+                        ) : null}
+                      </div>
+
+                      {unlocked ? (
+                        <Link
+                          to={PATHS[mission.id as keyof typeof PATHS]}
+                          className="tap-target inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-primary px-4 font-display text-primary-foreground shadow-[var(--shadow-pop)] active:translate-y-1 active:shadow-none md:size-11 md:px-0"
+                          aria-label={`${progress.started && !progress.completed ? "Continuar" : "Jugar"}: ${mission.title}`}
+                        >
+                          <Play className="size-5" aria-hidden />
+                          <span className="md:hidden">
+                            {progress.started && !progress.completed ? "Continuar" : "Jugar"}
+                          </span>
+                        </Link>
+                      ) : (
+                        <p
+                          className="inline-flex size-11 shrink-0 items-center justify-center rounded-full bg-card text-muted-foreground"
+                          aria-label="Se abre al terminar el día anterior"
+                        >
+                          <Lock className="size-4" aria-hidden />
+                        </p>
+                      )}
+                    </div>
+                  </li>
+                );
+              })}
             </ul>
           </section>
         </div>

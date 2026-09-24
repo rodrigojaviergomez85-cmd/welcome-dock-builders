@@ -51,10 +51,7 @@ export function PipHome({ pip, day, feedsToEvolve, asleep, missionPath }: Props)
   }
 
   return (
-    <section
-      aria-label="La casa de Pip"
-      className="pointer-events-none absolute inset-0 z-10"
-    >
+    <section aria-label="La casa de Pip" className="pointer-events-none absolute inset-0 z-10">
       <button
         type="button"
         onClick={() => setPanel("homes")}
