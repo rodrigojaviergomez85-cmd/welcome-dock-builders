@@ -854,7 +854,10 @@ function AskRecordTurn({
           // Dijo la respuesta: cuenta como intento, no como fallo.
           setConfused(true);
           setState("idle");
-          showFullHint(["es-ask-confused"]);
+          void playClip([
+            "es-ask-confused",
+            ...(Array.isArray(modelClip) ? modelClip : [modelClip]),
+          ]);
           return;
         }
         return void fail();
@@ -885,7 +888,12 @@ function AskRecordTurn({
 
       {confused ? (
         <div className="mx-auto mt-3 flex max-w-md animate-pop items-center gap-3 rounded-2xl border-2 border-sun bg-sun/15 p-3 text-left">
-          <Pip mood="happy" color={progress.pip.color} accessories={progress.pip.accessories} className="size-12 shrink-0" />
+          <Pip
+            mood="happy"
+            color={progress.pip.color}
+            accessories={progress.pip.accessories}
+            className="size-12 shrink-0"
+          />
           <p className="font-display text-lg leading-snug">
             ¡Esa es la respuesta! Ahora te toca preguntar a vos. Escuchá.
           </p>
