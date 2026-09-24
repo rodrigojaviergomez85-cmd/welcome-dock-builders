@@ -72,6 +72,7 @@ export function PipHelp({
       idleSince = Date.now();
     };
     const tick = window.setInterval(() => {
+      console.log("piphelp-tick", offeredRef.current, isPlaying(), Date.now() - idleSince);
       if (offeredRef.current) return;
       if (isPlaying()) {
         idleSince = Date.now();
