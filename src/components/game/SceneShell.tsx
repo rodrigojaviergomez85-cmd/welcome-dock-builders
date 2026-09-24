@@ -54,7 +54,7 @@ export function SceneShell({
   const learned = pip?.learned ?? [];
 
   const pipLogicalSize = pip ? pipSizeFor(pip) : 64;
-  const cornerSize = Math.min(120, 44 + Math.max(0, pipLogicalSize - 64) * 0.48);
+  const cornerSize = 40;
 
   return (
     <div className="relative min-h-screen w-full overflow-hidden">
@@ -78,7 +78,10 @@ export function SceneShell({
             <span className="hidden sm:inline">Salir</span>
           </Link>
 
-          <div className="flex items-center gap-2 rounded-full bg-card/90 px-2 py-1 shadow-[var(--shadow-soft)] sm:px-4">
+          <div
+            aria-label={title}
+            className="flex h-14 items-center gap-2 rounded-full bg-card/90 px-3 shadow-[var(--shadow-soft)] sm:px-4"
+          >
             {pip ? (
               <div className="relative flex items-center gap-2">
                 <button
@@ -102,7 +105,7 @@ export function SceneShell({
                   />
                 </button>
                 <div
-                  className="flex flex-col items-center"
+                  className="flex items-center gap-1"
                   aria-label={`${pip.feeds} de ${pip.total}`}
                 >
                   <PipRuler
@@ -110,9 +113,9 @@ export function SceneShell({
                     currentDay={pip.day}
                     feeds={pip.feeds}
                     total={pip.total}
-                    height={96}
+                    height={40}
                   />
-                  <span className="font-display text-xs text-card-foreground">
+                  <span className="font-display text-sm text-card-foreground">
                     {pip.feeds} / {pip.total}
                   </span>
                 </div>
@@ -160,7 +163,6 @@ export function SceneShell({
                 ) : null}
               </div>
             ) : null}
-            <span className="hidden font-display text-card-foreground sm:inline">{title}</span>
             {counter.label ? (
               <span className="font-display text-sm text-card-foreground">{counter.label}</span>
             ) : null}

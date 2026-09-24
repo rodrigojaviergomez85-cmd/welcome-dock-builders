@@ -127,18 +127,16 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
 
   function onOral(status: OralResult, phrase: string, continueAfter?: () => void) {
     const target = mission.pip?.feedsToEvolve ?? 0;
-    const shouldFeed = status !== "pending";
+    const shouldFeed = true;
     const take = takeLastTake();
     if (shouldFeed) {
       const before = state.pip;
-      const learned = take
-        ? addLearned(before.learned, {
-            phrase,
-            clip: take.clip,
-            at: new Date().toISOString(),
-            ...(take.blob && take.recordingKey ? { recordingKey: take.recordingKey } : {}),
-          })
-        : before.learned;
+      const learned = addLearned(before.learned, {
+        phrase,
+        clip: take?.clip ?? "",
+        at: new Date().toISOString(),
+        ...(take?.blob && take.recordingKey ? { recordingKey: take.recordingKey } : {}),
+      });
       const nextFeeds = target > 0 ? Math.min(before.feeds + 1, target) : before.feeds + 1;
       const earnsReward =
         target > 0 && nextFeeds >= target && !before.accessories.includes(mission.reward.id);
@@ -183,7 +181,6 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
         };
       }),
     );
-    if (!shouldFeed) continueAfter?.();
   }
 
   const closeFeedMoment = useCallback(() => {
