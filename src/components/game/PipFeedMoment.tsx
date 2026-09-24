@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import { Pip, type PipMood } from "./Pip";
-import { playEvolution, playGrow, playMunch } from "@/lib/feedback-sounds";
-import { pipSizeFor, type PipProgress } from "@/lib/progress";
+import { playEvolution, playMunch, playTick } from "@/lib/feedback-sounds";
+import { type PipDay, pipSizeFor, type PipProgress } from "@/lib/progress";
+import { CharacterFigure } from "./CharacterFigure";
+import { PipRuler } from "./PipRuler";
+import { BACKGROUNDS } from "@/content/backgrounds";
 
 type Props = {
   phrase: string;
@@ -9,6 +12,7 @@ type Props = {
   after: PipProgress;
   feedsToEvolve: number;
   evolved: boolean;
+  day: PipDay;
   rewardLabel: string;
   onClose: () => void;
 };
@@ -22,6 +26,7 @@ export function PipFeedMoment({
   after,
   feedsToEvolve,
   evolved,
+  day,
   rewardLabel,
   onClose,
 }: Props) {
@@ -45,7 +50,7 @@ export function PipFeedMoment({
       window.setTimeout(() => setMouth("happy"), 1360),
       window.setTimeout(() => {
         setPhase("grow");
-        playGrow();
+        playTick();
       }, 1500),
       window.setTimeout(() => setCanSkip(true), 1000),
     ];
@@ -62,9 +67,9 @@ export function PipFeedMoment({
     return () => timers.forEach(window.clearTimeout);
   }, [evolved, onClose]);
 
-  const logicalSize = pipSizeFor(phase === "evolve" ? after : before);
-  const viewportSize = `min(60vh, ${Math.max(280, logicalSize * 2.5)}px)`;
-  const fill = feedsToEvolve > 0 ? Math.min(100, (after.feeds / feedsToEvolve) * 100) : 100;
+  const shownPip = phase === "evolve" ? after : before;
+  const logicalSize = pipSizeFor(shownPip);
+  const stageChanged = after.stage > before.stage;
 
   return (
     <div
@@ -85,31 +90,64 @@ export function PipFeedMoment({
           ))
         : null}
 
-      <div
-        className={`relative flex items-center justify-center ${
-          phase === "enter"
-            ? "animate-pip-enter"
-            : phase === "eat"
-              ? "animate-pip-chew"
-              : phase === "grow"
-                ? "animate-pip-grow"
-                : phase === "evolve"
-                  ? "animate-pip-evolve"
-                  : ""
-        }`}
-        style={{ width: viewportSize, height: viewportSize }}
-      >
-        <Pip
-          mood={mouth}
-          color={after.color}
-          accessories={phase === "evolve" ? after.accessories : before.accessories}
-          className="size-full max-h-full max-w-full"
-        />
-        {phase === "eat"
-          ? SPARKS.map((_, index) => (
-              <i key={index} className={`pip-spark pip-spark-${index + 1}`} aria-hidden />
-            ))
-          : null}
+      <img
+        src={BACKGROUNDS.afternoon}
+        alt=""
+        className="absolute inset-0 -z-10 size-full object-cover opacity-50"
+        aria-hidden
+      />
+      <div className="relative flex h-[60vh] w-full max-w-5xl items-end justify-center gap-3 sm:gap-8">
+        <div className="relative flex h-full min-w-0 flex-1 items-end justify-end">
+          <CharacterFigure id="leo" className="[&_img]:h-[340px] [&_img]:max-h-[55vh]" />
+        </div>
+        <div
+          className={`relative flex shrink-0 items-end justify-center ${
+            phase === "enter"
+              ? "animate-pip-enter"
+              : phase === "eat"
+                ? "animate-pip-chew"
+                : phase === "grow"
+                  ? "animate-pip-grow"
+                  : phase === "evolve"
+                    ? "animate-pip-evolve"
+                    : ""
+          }`}
+          style={{ width: logicalSize, height: logicalSize }}
+        >
+          {phase === "evolve" && stageChanged ? (
+            <Pip
+              mood="happy"
+              color="var(--color-muted-foreground)"
+              stage={before.stage}
+              feeds={before.feeds}
+              size={pipSizeFor(before)}
+              className="pip-before-silhouette absolute bottom-0 left-[42%] -translate-x-full opacity-40 grayscale"
+            />
+          ) : null}
+          <Pip
+            mood={mouth}
+            color={after.color}
+            stage={shownPip.stage}
+            feeds={shownPip.feeds}
+            accessories={phase === "evolve" ? after.accessories : before.accessories}
+            className="size-full max-h-full max-w-full"
+          />
+          {phase === "eat"
+            ? SPARKS.map((_, index) => (
+                <i key={index} className={`pip-spark pip-spark-${index + 1}`} aria-hidden />
+              ))
+            : null}
+        </div>
+        <div className="flex h-full min-w-0 flex-1 items-end justify-start">
+          <PipRuler
+            marks={after.marks}
+            currentDay={day}
+            feeds={after.feeds}
+            total={feedsToEvolve}
+            height="60vh"
+            animate={phase === "grow"}
+          />
+        </div>
       </div>
 
       {phase === "cookie" ? (
@@ -124,15 +162,9 @@ export function PipFeedMoment({
       {phase === "grow" || phase === "evolve" ? (
         <div className="animate-pop rounded-3xl bg-card/95 px-6 py-4 text-card-foreground shadow-[var(--shadow-soft)]">
           <p className="font-display text-3xl sm:text-4xl">
-            {phase === "evolve" ? "¡Pip evolucionó!" : "¡Pip creció!"}
+            {phase === "evolve" ? "¡Pip evolucionó!" : "¡Ñam! Una rayita más"}
           </p>
           {phase === "evolve" ? <p className="mt-1 text-lg">{rewardLabel}</p> : null}
-          <div className="mx-auto mt-3 h-3 w-48 overflow-hidden rounded-full bg-muted">
-            <div
-              className="h-full animate-pip-meter rounded-full bg-success"
-              style={{ width: `${fill}%` }}
-            />
-          </div>
           <p className="mt-1 font-display text-lg">
             {after.feeds} / {feedsToEvolve}
           </p>

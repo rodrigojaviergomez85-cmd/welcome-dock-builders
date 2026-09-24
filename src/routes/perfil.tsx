@@ -103,6 +103,8 @@ function ProfilePage() {
           <Pip
             mood="happy"
             color={pipColor}
+            stage={state.pip.stage}
+            feeds={state.pip.feeds}
             accessories={state.pip.accessories}
             size={Math.min(180, pipSizeFor(state.pip))}
             className="mr-2"

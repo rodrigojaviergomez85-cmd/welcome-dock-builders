@@ -892,6 +892,8 @@ function AskRecordTurn({
           <Pip
             mood="happy"
             color={progress.pip.color}
+            stage={progress.pip.stage}
+            feeds={progress.pip.feeds}
             accessories={progress.pip.accessories}
             size={Math.min(60, 44 + (pipSizeFor(progress.pip) - 64) * 0.1)}
             className="shrink-0"

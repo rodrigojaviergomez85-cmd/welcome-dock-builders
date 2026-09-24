@@ -98,6 +98,11 @@ export function playGrow() {
   ]);
 }
 
+/** Vara de Pip: golpe de madera seco y corto. */
+export function playTick() {
+  playNotes([{ freq: 235, start: 0, duration: 0.075, volume: 0.13, type: "square" }]);
+}
+
 /** Pip evoluciona: destello ascendente distinto de la recompensa final. */
 export function playEvolution() {
   playNotes([

@@ -18,6 +18,7 @@ export const thursdayMission: Mission = {
   reward: { id: "thursday-letters", label: "Letras de tu nombre" },
   evidence: "Reconoce letras dichas en inglés y entiende un nombre deletreado.",
   counter: { icon: "star", label: "Letras recuperadas" },
+  pip: { feedsToEvolve: 8, rewardLabel: "Pip aprende las letras" },
   reviewPhrases: ["Hello! My name is {alias}.", "I am from {country}.", "I am {age} years old."],
   blocks: [
     {

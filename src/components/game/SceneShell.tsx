@@ -5,7 +5,9 @@ import { cn } from "@/lib/utils";
 import { HelpBubble } from "./HelpBubble";
 import { Pip, type PipMood } from "./Pip";
 import { pipSizeFor } from "@/lib/progress";
+import type { PipDay, PipMark } from "@/lib/progress";
 import { playSuccess } from "@/lib/feedback-sounds";
+import { PipRuler } from "./PipRuler";
 
 type Props = {
   background: string;
@@ -24,6 +26,8 @@ type Props = {
     totalFeeds: number;
     stage: number;
     accessories: string[];
+    marks: PipMark[];
+    day: PipDay;
     bounceKey?: number;
   };
 };
@@ -49,7 +53,6 @@ export function SceneShell({
 
   const pipLogicalSize = pip ? pipSizeFor(pip) : 64;
   const cornerSize = Math.min(120, 44 + Math.max(0, pipLogicalSize - 64) * 0.48);
-  const feedFill = pip && pip.total > 0 ? Math.min(100, (pip.feeds / pip.total) * 100) : 0;
 
   return (
     <div className="relative min-h-screen w-full overflow-hidden">
@@ -89,6 +92,8 @@ export function SceneShell({
                   <Pip
                     mood={pip.mood}
                     color={pip.color}
+                    stage={pip.stage}
+                    feeds={pip.feeds}
                     accessories={pip.accessories}
                     size={cornerSize}
                     className="shrink-0"
@@ -98,38 +103,40 @@ export function SceneShell({
                   className="flex flex-col items-center"
                   aria-label={`${pip.feeds} de ${pip.total}`}
                 >
-                  <div className="relative size-9">
-                    <Pip
-                      mood="happy"
-                      color="var(--color-muted-foreground)"
-                      className="absolute inset-0 size-9 opacity-25"
-                    />
-                    <div
-                      className="absolute inset-0 overflow-hidden"
-                      style={{ clipPath: `inset(${100 - feedFill}% 0 0 0)` }}
-                    >
-                      <Pip mood="happy" color={pip.color} className="size-9" />
-                    </div>
-                  </div>
+                  <PipRuler
+                    marks={pip.marks}
+                    currentDay={pip.day}
+                    feeds={pip.feeds}
+                    total={pip.total}
+                    height={96}
+                  />
                   <span className="font-display text-xs text-card-foreground">
                     {pip.feeds} / {pip.total}
                   </span>
                 </div>
                 {pipCard ? (
-                  <div className="absolute left-0 top-full z-40 mt-2 w-64 animate-pop rounded-2xl bg-card p-4 text-center text-card-foreground shadow-[var(--shadow-soft)]">
-                    <Pip
-                      mood="happy"
-                      color={pip.color}
-                      accessories={pip.accessories}
-                      size={Math.min(150, pipLogicalSize)}
-                      className="mx-auto"
+                  <div className="absolute left-1/2 top-full z-40 mt-2 flex w-72 -translate-x-1/2 animate-pop items-center justify-center gap-3 rounded-2xl bg-card p-4 text-center text-card-foreground shadow-[var(--shadow-soft)]">
+                    <PipRuler
+                      marks={pip.marks}
+                      currentDay={pip.day}
+                      feeds={pip.feeds}
+                      total={pip.total}
+                      height={250}
                     />
-                    <p className="font-display text-lg">Pip ha comido {pip.totalFeeds} frases</p>
-                    <p className="text-sm text-muted-foreground">
-                      {pip.feeds >= pip.total
-                        ? "¡Hoy ya creció!"
-                        : `Le faltan ${Math.max(0, pip.total - pip.feeds)} para crecer`}
-                    </p>
+                    <div>
+                      <Pip
+                        mood="happy"
+                        color={pip.color}
+                        stage={pip.stage}
+                        feeds={pip.feeds}
+                        accessories={pip.accessories}
+                        size={Math.min(120, pipLogicalSize)}
+                        className="mx-auto"
+                      />
+                      <p className="mt-2 font-display text-base leading-snug">
+                        Pip ha comido {pip.totalFeeds} frases · Etapa {pip.stage + 1} de 5
+                      </p>
+                    </div>
                   </div>
                 ) : null}
               </div>

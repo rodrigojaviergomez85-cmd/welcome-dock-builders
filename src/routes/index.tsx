@@ -62,6 +62,8 @@ function IslandMap() {
                 <Pip
                   mood="happy"
                   color={state.pip.color}
+                  stage={state.pip.stage}
+                  feeds={state.pip.feeds}
                   accessories={state.pip.accessories}
                   size={Math.min(56, 38 + (pipSizeFor(state.pip) - 64) * 0.14)}
                 />

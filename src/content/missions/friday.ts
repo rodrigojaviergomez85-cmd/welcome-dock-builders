@@ -18,6 +18,7 @@ export const fridayMission: Mission = {
   reward: { id: "friday-pass", label: "Pase de explorador de la semana" },
   evidence: "Se presenta solo con nombre, deletreo, país y edad.",
   counter: { icon: "star", label: "Partes del show" },
+  pip: { feedsToEvolve: 8, rewardLabel: "Pip gana el pase de explorador" },
   reviewPhrases: [
     "Hello! My name is {alias}.",
     "I am from {country}.",
