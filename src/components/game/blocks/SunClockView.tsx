@@ -38,11 +38,38 @@ function fromBits(value: number, shift: number, count: number) {
 }
 
 /** Mini escena de cada ventanita: recorte del muelle + tinte + astro en su altura. */
-const WINDOW: Record<TimeOfDay, { img: string; tint: string; astro: "sun" | "moon"; top: string; color: string }> = {
-  morning: { img: dockMorning, tint: "bg-[#ff9ec4]/35", astro: "sun", top: "62%", color: "text-[#FFB347]" },
-  afternoon: { img: dockAfternoon, tint: "bg-[#5ec8ff]/25", astro: "sun", top: "22%", color: "text-[#FFD166]" },
-  evening: { img: dockEvening, tint: "bg-[#ff7a2f]/35", astro: "sun", top: "66%", color: "text-[#ff6b1a]" },
-  night: { img: dockNight, tint: "bg-[#0b1840]/45", astro: "moon", top: "26%", color: "text-[#fff6c8]" },
+const WINDOW: Record<
+  TimeOfDay,
+  { img: string; tint: string; astro: "sun" | "moon"; top: string; color: string }
+> = {
+  morning: {
+    img: dockMorning,
+    tint: "bg-[#ff9ec4]/35",
+    astro: "sun",
+    top: "62%",
+    color: "text-[#FFB347]",
+  },
+  afternoon: {
+    img: dockAfternoon,
+    tint: "bg-[#5ec8ff]/25",
+    astro: "sun",
+    top: "22%",
+    color: "text-[#FFD166]",
+  },
+  evening: {
+    img: dockEvening,
+    tint: "bg-[#ff7a2f]/35",
+    astro: "sun",
+    top: "66%",
+    color: "text-[#ff6b1a]",
+  },
+  night: {
+    img: dockNight,
+    tint: "bg-[#0b1840]/45",
+    astro: "moon",
+    top: "26%",
+    color: "text-[#fff6c8]",
+  },
 };
 
 /** Sol grande con carita y halo. */
@@ -51,14 +78,29 @@ function SunFace({ className }: { className?: string }) {
     <svg viewBox="0 0 100 100" className={className} aria-hidden>
       <circle cx="50" cy="50" r="48" fill="#FFD166" opacity="0.35" />
       {Array.from({ length: 12 }, (_, i) => (
-        <rect key={i} x="47" y="2" width="6" height="14" rx="3" fill="#FFB347" transform={`rotate(${i * 30} 50 50)`} />
+        <rect
+          key={i}
+          x="47"
+          y="2"
+          width="6"
+          height="14"
+          rx="3"
+          fill="#FFB347"
+          transform={`rotate(${i * 30} 50 50)`}
+        />
       ))}
       <circle cx="50" cy="50" r="30" fill="#FFD166" stroke="#F4A300" strokeWidth="3" />
       <circle cx="40" cy="46" r="3.6" fill="#5a3a00" />
       <circle cx="60" cy="46" r="3.6" fill="#5a3a00" />
       <circle cx="34" cy="56" r="4" fill="#ff8a8a" opacity="0.6" />
       <circle cx="66" cy="56" r="4" fill="#ff8a8a" opacity="0.6" />
-      <path d="M40 58 Q50 67 60 58" stroke="#5a3a00" strokeWidth="3.4" fill="none" strokeLinecap="round" />
+      <path
+        d="M40 58 Q50 67 60 58"
+        stroke="#5a3a00"
+        strokeWidth="3.4"
+        fill="none"
+        strokeLinecap="round"
+      />
     </svg>
   );
 }
@@ -210,7 +252,11 @@ export function SunClockView({
         onPointerLeave={() => setDragT(null)}
         className="fixed left-1/2 top-[8.5rem] z-10 h-[max(9rem,20vh)] w-[min(86vw,40rem)] -translate-x-1/2 touch-none select-none"
       >
-        <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 size-full overflow-visible">
+        <svg
+          viewBox="0 0 100 100"
+          preserveAspectRatio="none"
+          className="absolute inset-0 size-full overflow-visible"
+        >
           <path
             d="M6 86 Q50 -70 94 86"
             fill="none"
@@ -252,16 +298,29 @@ export function SunClockView({
                 phase === "repeat" && !isGold && "animate-pulse",
               )}
             >
-              <img src={w.img} alt="" className="absolute inset-0 size-full scale-150 object-cover object-top" />
+              <img
+                src={w.img}
+                alt=""
+                className="absolute inset-0 size-full scale-150 object-cover object-top"
+              />
               <span className={cn("absolute inset-0", w.tint)} />
               {stop.time === "night" ? (
                 <>
-                  <Star className="absolute left-[22%] top-[18%] size-2.5 fill-current text-[#fff6c8]" aria-hidden />
-                  <Star className="absolute right-[20%] top-[44%] size-2 fill-current text-[#fff6c8]" aria-hidden />
+                  <Star
+                    className="absolute left-[22%] top-[18%] size-2.5 fill-current text-[#fff6c8]"
+                    aria-hidden
+                  />
+                  <Star
+                    className="absolute right-[20%] top-[44%] size-2 fill-current text-[#fff6c8]"
+                    aria-hidden
+                  />
                 </>
               ) : null}
               <Astro
-                className={cn("absolute left-1/2 size-7 -translate-x-1/2 -translate-y-1/2 fill-current sm:size-8", w.color)}
+                className={cn(
+                  "absolute left-1/2 size-7 -translate-x-1/2 -translate-y-1/2 fill-current sm:size-8",
+                  w.color,
+                )}
                 style={{ top: w.top }}
                 aria-hidden
               />
@@ -297,7 +356,10 @@ export function SunClockView({
         >
           <SunFace className="size-full drop-shadow-[0_0_18px_rgba(255,209,102,0.9)]" />
           {showDemo ? (
-            <Hand className="absolute -bottom-3 left-1/2 size-9 fill-card text-foreground" aria-hidden />
+            <Hand
+              className="absolute -bottom-3 left-1/2 size-9 fill-card text-foreground"
+              aria-hidden
+            />
           ) : null}
         </div>
       </div>
@@ -327,11 +389,15 @@ export function SunClockView({
               <p lang="en" className="font-display text-3xl sm:text-4xl">
                 {current.line.en}
               </p>
-              {current.line.es ? <p className="text-sm text-muted-foreground">{current.line.es}</p> : null}
+              {current.line.es ? (
+                <p className="text-sm text-muted-foreground">{current.line.es}</p>
+              ) : null}
               <AudioButton clipId={current.line.clip} label="Escuchar" />
             </div>
           ) : (
-            <p className="mb-10 rounded-full bg-card/90 px-4 py-2 text-sm text-card-foreground">{block.helpEs}</p>
+            <p className="mb-10 rounded-full bg-card/90 px-4 py-2 text-sm text-card-foreground">
+              {block.helpEs}
+            </p>
           )}
         </div>
       ) : null}
