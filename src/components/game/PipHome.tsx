@@ -32,7 +32,8 @@ export function PipHome({ pip, day, feedsToEvolve, asleep, missionPath }: Props)
   const [awake, setAwake] = useState(false);
   const stage = Math.min(4, Math.max(0, pip.stage));
   const sleeping = asleep && !awake;
-  const missing = Math.max(0, feedsToEvolve - pip.feeds);
+  const known = Math.max(pip.learned.length, pip.totalFeeds);
+  const missing = Math.max(1, (stage + 1) * feedsToEvolve - pip.totalFeeds);
   // Pip a su tamaño de etapa, acotado para que quepa en 400 px.
   const pipSize = Math.min(pipSizeFor(pip), 110);
 
@@ -101,7 +102,7 @@ export function PipHome({ pip, day, feedsToEvolve, asleep, missionPath }: Props)
         />
       </div>
       <p className="mt-3 text-center font-display text-lg">
-        Pip sabe {pip.learned.length} {pip.learned.length === 1 ? "frase" : "frases"} ·{" "}
+        Pip sabe {known} {known === 1 ? "frase" : "frases"} ·{" "}
         {stage >= 4 ? "ya es gigante" : `le faltan ${missing} para crecer`}
       </p>
       {sleeping ? (

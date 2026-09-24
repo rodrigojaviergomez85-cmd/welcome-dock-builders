@@ -173,10 +173,10 @@ export function SunClockView({
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
         onPointerLeave={() => setDragT(null)}
-        className="fixed left-1/2 top-[11vh] z-10 h-[22vh] w-[min(92vw,42rem)] -translate-x-1/2 touch-none select-none"
+        className="fixed left-1/2 top-[9.5rem] z-10 h-[22vh] w-[min(92vw,42rem)] -translate-x-1/2 touch-none select-none"
       >
         {phase === "repeat" ? (
-          <p className="absolute -top-8 left-1/2 z-30 -translate-x-1/2 whitespace-nowrap rounded-full bg-card/95 px-4 py-1 font-display text-base text-card-foreground shadow-[var(--shadow-soft)]">
+          <p className="absolute -top-12 left-1/2 z-30 -translate-x-1/2 whitespace-nowrap rounded-full bg-card/95 px-4 py-1 font-display text-base text-card-foreground shadow-[var(--shadow-soft)]">
             Tocá un cielo y repetí
           </p>
         ) : null}
@@ -260,7 +260,7 @@ export function SunClockView({
         </div>
       </div>
 
-      <div className="h-[20vh]" aria-hidden />
+      <div className="h-[calc(22vh+4rem)]" aria-hidden />
       <p className="rounded-full bg-card/85 px-4 py-1 text-center text-xs text-muted-foreground">
         {block.helpEs}
       </p>
