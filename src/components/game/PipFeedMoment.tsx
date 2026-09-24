@@ -30,7 +30,7 @@ export function PipFeedMoment({
   evolved,
   day,
   rewardLabel,
-  voice = null,
+  voice: _voice = null,
   onClose,
 }: Props) {
   const [phase, setPhase] = useState<"enter" | "cookie" | "eat" | "grow" | "evolve">("enter");
@@ -151,7 +151,6 @@ export function PipFeedMoment({
           />
         </div>
       </div>
-
 
       {phase === "cookie" ? (
         <div
