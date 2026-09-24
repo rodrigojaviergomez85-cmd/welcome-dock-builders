@@ -6,6 +6,8 @@ import { AVATARS } from "@/content/characters";
 import { useProgress } from "@/lib/useProgress";
 import { getMissionProgress, pipSizeFor } from "@/lib/progress";
 import { Pip } from "@/components/game/Pip";
+import { PipHome, currentPipDay } from "@/components/game/PipHome";
+import { today } from "@/lib/economy";
 
 const description =
   "Juego de inglés para niños de 8 a 12 años. Semana 1 completa: saludos, países, números, alfabeto y tu presentación.";
@@ -101,6 +103,25 @@ function IslandMap() {
             ) : null}
           </div>
         </div>
+
+        {ready && profile
+          ? (() => {
+              const completed = missions
+                .filter((m) => getMissionProgress(state, m.id).completed)
+                .map((m) => m.id);
+              const day = currentPipDay(completed);
+              const next = missions.find((m) => !completed.includes(m.id)) ?? missions[0];
+              return (
+                <PipHome
+                  pip={state.pip}
+                  day={day}
+                  feedsToEvolve={next?.pip?.feedsToEvolve ?? 8}
+                  asleep={state.streak?.lastDay !== today()}
+                  missionPath={next ? PATHS[next.id as keyof typeof PATHS] : null}
+                />
+              );
+            })()
+          : null}
 
         <div className="mt-8 flex flex-wrap items-center justify-between gap-3">
           <h2 className="font-display text-2xl">Los cinco días de la semana</h2>
