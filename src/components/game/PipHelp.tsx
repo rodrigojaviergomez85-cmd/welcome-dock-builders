@@ -3,7 +3,7 @@ import { Hand, Mic, X } from "lucide-react";
 import { Pip } from "./Pip";
 import { AudioButton } from "./AudioButton";
 import { gloss } from "@/content/glossary";
-import { playClip, stopClip } from "@/lib/audio";
+import { isPlaying, playClip, stopClip } from "@/lib/audio";
 import { useProgress } from "@/lib/useProgress";
 import { pipSizeFor } from "@/lib/progress";
 
@@ -72,7 +72,6 @@ export function PipHelp({
       idleSince = Date.now();
     };
     const tick = window.setInterval(() => {
-      (window as any).__tick = [offeredRef.current, isPlaying(), Date.now() - idleSince];
       if (offeredRef.current) return;
       if (isPlaying()) {
         idleSince = Date.now();
