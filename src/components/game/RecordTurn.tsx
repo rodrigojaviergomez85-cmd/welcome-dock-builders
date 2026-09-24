@@ -379,6 +379,11 @@ function GuidedRecordTurn({
   };
   const practiceTarget = recordingFull ? targetEn : fragment.en;
 
+  useEffect(() => {
+    setLastTake({ clip: modelClip });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [turnId]);
+
   async function begin(full = false) {
     stopClip();
     setRecordingFull(full);
