@@ -121,7 +121,7 @@ export function PipFeedMoment({
               stage={before.stage}
               feeds={before.feeds}
               size={pipSizeFor(before)}
-              className="pip-before-silhouette absolute bottom-0 left-1/2 -translate-x-1/2 opacity-40 grayscale"
+              className="pip-before-silhouette absolute bottom-0 left-[42%] -translate-x-full opacity-40 grayscale"
             />
           ) : null}
           <Pip

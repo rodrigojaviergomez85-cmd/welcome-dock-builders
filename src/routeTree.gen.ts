@@ -12,7 +12,6 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdultoRouteImport } from './routes/adulto'
 import { Route as PerfilRouteImport } from './routes/perfil'
-import { Route as PipEtapasRouteImport } from './routes/pip-etapas'
 import { Route as MisionJuevesRouteImport } from './routes/mision.jueves'
 import { Route as MisionLunesRouteImport } from './routes/mision.lunes'
 import { Route as MisionMartesRouteImport } from './routes/mision.martes'
@@ -32,11 +31,6 @@ const AdultoRoute = AdultoRouteImport.update({
 const PerfilRoute = PerfilRouteImport.update({
   id: '/perfil',
   path: '/perfil',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PipEtapasRoute = PipEtapasRouteImport.update({
-  id: '/pip-etapas',
-  path: '/pip-etapas',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MisionJuevesRoute = MisionJuevesRouteImport.update({
@@ -69,7 +63,6 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/adulto': typeof AdultoRoute
   '/perfil': typeof PerfilRoute
-  '/pip-etapas': typeof PipEtapasRoute
   '/mision/jueves': typeof MisionJuevesRoute
   '/mision/lunes': typeof MisionLunesRoute
   '/mision/martes': typeof MisionMartesRoute
@@ -80,7 +73,6 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/adulto': typeof AdultoRoute
   '/perfil': typeof PerfilRoute
-  '/pip-etapas': typeof PipEtapasRoute
   '/mision/jueves': typeof MisionJuevesRoute
   '/mision/lunes': typeof MisionLunesRoute
   '/mision/martes': typeof MisionMartesRoute
@@ -92,7 +84,6 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/adulto': typeof AdultoRoute
   '/perfil': typeof PerfilRoute
-  '/pip-etapas': typeof PipEtapasRoute
   '/mision/jueves': typeof MisionJuevesRoute
   '/mision/lunes': typeof MisionLunesRoute
   '/mision/martes': typeof MisionMartesRoute
@@ -105,7 +96,6 @@ export interface FileRouteTypes {
     | '/'
     | '/adulto'
     | '/perfil'
-    | '/pip-etapas'
     | '/mision/jueves'
     | '/mision/lunes'
     | '/mision/martes'
@@ -116,7 +106,6 @@ export interface FileRouteTypes {
     | '/'
     | '/adulto'
     | '/perfil'
-    | '/pip-etapas'
     | '/mision/jueves'
     | '/mision/lunes'
     | '/mision/martes'
@@ -127,7 +116,6 @@ export interface FileRouteTypes {
     | '/'
     | '/adulto'
     | '/perfil'
-    | '/pip-etapas'
     | '/mision/jueves'
     | '/mision/lunes'
     | '/mision/martes'
@@ -139,7 +127,6 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdultoRoute: typeof AdultoRoute
   PerfilRoute: typeof PerfilRoute
-  PipEtapasRoute: typeof PipEtapasRoute
   MisionJuevesRoute: typeof MisionJuevesRoute
   MisionLunesRoute: typeof MisionLunesRoute
   MisionMartesRoute: typeof MisionMartesRoute
@@ -168,13 +155,6 @@ declare module '@tanstack/react-router' {
       path: '/perfil'
       fullPath: '/perfil'
       preLoaderRoute: typeof PerfilRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pip-etapas': {
-      id: '/pip-etapas'
-      path: '/pip-etapas'
-      fullPath: '/pip-etapas'
-      preLoaderRoute: typeof PipEtapasRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/mision/jueves': {
@@ -219,7 +199,6 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdultoRoute: AdultoRoute,
   PerfilRoute: PerfilRoute,
-  PipEtapasRoute: PipEtapasRoute,
   MisionJuevesRoute: MisionJuevesRoute,
   MisionLunesRoute: MisionLunesRoute,
   MisionMartesRoute: MisionMartesRoute,

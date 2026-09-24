@@ -532,7 +532,7 @@
   z-index: 120;
   pointer-events: none;
   background: var(--color-card);
-  animation: pip-flash 0.45s ease-out both;
+  animation: pip-flash 0.2s ease-out both;
 }
 
 .pip-spark {
