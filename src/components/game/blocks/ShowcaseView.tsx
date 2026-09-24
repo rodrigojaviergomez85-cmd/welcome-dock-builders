@@ -9,6 +9,7 @@ import { missionVars, fillText, resolveClip } from "@/lib/mission-vars";
 import { gloss } from "@/content/glossary";
 import { playFanfare } from "@/lib/feedback-sounds";
 import { playClip, stopClip } from "@/lib/audio";
+import type { OralHandler } from "../MissionPlayer";
 
 type Props = {
   missionId: string;
@@ -16,7 +17,7 @@ type Props = {
   alias: string;
   startIndex?: number;
   onHelpUsed: () => void;
-  onOral: (status: "heard" | "practiced" | "pending") => void;
+  onOral: OralHandler;
   onStepChange: (index: number) => void;
   onFinish: () => void;
 };
@@ -191,14 +192,16 @@ export function ShowcaseView({
         support="full"
         onHelpUsed={onHelpUsed}
         onDone={(status) => {
-          onOral(status);
-          if (index + 1 >= block.steps.length) {
-            setStage("cheer");
-            return;
-          }
-          const next = index + 1;
-          setIndex(next);
-          onStepChange(next);
+          const phrase = fillText(step.targetEn, vars);
+          onOral(status, phrase, () => {
+            if (index + 1 >= block.steps.length) {
+              setStage("cheer");
+              return;
+            }
+            const next = index + 1;
+            setIndex(next);
+            onStepChange(next);
+          });
         }}
       />
     </div>

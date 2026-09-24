@@ -8,13 +8,14 @@ import { useProgress } from "@/lib/useProgress";
 import { missionVars, fillText, resolveClip } from "@/lib/mission-vars";
 import { RecordTurn } from "../RecordTurn";
 import { cn } from "@/lib/utils";
+import type { OralHandler } from "../MissionPlayer";
 
 type Props = {
   missionId: string;
   block: SpellBlock;
   alias: string;
   onHelpUsed: () => void;
-  onOral: (status: "heard" | "practiced" | "pending") => void;
+  onOral: OralHandler;
   onFinish: () => void;
 };
 
@@ -91,8 +92,7 @@ export function SpellView({ missionId, block, alias, onHelpUsed, onOral, onFinis
         support="full"
         onHelpUsed={onHelpUsed}
         onDone={(status) => {
-          onOral(status);
-          onFinish();
+          onOral(status, fillText(block.record?.targetEn ?? "", vars), onFinish);
         }}
       />
     );

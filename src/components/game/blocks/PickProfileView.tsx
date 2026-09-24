@@ -7,13 +7,14 @@ import { useProgress } from "@/lib/useProgress";
 import { missionVars, fillText, resolveClip } from "@/lib/mission-vars";
 import { RecordTurn } from "../RecordTurn";
 import { cn } from "@/lib/utils";
+import type { OralHandler } from "../MissionPlayer";
 
 type Props = {
   missionId: string;
   block: PickProfileBlock;
   alias: string;
   onHelpUsed: () => void;
-  onOral: (status: "heard" | "practiced" | "pending") => void;
+  onOral: OralHandler;
   onFinish: () => void;
 };
 
@@ -85,8 +86,7 @@ export function PickProfileView({ missionId, block, alias, onHelpUsed, onOral, o
         support="full"
         onHelpUsed={onHelpUsed}
         onDone={(status) => {
-          onOral(status);
-          onFinish();
+          onOral(status, fillText(block.say.targetEn, vars), onFinish);
         }}
       />
     </div>
