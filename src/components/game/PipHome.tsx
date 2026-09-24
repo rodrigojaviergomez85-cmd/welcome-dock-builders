@@ -9,7 +9,7 @@ import home4 from "@/assets/pip-home-4.png";
 import { Pip } from "./Pip";
 import { PipRuler } from "./PipRuler";
 import { PipBelly } from "./PipBelly";
-import { PIP_DAYS, pipSizeFor, type PipDay, type PipProgress } from "@/lib/progress";
+import { PIP_DAYS, type PipDay, type PipProgress } from "@/lib/progress";
 import { stopPipVoice } from "@/lib/pip-voice";
 import { playSuccess } from "@/lib/feedback-sounds";
 
@@ -32,10 +32,8 @@ export function PipHome({ pip, day, feedsToEvolve, asleep, missionPath }: Props)
   const [awake, setAwake] = useState(false);
   const stage = Math.min(4, Math.max(0, pip.stage));
   const sleeping = asleep && !awake;
-  const known = Math.max(pip.learned.length, pip.totalFeeds);
-  const missing = Math.max(1, (stage + 1) * feedsToEvolve - pip.totalFeeds);
-  // Pip a su tamaño de etapa, acotado para que quepa en 400 px.
-  const pipSize = Math.min(pipSizeFor(pip), 110);
+  const homeWidths = [14, 15.5, 17, 18.5, 20];
+  const pipWidths = [6, 8.5, 11, 13.5, 16];
 
   function onPip() {
     if (sleeping) {
@@ -55,67 +53,57 @@ export function PipHome({ pip, day, feedsToEvolve, asleep, missionPath }: Props)
   return (
     <section
       aria-label="La casa de Pip"
-      className="relative mt-8 overflow-hidden rounded-[2rem] bg-card p-4 shadow-[var(--shadow-soft)] sm:p-6"
+      className="pointer-events-none absolute inset-0 z-10"
     >
-      <h2 className="font-display text-2xl">La casa de Pip</h2>
-      <div className="mt-2 flex items-end justify-center gap-2 sm:gap-6">
-        <div className="flex min-w-0 flex-1 items-end justify-center gap-1">
-          <button
-            type="button"
-            onClick={() => setPanel("homes")}
-            aria-label={`Casa de Pip: ${HOME_NAMES[stage]}. Ver todas las casas.`}
-            className="block min-w-0 flex-1 max-w-[18rem] rounded-2xl focus-visible:outline-4 focus-visible:outline-primary"
-          >
-            <img
-              src={PIP_HOMES[stage]}
-              alt=""
-              width={512}
-              height={512}
-              className="h-auto w-full select-none"
-              draggable={false}
-            />
-          </button>
-          <button
-            type="button"
-            onClick={onPip}
-            aria-label={
-              sleeping ? "Pip está dormido. Tocalo para despertarlo." : "Ver las frases de Pip"
-            }
-            className="mb-1 shrink-0 rounded-full focus-visible:outline-4 focus-visible:outline-primary"
-          >
-            <Pip
-              mood={sleeping ? "sleepy" : "happy"}
-              color={pip.color}
-              stage={stage}
-              feeds={pip.feeds}
-              accessories={pip.accessories}
-              size={pipSize}
-            />
-          </button>
-        </div>
+      <button
+        type="button"
+        onClick={() => setPanel("homes")}
+        aria-label={`Casa de Pip: ${HOME_NAMES[stage]}. Ver todas las casas.`}
+        className="pointer-events-auto absolute bottom-[3.5%] left-[48.5%] max-w-[260px] -translate-x-1/2 rounded-lg focus-visible:outline-4 focus-visible:outline-primary"
+        style={{ width: `${homeWidths[stage]}%` }}
+      >
+        <img
+          src={PIP_HOMES[stage]}
+          alt=""
+          width={512}
+          height={512}
+          className="size-full select-none object-contain object-bottom drop-shadow-lg"
+          draggable={false}
+        />
+      </button>
+      <button
+        type="button"
+        onClick={onPip}
+        aria-label={
+          sleeping ? "Pip está dormido. Tocalo para despertarlo." : "Ver las frases de Pip"
+        }
+        className="pointer-events-auto absolute bottom-[4%] left-[54%] max-w-[190px] rounded-full focus-visible:outline-4 focus-visible:outline-primary"
+        style={{ width: `${pipWidths[stage]}%` }}
+      >
+        <Pip
+          mood={sleeping ? "sleepy" : "happy"}
+          color={pip.color}
+          stage={stage}
+          feeds={pip.feeds}
+          accessories={pip.accessories}
+          className="size-full"
+        />
+      </button>
+      <div className="absolute bottom-[5%] left-[62%] w-[4%] max-w-[52px] [&>div>svg]:w-full">
         <PipRuler
           marks={pip.marks}
           currentDay={day}
           feeds={pip.feeds}
           total={feedsToEvolve}
-          height={200}
+          height="auto"
         />
       </div>
-      <p className="mt-3 text-center font-display text-lg">
-        Pip sabe {known} {known === 1 ? "frase" : "frases"} ·{" "}
-        {stage >= 4 ? "ya es gigante" : `le faltan ${missing} para crecer`}
-      </p>
-      {sleeping ? (
-        <p className="text-center text-sm text-muted-foreground">
-          Pip está dormido. Tocalo para jugar.
-        </p>
-      ) : null}
 
       {panel ? (
         <div
           role="dialog"
           aria-label={panel === "belly" ? "Barriga de palabras de Pip" : "Las casas de Pip"}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/50 p-4"
+          className="pointer-events-auto fixed inset-0 z-50 flex items-center justify-center bg-foreground/50 p-4"
           onClick={close}
         >
           <div
