@@ -80,11 +80,12 @@ export function playFanfare() {
   ]);
 }
 
-/** Pip come: dos crujidos cortos y suaves. */
+/** Pip come: "ñam" alegre y ascendente (nunca descendente, para no sonar a error). */
 export function playMunch() {
   playNotes([
-    { freq: 170, start: 0, duration: 0.08, volume: 0.16, type: "square" },
-    { freq: 125, start: 0.1, duration: 0.1, volume: 0.13, type: "triangle" },
+    { freq: 988, start: 0.3, duration: 0.07, volume: 0.12, type: "triangle" },
+    { freq: 1175, start: 0.39, duration: 0.07, volume: 0.12, type: "triangle" },
+    { freq: 1319, start: 0.48, duration: 0.12, volume: 0.12, type: "triangle" },
   ]);
 }
 
