@@ -723,11 +723,9 @@ function GuidedRecordTurn({
   );
 }
 
-const HINT_STEP_MS = 4000;
-
 /**
- * Turno "Vos preguntás": no suena la pregunta al entrar (el niño la contestaría).
- * Suena el motivo en español; la pista aparece sola (primera palabra → frase completa + modelo).
+ * Turno "Vos preguntás": explica el motivo, modela la pregunta y pide repetirla.
+ * La instrucción y la frase quedan visibles desde el inicio.
  * Si el niño dice la respuesta en vez de la pregunta, Pip lo corrige con cariño.
  */
 function AskRecordTurn({
@@ -747,40 +745,27 @@ function AskRecordTurn({
     "idle" | "starting" | "recording" | "checking" | "result" | "nomic"
   >("idle");
   const [heard, setHeard] = useState(false);
-  const [hint, setHint] = useState<0 | 1 | 2>(0);
   const [confused, setConfused] = useState(false);
   const failsRef = useRef(0);
   const attemptsRef = useRef(0);
-  const timersRef = useRef<number[]>([]);
   const stopperRef = useRef<{ stop: () => Promise<Blob> } | null>(null);
   const lastBlobRef = useRef<Blob | null>(null);
   const doneRef = useRef(onDone);
   doneRef.current = onDone;
   const transcribe = useServerFn(transcribeAttempt);
   const listenEnabled = progress.listenEnabled !== false;
-  const firstWord = (targetEn.match(/^[A-Za-z']+/)?.[0] ?? targetEn) + "…";
   const confusedTarget = confusedWith?.split("{alias}").join(alias);
 
-  function clearTimers() {
-    timersRef.current.forEach((t) => window.clearTimeout(t));
-    timersRef.current = [];
-  }
-
-  function showFullHint(clips: string[]) {
-    setHint(2);
+  function playAskSequence(includePrompt = true) {
     const model = Array.isArray(modelClip) ? modelClip : [modelClip];
-    void playClip([...clips, ...model]);
+    const clips = includePrompt && promptClip ? [promptClip, ...model] : model;
+    return playClip([...clips, "es-ask-repeat"]);
   }
 
   useEffect(() => {
     if (!micSupported() && !wavRecordingSupported()) setState("nomic");
-    if (promptClip) void playClip(promptClip);
-    timersRef.current = [
-      window.setTimeout(() => setHint((h) => (h < 1 ? 1 : h)), HINT_STEP_MS),
-      window.setTimeout(() => showFullHint(["es-ask-hint"]), HINT_STEP_MS * 2),
-    ];
+    void playAskSequence();
     return () => {
-      clearTimers();
       stopClip();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -800,7 +785,6 @@ function AskRecordTurn({
   }
 
   async function begin() {
-    clearTimers();
     stopClip();
     setConfused(false);
     setState("starting");
@@ -822,9 +806,11 @@ function AskRecordTurn({
     }, 1200);
   }
 
-  function fail() {
+  async function fail() {
     failsRef.current += 1;
     setHeard(false);
+    setState("checking");
+    await playAskSequence(false);
     setState("result");
     playTryAgain();
     setTimeout(() => {
@@ -871,9 +857,11 @@ function AskRecordTurn({
           showFullHint(["es-ask-confused"]);
           return;
         }
-        return fail();
+        return void fail();
       }
-      if (result.reason === "no-se-entendio" || result.reason === "audio-vacio") return fail();
+      if (result.reason === "no-se-entendio" || result.reason === "audio-vacio") {
+        return void fail();
+      }
     } catch {
       /* servicio caído: cuenta como practicado */
     }
@@ -883,15 +871,17 @@ function AskRecordTurn({
   return (
     <div className="w-full max-w-xl rounded-3xl bg-card/95 p-5 text-center text-card-foreground shadow-[var(--shadow-soft)]">
       <p className="font-display text-2xl leading-snug sm:text-3xl">{promptEs}</p>
-      {promptClip ? (
-        <button
-          type="button"
-          onClick={() => void playClip(promptClip)}
-          className="mt-2 inline-flex items-center gap-1 rounded-full bg-secondary px-3 py-1 text-sm font-semibold text-secondary-foreground"
-        >
-          <Volume2 className="size-4" aria-hidden /> Escuchar otra vez
-        </button>
-      ) : null}
+      <p lang="en" className="mt-3 font-display text-3xl leading-tight text-accent sm:text-4xl">
+        {targetEn}
+      </p>
+      <p className="mt-2 text-base font-semibold text-muted-foreground">Ahora repetilo vos</p>
+      <button
+        type="button"
+        onClick={() => void playAskSequence()}
+        className="mt-2 inline-flex items-center gap-1 rounded-full bg-secondary px-3 py-1 text-sm font-semibold text-secondary-foreground"
+      >
+        <Volume2 className="size-4" aria-hidden /> Escuchar otra vez
+      </button>
 
       {confused ? (
         <div className="mx-auto mt-3 flex max-w-md animate-pop items-center gap-3 rounded-2xl border-2 border-sun bg-sun/15 p-3 text-left">
@@ -954,30 +944,10 @@ function AskRecordTurn({
         ) : null}
       </div>
 
-      {/* Zona de pista: vacía al principio, se llena sola. */}
-      <div className="mt-2 flex min-h-20 flex-col items-center justify-center" aria-live="polite">
-        {hint === 1 ? (
-          <p lang="en" className="animate-pop font-display text-4xl text-accent">
-            {firstWord}
-          </p>
-        ) : null}
-        {hint === 2 ? (
-          <>
-            <p lang="en" className="animate-pop font-display text-3xl text-accent sm:text-4xl">
-              {targetEn}
-            </p>
-            {!confused ? (
-              <p className="text-base font-semibold text-muted-foreground">Escuchá y decilo vos</p>
-            ) : null}
-          </>
-        ) : null}
-      </div>
-
       {state !== "result" && state !== "checking" ? (
         <button
           type="button"
           onClick={() => {
-            clearTimers();
             stopperRef.current = null;
             stopClip();
             if (!lastBlobRef.current) markSaved("pending");

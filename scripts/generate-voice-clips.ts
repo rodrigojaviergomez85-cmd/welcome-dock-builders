@@ -414,13 +414,22 @@ export const LINES: Line[] = [
     text: "Repetí la frase. Tocá el botón rojo y decila en inglés.",
   },
   { id: "es-help-offer", speaker: "es", text: "¿Te ayudo? Tocá mi carita." },
-  { id: "es-ask-mia-name", speaker: "es", text: "¡Mirá, llegó Mia! Preguntale cómo se llama." },
+  {
+    id: "es-ask-mia-name",
+    speaker: "es",
+    text: "¡Mirá, llegó Mia! Preguntale cómo se llama diciendo:",
+  },
   {
     id: "es-ask-luna-how",
     speaker: "es",
-    text: "Luna está esperando. Saludala y preguntale cómo está.",
+    text: "Luna está esperando. Saludala y preguntale cómo está diciendo:",
   },
-  { id: "es-ask-luna-name", speaker: "es", text: "Ahora preguntale el nombre a Luna." },
+  {
+    id: "es-ask-luna-name",
+    speaker: "es",
+    text: "Ahora preguntale el nombre a Luna diciendo:",
+  },
+  { id: "es-ask-repeat", speaker: "es", text: "Ahora repetilo vos." },
   { id: "es-ask-hint", speaker: "es", text: "Escuchá y decilo vos." },
   {
     id: "es-ask-confused",
