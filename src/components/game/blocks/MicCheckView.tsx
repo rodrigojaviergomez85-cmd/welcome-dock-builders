@@ -5,6 +5,8 @@ import { Pip, type PipMood } from "../Pip";
 import { RecordTurn } from "../RecordTurn";
 import { playClip, stopClip } from "@/lib/audio";
 import { playSnore } from "@/lib/feedback-sounds";
+import { useProgress } from "@/lib/useProgress";
+import { pipSizeFor } from "@/lib/progress";
 
 type Props = {
   missionId: string;
@@ -27,6 +29,7 @@ export function MicCheckView({
   onOral,
   onFinish,
 }: Props) {
+  const { state: progress } = useProgress();
   const [mood, setMood] = useState<PipMood>("sleepy");
   const [done, setDone] = useState(false);
 
@@ -51,7 +54,8 @@ export function MicCheckView({
         mood={mood}
         color={pipColor}
         accessories={pipAccessories}
-        className={done ? "size-36 animate-pop" : "size-36"}
+        size={Math.min(224, pipSizeFor(progress.pip))}
+        className={done ? "animate-pop" : undefined}
       />
       <div className="flex items-center gap-2 rounded-3xl bg-card/95 px-5 py-3 shadow-[var(--shadow-soft)]">
         <p lang="en" className="font-display text-3xl text-card-foreground">

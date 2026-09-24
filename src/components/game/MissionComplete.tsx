@@ -5,7 +5,7 @@ import { Sun, Ticket } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { Backpack, Check, Mic, Ear, RotateCcw, Volume2 } from "lucide-react";
 import type { Mission } from "@/content/missions/types";
-import type { MissionProgress } from "@/lib/progress";
+import { pipSizeFor, type MissionProgress } from "@/lib/progress";
 import { playFanfare } from "@/lib/feedback-sounds";
 import { REVIEW_PHRASES, gloss } from "@/content/glossary";
 import { playClip } from "@/lib/audio";
@@ -64,7 +64,8 @@ export function MissionComplete({ mission, progress, alias, avatarImage, onRepla
           mood="happy"
           color={state.pip.color}
           accessories={state.pip.accessories}
-          className="h-36 w-36 animate-pop"
+          size={Math.min(224, pipSizeFor(state.pip))}
+          className="animate-pop"
         />
         <div className="w-full rounded-2xl border-4 border-dashed border-accent bg-card px-5 py-4">
           <p lang="en" className="font-display text-3xl">

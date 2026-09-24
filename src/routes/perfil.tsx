@@ -5,6 +5,7 @@ import { AVATARS } from "@/content/characters";
 import { BAGS } from "@/content/characters";
 import { DEFAULT_PIP_COLOR, Pip, PIP_COLORS } from "@/components/game/Pip";
 import { useProgress } from "@/lib/useProgress";
+import { pipSizeFor } from "@/lib/progress";
 import { getMissionProgress } from "@/lib/progress";
 import { cn } from "@/lib/utils";
 
@@ -103,7 +104,8 @@ function ProfilePage() {
             mood="happy"
             color={pipColor}
             accessories={state.pip.accessories}
-            className="mr-2 size-28"
+            size={Math.min(180, pipSizeFor(state.pip))}
+            className="mr-2"
           />
           {PIP_COLORS.map((color, index) => (
             <button

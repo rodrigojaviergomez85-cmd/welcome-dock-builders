@@ -4,7 +4,7 @@ import { islandMap } from "@/content/backgrounds";
 import { missions } from "@/content/missions";
 import { AVATARS } from "@/content/characters";
 import { useProgress } from "@/lib/useProgress";
-import { getMissionProgress } from "@/lib/progress";
+import { getMissionProgress, pipSizeFor } from "@/lib/progress";
 import { Pip } from "@/components/game/Pip";
 
 const description =
@@ -63,7 +63,7 @@ function IslandMap() {
                   mood="happy"
                   color={state.pip.color}
                   accessories={state.pip.accessories}
-                  className="size-10"
+                  size={Math.min(56, 38 + (pipSizeFor(state.pip) - 64) * 0.14)}
                 />
                 {profile.alias}
               </Link>

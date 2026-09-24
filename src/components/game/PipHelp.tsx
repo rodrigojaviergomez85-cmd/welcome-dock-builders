@@ -5,6 +5,7 @@ import { AudioButton } from "./AudioButton";
 import { gloss } from "@/content/glossary";
 import { playClip, stopClip } from "@/lib/audio";
 import { useProgress } from "@/lib/useProgress";
+import { pipSizeFor } from "@/lib/progress";
 
 export type RecordRole = "ask" | "answer" | "repeat";
 
@@ -140,7 +141,8 @@ export function PipHelp({
             mood="happy"
             color={state.pip.color}
             accessories={state.pip.accessories}
-            className="size-10"
+            size={Math.min(52, 34 + (pipSizeFor(state.pip) - 64) * 0.12)}
+            className="shrink-0"
           />
           Ayuda
         </button>
