@@ -5,7 +5,7 @@ import { type PipDay, pipSizeFor, type PipProgress } from "@/lib/progress";
 import { CharacterFigure } from "./CharacterFigure";
 import { PipRuler } from "./PipRuler";
 import { BACKGROUNDS } from "@/content/backgrounds";
-import { playPipVoice, stopPipVoice, type PipVoiceSource } from "@/lib/pip-voice";
+import type { PipVoiceSource } from "@/lib/pip-voice";
 
 type Props = {
   phrase: string;
