@@ -175,7 +175,9 @@ export function SceneShell({
                         ))}
                       </ul>
                     ) : (
-                      <p className="mt-3 text-muted-foreground">Hablá para darle su primera frase.</p>
+                      <p className="mt-3 text-muted-foreground">
+                        Hablá para darle su primera frase.
+                      </p>
                     )}
                   </div>
                 ) : null}

@@ -56,7 +56,7 @@ export function addLearned(list: PipLearned[], item: PipLearned): PipLearned[] {
   const previous = list.find((entry) => entry.phrase.trim().toLowerCase() === key);
   const merged: PipLearned = {
     ...item,
-    ...(item.recordingKey ?? previous?.recordingKey
+    ...((item.recordingKey ?? previous?.recordingKey)
       ? { recordingKey: (item.recordingKey ?? previous?.recordingKey)! }
       : {}),
   };
@@ -106,7 +106,15 @@ export const emptyMission = (): MissionProgress => ({
 export const emptyState = (): ProgressState => ({
   version: 1,
   profile: null,
-  pip: { color: "#FF8A3D", feeds: 0, totalFeeds: 0, stage: 0, accessories: [], marks: [], learned: [] },
+  pip: {
+    color: "#FF8A3D",
+    feeds: 0,
+    totalFeeds: 0,
+    stage: 0,
+    accessories: [],
+    marks: [],
+    learned: [],
+  },
   micAllowed: null,
   listenEnabled: true,
   missions: {},

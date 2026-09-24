@@ -336,7 +336,11 @@ export function Pip({
         className="pointer-events-none size-full select-none object-contain object-bottom"
         style={{ filter: pipColorFilter(color) }}
       />
-      <svg viewBox="0 0 100 100" className="pointer-events-none absolute inset-0 size-full" aria-hidden>
+      <svg
+        viewBox="0 0 100 100"
+        className="pointer-events-none absolute inset-0 size-full"
+        aria-hidden
+      >
         {idx === 0 && feeds >= 3 ? (
           <path
             d="M48 62l-6 8 7 6-6 9"
@@ -359,14 +363,30 @@ export function Pip({
         ) : null}
         {cheeks && idx > 0 ? (
           <>
-            <circle cx={eyes.x[0] * 100 - 4} cy={eyes.y * 100 + 9} r={mood === "eat" ? 5 : 3.5} fill="rgba(255,95,162,.45)" />
-            <circle cx={eyes.x[1] * 100 + 4} cy={eyes.y * 100 + 9} r={mood === "eat" ? 5 : 3.5} fill="rgba(255,95,162,.45)" />
+            <circle
+              cx={eyes.x[0] * 100 - 4}
+              cy={eyes.y * 100 + 9}
+              r={mood === "eat" ? 5 : 3.5}
+              fill="rgba(255,95,162,.45)"
+            />
+            <circle
+              cx={eyes.x[1] * 100 + 4}
+              cy={eyes.y * 100 + 9}
+              r={mood === "eat" ? 5 : 3.5}
+              fill="rgba(255,95,162,.45)"
+            />
           </>
         ) : null}
         {blink || sleepy
           ? eyes.x.map((x) => (
               <g key={x}>
-                <circle cx={x * 100} cy={eyes.y * 100} r={eyes.r * 100 + 1} fill={lid} style={{ filter: pipColorFilter(color) }} />
+                <circle
+                  cx={x * 100}
+                  cy={eyes.y * 100}
+                  r={eyes.r * 100 + 1}
+                  fill={lid}
+                  style={{ filter: pipColorFilter(color) }}
+                />
                 <path
                   d={`M${x * 100 - eyes.r * 100} ${eyes.y * 100}q${eyes.r * 100} ${eyes.r * 60} ${eyes.r * 200} 0`}
                   stroke="#3A1A08"
@@ -378,7 +398,10 @@ export function Pip({
             ))
           : null}
         {accessories.includes("sun-tag") && idx > 0 ? (
-          <g aria-label="Gorra de explorador" transform={`translate(${(eyes.x[0] + eyes.x[1]) * 50 - 50} ${eyes.y * 100 - 36}) scale(0.6) translate(33 10)`}>
+          <g
+            aria-label="Gorra de explorador"
+            transform={`translate(${(eyes.x[0] + eyes.x[1]) * 50 - 50} ${eyes.y * 100 - 36}) scale(0.6) translate(33 10)`}
+          >
             <path d="M24 30Q50 5 76 30L70 38H30Z" fill="var(--color-sun)" />
             <path d="M20 36Q50 28 82 37Q70 43 38 41Z" fill="var(--color-sun-foreground)" />
             <circle cx="50" cy="25" r="4" fill="var(--color-accent)" />
@@ -386,7 +409,10 @@ export function Pip({
         ) : null}
       </svg>
       {sleepy ? (
-        <span className="pip-zzz absolute -top-2 right-0 font-display text-sm text-muted-foreground" aria-hidden>
+        <span
+          className="pip-zzz absolute -top-2 right-0 font-display text-sm text-muted-foreground"
+          aria-hidden
+        >
           z z z
         </span>
       ) : null}
