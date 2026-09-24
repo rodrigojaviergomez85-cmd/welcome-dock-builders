@@ -16,9 +16,36 @@ export const Route = createFileRoute("/pip-etapas")({
   component: Preview,
 });
 
-const before: PipProgress = { color: "#5AA9FF", feeds: 7, totalFeeds: 15, stage: 1, accessories: ["sun-tag"], marks: [{ day: "monday", feeds: 8 }] };
-const after: PipProgress = { ...before, feeds: 8, totalFeeds: 16, stage: 2, marks: [{ day: "monday", feeds: 8 }, { day: "tuesday", feeds: 8 }] };
+const before: PipProgress = {
+  color: "#5AA9FF",
+  feeds: 7,
+  totalFeeds: 15,
+  stage: 1,
+  accessories: ["sun-tag"],
+  marks: [{ day: "monday", feeds: 8 }],
+};
+const after: PipProgress = {
+  ...before,
+  feeds: 8,
+  totalFeeds: 16,
+  stage: 2,
+  marks: [
+    { day: "monday", feeds: 8 },
+    { day: "tuesday", feeds: 8 },
+  ],
+};
 
 function Preview() {
-  return <PipFeedMoment phrase="Hello!" before={before} after={after} feedsToEvolve={8} evolved day="tuesday" rewardLabel="Pip aprende a preguntar" onClose={() => undefined} />;
+  return (
+    <PipFeedMoment
+      phrase="Hello!"
+      before={before}
+      after={after}
+      feedsToEvolve={8}
+      evolved
+      day="tuesday"
+      rewardLabel="Pip aprende a preguntar"
+      onClose={() => undefined}
+    />
+  );
 }
