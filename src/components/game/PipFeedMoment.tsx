@@ -90,51 +90,63 @@ export function PipFeedMoment({
           ))
         : null}
 
-      <img src={BACKGROUNDS.afternoon} alt="" className="absolute inset-0 -z-10 size-full object-cover opacity-50" aria-hidden />
+      <img
+        src={BACKGROUNDS.afternoon}
+        alt=""
+        className="absolute inset-0 -z-10 size-full object-cover opacity-50"
+        aria-hidden
+      />
       <div className="relative flex h-[60vh] w-full max-w-5xl items-end justify-center gap-3 sm:gap-8">
         <div className="relative flex h-full min-w-0 flex-1 items-end justify-end">
           <CharacterFigure id="leo" className="[&_img]:h-[340px] [&_img]:max-h-[55vh]" />
         </div>
         <div
           className={`relative flex shrink-0 items-end justify-center ${
-          phase === "enter"
-            ? "animate-pip-enter"
-            : phase === "eat"
-              ? "animate-pip-chew"
-              : phase === "grow"
-                ? "animate-pip-grow"
-                : phase === "evolve"
-                  ? "animate-pip-evolve"
-                  : ""
-        }`}
+            phase === "enter"
+              ? "animate-pip-enter"
+              : phase === "eat"
+                ? "animate-pip-chew"
+                : phase === "grow"
+                  ? "animate-pip-grow"
+                  : phase === "evolve"
+                    ? "animate-pip-evolve"
+                    : ""
+          }`}
           style={{ width: logicalSize, height: logicalSize }}
         >
-        {phase === "evolve" && stageChanged ? (
+          {phase === "evolve" && stageChanged ? (
+            <Pip
+              mood="happy"
+              color="var(--color-muted-foreground)"
+              stage={before.stage}
+              feeds={before.feeds}
+              size={pipSizeFor(before)}
+              className="pip-before-silhouette absolute bottom-0 left-1/2 -translate-x-1/2 opacity-40 grayscale"
+            />
+          ) : null}
           <Pip
-            mood="happy"
-            color="var(--color-muted-foreground)"
-            stage={before.stage}
-            feeds={before.feeds}
-            size={pipSizeFor(before)}
-            className="pip-before-silhouette absolute bottom-0 left-1/2 -translate-x-1/2 opacity-40 grayscale"
+            mood={mouth}
+            color={after.color}
+            stage={shownPip.stage}
+            feeds={shownPip.feeds}
+            accessories={phase === "evolve" ? after.accessories : before.accessories}
+            className="size-full max-h-full max-w-full"
           />
-        ) : null}
-        <Pip
-          mood={mouth}
-          color={after.color}
-          stage={shownPip.stage}
-          feeds={shownPip.feeds}
-          accessories={phase === "evolve" ? after.accessories : before.accessories}
-          className="size-full max-h-full max-w-full"
-        />
-        {phase === "eat"
-          ? SPARKS.map((_, index) => (
-              <i key={index} className={`pip-spark pip-spark-${index + 1}`} aria-hidden />
-            ))
-          : null}
+          {phase === "eat"
+            ? SPARKS.map((_, index) => (
+                <i key={index} className={`pip-spark pip-spark-${index + 1}`} aria-hidden />
+              ))
+            : null}
         </div>
         <div className="flex h-full min-w-0 flex-1 items-end justify-start">
-          <PipRuler marks={after.marks} currentDay={day} feeds={after.feeds} total={feedsToEvolve} height="60vh" animate={phase === "grow"} />
+          <PipRuler
+            marks={after.marks}
+            currentDay={day}
+            feeds={after.feeds}
+            total={feedsToEvolve}
+            height="60vh"
+            animate={phase === "grow"}
+          />
         </div>
       </div>
 

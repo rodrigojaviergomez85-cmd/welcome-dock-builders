@@ -103,16 +103,36 @@ export function SceneShell({
                   className="flex flex-col items-center"
                   aria-label={`${pip.feeds} de ${pip.total}`}
                 >
-                  <PipRuler marks={pip.marks} currentDay={pip.day} feeds={pip.feeds} total={pip.total} height={96} />
+                  <PipRuler
+                    marks={pip.marks}
+                    currentDay={pip.day}
+                    feeds={pip.feeds}
+                    total={pip.total}
+                    height={96}
+                  />
                   <span className="font-display text-xs text-card-foreground">
                     {pip.feeds} / {pip.total}
                   </span>
                 </div>
                 {pipCard ? (
                   <div className="absolute left-1/2 top-full z-40 mt-2 flex w-72 -translate-x-1/2 animate-pop items-center justify-center gap-3 rounded-2xl bg-card p-4 text-center text-card-foreground shadow-[var(--shadow-soft)]">
-                    <PipRuler marks={pip.marks} currentDay={pip.day} feeds={pip.feeds} total={pip.total} height={250} />
+                    <PipRuler
+                      marks={pip.marks}
+                      currentDay={pip.day}
+                      feeds={pip.feeds}
+                      total={pip.total}
+                      height={250}
+                    />
                     <div>
-                      <Pip mood="happy" color={pip.color} stage={pip.stage} feeds={pip.feeds} accessories={pip.accessories} size={Math.min(120, pipLogicalSize)} className="mx-auto" />
+                      <Pip
+                        mood="happy"
+                        color={pip.color}
+                        stage={pip.stage}
+                        feeds={pip.feeds}
+                        accessories={pip.accessories}
+                        size={Math.min(120, pipLogicalSize)}
+                        className="mx-auto"
+                      />
                       <p className="mt-2 font-display text-base leading-snug">
                         Pip ha comido {pip.totalFeeds} frases · Etapa {pip.stage + 1} de 5
                       </p>
