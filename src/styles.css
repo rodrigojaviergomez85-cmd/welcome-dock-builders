@@ -635,3 +635,12 @@
     animation: none;
   }
 }
+
+@keyframes pip-breathe { 0%,100% { transform: scale(1); } 50% { transform: scale(1.03); } }
+@keyframes pip-happy { 0%,100% { transform: translateY(0); } 25%,75% { transform: translateY(-10%); } 50% { transform: translateY(0); } }
+@keyframes pip-munch { 0%,100% { transform: scale(1) rotate(0); } 25%,75% { transform: scale(1.08) rotate(-4deg); } 50% { transform: scale(1) rotate(0); } }
+@keyframes pip-zzz { 0% { opacity: 0; transform: translate(0,0); } 30% { opacity: 1; } 100% { opacity: 0; transform: translate(10px,-18px); } }
+@utility animate-pip-breathe { animation: pip-breathe 2.4s ease-in-out infinite; transform-origin: bottom center; }
+@utility animate-pip-happy { animation: pip-happy 0.9s ease-out 1; transform-origin: bottom center; }
+@utility animate-pip-munch { animation: pip-munch 0.4s ease-in-out 2; transform-origin: bottom center; }
+.pip-zzz { animation: pip-zzz 2s ease-in-out infinite; }

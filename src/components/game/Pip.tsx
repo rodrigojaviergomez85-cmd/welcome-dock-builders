@@ -1,9 +1,14 @@
-import { useId } from "react";
+import { useEffect, useId, useState } from "react";
+import stage0 from "@/assets/pip-stage-0.png";
+import stage1 from "@/assets/pip-stage-1.png";
+import stage2 from "@/assets/pip-stage-2.png";
+import stage3 from "@/assets/pip-stage-3.png";
+import stage4 from "@/assets/pip-stage-4.png";
 import { cn } from "@/lib/utils";
 
 /* eslint-disable react-refresh/only-export-components -- el prompt requiere exportar pipSvg junto a Pip */
 
-export type PipMood = "sleepy" | "happy" | "eat";
+export type PipMood = "sleepy" | "happy" | "eat" | "normal";
 
 type Props = {
   mood: PipMood;
@@ -69,7 +74,7 @@ export function pipSvg(mood: PipMood, color: string, stage = 0, feeds = 0) {
     ${eyes}${mouth}</svg>`;
 }
 
-export function Pip({
+function PipSvgFallback({
   mood,
   color,
   stage = 0,
@@ -209,5 +214,182 @@ export function Pip({
         </>
       )}
     </svg>
+  );
+}
+
+/** Ilustraciones por etapa (0 huevo … 4 gigante). */
+export const PIP_STAGE_IMAGES = [stage0, stage1, stage2, stage3, stage4] as const;
+
+/** Posición de los ojos por etapa (fracción del cuadro) para parpadeo y ojos dormidos. */
+const EYES: { y: number; x: [number, number]; r: number }[] = [
+  { y: 0.4, x: [0.38, 0.63], r: 0.07 },
+  { y: 0.43, x: [0.29, 0.52], r: 0.07 },
+  { y: 0.53, x: [0.32, 0.48], r: 0.05 },
+  { y: 0.46, x: [0.21, 0.37], r: 0.045 },
+  { y: 0.39, x: [0.29, 0.41], r: 0.035 },
+];
+/** Cachetes (para feliz y comiendo), cerca de los ojos. */
+const BASE_HUE = 28;
+
+function hexToHsl(hex: string): { h: number; s: number } | null {
+  const m = /^#?([0-9a-f]{6})$/i.exec(hex.trim());
+  if (!m) return null;
+  const n = parseInt(m[1]!, 16);
+  const r = ((n >> 16) & 255) / 255;
+  const g = ((n >> 8) & 255) / 255;
+  const b = (n & 255) / 255;
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  const d = max - min;
+  let h = 0;
+  if (d) {
+    if (max === r) h = ((g - b) / d) % 6;
+    else if (max === g) h = (b - r) / d + 2;
+    else h = (r - g) / d + 4;
+  }
+  h = (h * 60 + 360) % 360;
+  const l = (max + min) / 2;
+  const s = d ? d / (1 - Math.abs(2 * l - 1)) : 0;
+  return { h, s };
+}
+
+/** Filtro CSS que lleva el naranja base al color elegido por el niño. */
+export function pipColorFilter(color: string): string | undefined {
+  const hsl = hexToHsl(color);
+  if (!hsl) return color.startsWith("var(") ? "grayscale(1)" : undefined;
+  const rotate = Math.round(hsl.h - BASE_HUE);
+  if (Math.abs(rotate) < 4) return undefined;
+  const sat = hsl.s < 0.75 ? 0.9 : 1.1;
+  return `hue-rotate(${rotate}deg) saturate(${sat})`;
+}
+
+export function Pip({
+  mood,
+  color,
+  stage = 0,
+  feeds = 0,
+  accessories = [],
+  className,
+  size,
+}: Props) {
+  const [failed, setFailed] = useState(false);
+  const [blink, setBlink] = useState(false);
+  const idx = Math.min(4, Math.max(0, stage));
+  const eyes = EYES[idx]!;
+  const sleepy = mood === "sleepy";
+
+  useEffect(() => {
+    if (sleepy) return;
+    let timer = 0;
+    const schedule = () => {
+      timer = window.setTimeout(
+        () => {
+          setBlink(true);
+          window.setTimeout(() => setBlink(false), 140);
+          schedule();
+        },
+        3000 + Math.random() * 3000,
+      );
+    };
+    schedule();
+    return () => window.clearTimeout(timer);
+  }, [sleepy]);
+
+  if (failed) {
+    return (
+      <PipSvgFallback
+        mood={mood}
+        color={color}
+        stage={stage}
+        feeds={feeds}
+        accessories={accessories}
+        {...(className ? { className } : {})}
+        {...(size ? { size } : {})}
+      />
+    );
+  }
+
+  const lid = "#C8621E";
+  const cheeks = mood === "eat" || mood === "happy";
+  return (
+    <div
+      role="img"
+      aria-label={idx === 0 ? "Pip huevo" : "Pip"}
+      style={size ? { width: size, height: size } : undefined}
+      className={cn(
+        "relative size-24 drop-shadow-lg",
+        mood === "eat"
+          ? "motion-safe:animate-pip-munch"
+          : mood === "happy"
+            ? "motion-safe:animate-pip-happy"
+            : sleepy
+              ? "scale-95"
+              : "motion-safe:animate-pip-breathe",
+        className,
+      )}
+    >
+      <img
+        src={PIP_STAGE_IMAGES[idx]}
+        alt=""
+        draggable={false}
+        onError={() => setFailed(true)}
+        className="pointer-events-none size-full select-none object-contain object-bottom"
+        style={{ filter: pipColorFilter(color) }}
+      />
+      <svg viewBox="0 0 100 100" className="pointer-events-none absolute inset-0 size-full" aria-hidden>
+        {idx === 0 && feeds >= 3 ? (
+          <path
+            d="M48 62l-6 8 7 6-6 9"
+            stroke="#6B2E0E"
+            strokeWidth="2.2"
+            fill="none"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        ) : null}
+        {idx === 0 && feeds >= 6 ? (
+          <path
+            d="M62 70l-5 7 6 5"
+            stroke="#6B2E0E"
+            strokeWidth="2.2"
+            fill="none"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        ) : null}
+        {cheeks && idx > 0 ? (
+          <>
+            <circle cx={eyes.x[0] * 100 - 4} cy={eyes.y * 100 + 9} r={mood === "eat" ? 5 : 3.5} fill="rgba(255,95,162,.45)" />
+            <circle cx={eyes.x[1] * 100 + 4} cy={eyes.y * 100 + 9} r={mood === "eat" ? 5 : 3.5} fill="rgba(255,95,162,.45)" />
+          </>
+        ) : null}
+        {blink || sleepy
+          ? eyes.x.map((x) => (
+              <g key={x}>
+                <circle cx={x * 100} cy={eyes.y * 100} r={eyes.r * 100 + 1} fill={lid} style={{ filter: pipColorFilter(color) }} />
+                <path
+                  d={`M${x * 100 - eyes.r * 100} ${eyes.y * 100}q${eyes.r * 100} ${eyes.r * 60} ${eyes.r * 200} 0`}
+                  stroke="#3A1A08"
+                  strokeWidth="1.6"
+                  fill="none"
+                  strokeLinecap="round"
+                />
+              </g>
+            ))
+          : null}
+        {accessories.includes("sun-tag") && idx > 0 ? (
+          <g aria-label="Gorra de explorador" transform={`translate(${(eyes.x[0] + eyes.x[1]) * 50 - 50} ${eyes.y * 100 - 36}) scale(0.6) translate(33 10)`}>
+            <path d="M24 30Q50 5 76 30L70 38H30Z" fill="var(--color-sun)" />
+            <path d="M20 36Q50 28 82 37Q70 43 38 41Z" fill="var(--color-sun-foreground)" />
+            <circle cx="50" cy="25" r="4" fill="var(--color-accent)" />
+          </g>
+        ) : null}
+      </svg>
+      {sleepy ? (
+        <span className="pip-zzz absolute -top-2 right-0 font-display text-sm text-muted-foreground" aria-hidden>
+          z z z
+        </span>
+      ) : null}
+    </div>
   );
 }
