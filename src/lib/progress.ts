@@ -10,6 +10,10 @@ export type OralStatus = "none" | "heard" | "practiced" | "pending-no-mic";
 /** Resultado de un turno hablado. "heard" = el juego entendió la frase. */
 export type OralResult = "heard" | "practiced" | "pending";
 
+export const PIP_DAYS = ["monday", "tuesday", "wednesday", "thursday", "friday"] as const;
+export type PipDay = (typeof PIP_DAYS)[number];
+export type PipMark = { day: PipDay; feeds: number };
+
 export type MissionProgress = {
   started: boolean;
   completed: boolean;
@@ -47,6 +51,8 @@ export type ProgressState = {
     totalFeeds: number;
     stage: number;
     accessories: string[];
+    /** Marcas consolidadas al terminar cada misión de la semana. */
+    marks: PipMark[];
   };
   micAllowed: boolean | null;
   /** Si el juego puede escuchar y responder (transcribir el intento). */
@@ -76,7 +82,7 @@ export const emptyMission = (): MissionProgress => ({
 export const emptyState = (): ProgressState => ({
   version: 1,
   profile: null,
-  pip: { color: "#FF8A3D", feeds: 0, totalFeeds: 0, stage: 0, accessories: [] },
+  pip: { color: "#FF8A3D", feeds: 0, totalFeeds: 0, stage: 0, accessories: [], marks: [] },
   micAllowed: null,
   listenEnabled: true,
   missions: {},
@@ -102,7 +108,9 @@ export function loadProgress(): ProgressState {
         ...parsed.pip,
         color: parsed.pip?.color ?? legacyColor ?? fallback.pip.color,
         totalFeeds: parsed.pip?.totalFeeds ?? parsed.pip?.feeds ?? 0,
+        stage: Math.min(4, Math.max(0, parsed.pip?.stage ?? 0)),
         accessories: parsed.pip?.accessories ?? [],
+        marks: parsed.pip?.marks ?? [],
       },
     };
   } catch {
@@ -112,9 +120,10 @@ export function loadProgress(): ProgressState {
 
 export type PipProgress = ProgressState["pip"];
 
-/** Tamaño lógico de Pip: crece con cada frase y pega un salto al evolucionar. */
-export function pipSizeFor(pip: Pick<PipProgress, "totalFeeds" | "stage">): number {
-  return 64 + Math.min(Math.max(pip.totalFeeds, 0), 40) * 4 + Math.max(pip.stage, 0) * 16;
+/** Tamaño lógico de Pip: cada etapa es 1,5 veces la anterior. */
+export function pipSizeFor(pip: Pick<PipProgress, "stage">): number {
+  const sizes = [64, 96, 144, 216, 324] as const;
+  return sizes[Math.min(4, Math.max(0, Math.floor(pip.stage)))] ?? sizes[0];
 }
 
 export function saveProgress(state: ProgressState) {
