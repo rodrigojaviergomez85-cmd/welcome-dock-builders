@@ -52,8 +52,8 @@ function IslandMap() {
     <div className="min-h-screen">
       <header className="mx-auto grid max-w-7xl grid-cols-[minmax(0,1fr)_auto] items-center gap-3 p-3 sm:p-4">
         <div className="min-w-0 md:flex md:items-baseline md:gap-2">
-          <p className="truncate text-xs text-muted-foreground sm:text-sm">English4Kids</p>
-          <h1 className="truncate font-display text-2xl sm:text-3xl">Explorer Island</h1>
+          <p className="hidden truncate text-xs text-muted-foreground sm:block sm:text-sm">English4Kids</p>
+          <h1 className="truncate font-display text-xl sm:text-3xl">Explorer Island</h1>
         </div>
         <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
           {ready && profile ? (
