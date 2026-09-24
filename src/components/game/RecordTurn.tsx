@@ -18,7 +18,7 @@ import { micSupported, startRecording } from "@/lib/recorder";
 import { startWavRecording, wavRecordingSupported, blobToBase64 } from "@/lib/wav-recorder";
 import { saveRecording } from "@/lib/recordings";
 import { setLastTake } from "@/lib/pip-voice";
-import { playClip, stopClip } from "@/lib/audio";
+import { playClip, queueClip, stopClip } from "@/lib/audio";
 import { setPhraseHelp } from "@/lib/help-context";
 import { gloss } from "@/content/glossary";
 import { transcribeAttempt } from "@/lib/speech.functions";
@@ -186,7 +186,7 @@ function QuickRecordTurn({
   useEffect(() => {
     if (!micSupported() && !wavRecordingSupported()) setState("nomic");
     setLastTake({ clip: modelClip });
-    void playClip(modelClip);
+    void queueClip(modelClip);
     return () => stopClip();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [turnId]);
