@@ -134,6 +134,7 @@ export function NameTagView({
             alias={alias}
             modelClip={block.swap.record.modelClip}
             promptClip={block.swap.record.promptClip}
+            askSequenceClip={block.swap.record.askSequenceClip}
             confusedWith={block.swap.record.confusedWith}
             support="reduced"
             onHelpUsed={onHelpUsed}

@@ -89,6 +89,7 @@ export function TurnsView({
           alias={alias}
           modelClip={turn.modelClip}
           promptClip={turn.promptClip}
+          askSequenceClip={turn.askSequenceClip}
           confusedWith={turn.confusedWith}
           support={support}
           onHelpUsed={onHelpUsed}

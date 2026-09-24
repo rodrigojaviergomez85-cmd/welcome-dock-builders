@@ -415,9 +415,14 @@ export const LINES: Line[] = [
   },
   { id: "es-help-offer", speaker: "es", text: "¿Te ayudo? Tocá mi carita." },
   {
-    id: "es-ask-mia-name",
+    id: "es-ask-mia-name-v2",
     speaker: "es",
     text: "¡Mirá, llegó Mia! Preguntale cómo se llama diciendo:",
+  },
+  {
+    id: "es-ask-mia-name-full",
+    speaker: "es",
+    text: "¡Mirá, llegó Mia! Preguntale cómo se llama diciendo: What is your name? Ahora repetilo vos.",
   },
   {
     id: "es-ask-luna-how",
