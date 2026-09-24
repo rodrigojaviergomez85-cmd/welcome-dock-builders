@@ -50,7 +50,7 @@ function PipStagesPage() {
           evolved={false}
           day="monday"
           rewardLabel=""
-          voice={{ clip: "good-morning" }}
+          voice={{ clip: "model-good-morning" }}
           onClose={() => setMoment(false)}
         />
       ) : null}
