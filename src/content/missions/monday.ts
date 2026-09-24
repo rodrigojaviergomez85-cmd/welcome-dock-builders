@@ -240,7 +240,7 @@ export const mondayMission: Mission = {
           id: "t2",
           role: "ask",
           promptEs: "¡Mirá, llegó Mia! Preguntale cómo se llama diciendo:",
-          promptClip: "es-ask-mia-name",
+          promptClip: "es-ask-mia-name-v2",
           confusedWith: "My name is {alias}.",
           targetEn: "What is your name?",
           modelClip: "model-what-name",
