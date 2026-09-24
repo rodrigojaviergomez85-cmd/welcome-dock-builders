@@ -40,7 +40,14 @@ export type Profile = {
 export type ProgressState = {
   version: 1;
   profile: Profile | null;
-  pip: { color: string; feeds: number; stage: number; accessories: string[] };
+  pip: {
+    color: string;
+    feeds: number;
+    /** Frases comidas durante toda la vida de Pip. Nunca se reinicia. */
+    totalFeeds: number;
+    stage: number;
+    accessories: string[];
+  };
   micAllowed: boolean | null;
   /** Si el juego puede escuchar y responder (transcribir el intento). */
   listenEnabled: boolean;
@@ -69,7 +76,7 @@ export const emptyMission = (): MissionProgress => ({
 export const emptyState = (): ProgressState => ({
   version: 1,
   profile: null,
-  pip: { color: "#FF8A3D", feeds: 0, stage: 0, accessories: [] },
+  pip: { color: "#FF8A3D", feeds: 0, totalFeeds: 0, stage: 0, accessories: [] },
   micAllowed: null,
   listenEnabled: true,
   missions: {},
@@ -94,12 +101,20 @@ export function loadProgress(): ProgressState {
         ...fallback.pip,
         ...parsed.pip,
         color: parsed.pip?.color ?? legacyColor ?? fallback.pip.color,
+        totalFeeds: parsed.pip?.totalFeeds ?? parsed.pip?.feeds ?? 0,
         accessories: parsed.pip?.accessories ?? [],
       },
     };
   } catch {
     return emptyState();
   }
+}
+
+export type PipProgress = ProgressState["pip"];
+
+/** Tamaño lógico de Pip: crece con cada frase y pega un salto al evolucionar. */
+export function pipSizeFor(pip: Pick<PipProgress, "totalFeeds" | "stage">): number {
+  return 64 + Math.min(Math.max(pip.totalFeeds, 0), 40) * 4 + Math.max(pip.stage, 0) * 16;
 }
 
 export function saveProgress(state: ProgressState) {

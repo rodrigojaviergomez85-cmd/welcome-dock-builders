@@ -5,6 +5,7 @@ import { AudioButton } from "./AudioButton";
 import { gloss } from "@/content/glossary";
 import { playClip, stopClip } from "@/lib/audio";
 import { useProgress } from "@/lib/useProgress";
+import { pipSizeFor } from "@/lib/progress";
 
 export type RecordRole = "ask" | "answer" | "repeat";
 
@@ -140,7 +141,8 @@ export function PipHelp({
             mood="happy"
             color={state.pip.color}
             accessories={state.pip.accessories}
-            className="size-10"
+            size={Math.min(52, 34 + (pipSizeFor(state.pip) - 64) * 0.12)}
+            className="shrink-0"
           />
           Ayuda
         </button>
@@ -169,7 +171,9 @@ export function PipHelp({
                   </p>
                   <p>{es}</p>
                 </div>
-                {esClip ? <AudioButton clipId={esClip} label="Escuchar" size="sm" className="shrink-0" /> : null}
+                {esClip ? (
+                  <AudioButton clipId={esClip} label="Escuchar" size="sm" className="shrink-0" />
+                ) : null}
               </div>
             </div>
             <div className={stepBox(1)}>
@@ -185,7 +189,12 @@ export function PipHelp({
                   </span>
                   {ROLE_TEXT[role]}
                 </p>
-                <AudioButton clipId={ROLE_CLIP[role]} label="Escuchar" size="sm" className="shrink-0" />
+                <AudioButton
+                  clipId={ROLE_CLIP[role]}
+                  label="Escuchar"
+                  size="sm"
+                  className="shrink-0"
+                />
               </div>
             </div>
             <div className={stepBox(2)}>

@@ -4,13 +4,14 @@ import { AudioButton } from "../AudioButton";
 import { CharacterFigure } from "../CharacterFigure";
 import { RecordTurn } from "../RecordTurn";
 import { playClip, stopClip } from "@/lib/audio";
+import type { OralHandler } from "../MissionPlayer";
 
 type Props = {
   missionId: string;
   block: NameTagBlock;
   alias: string;
   onHelpUsed: () => void;
-  onOral: (status: "heard" | "practiced" | "pending") => void;
+  onOral: OralHandler;
   onReward: () => void;
   onFinish: () => void;
 };
@@ -46,20 +47,20 @@ export function NameTagView({
   }, []);
 
   function printTag(status: "heard" | "practiced" | "pending") {
-    onOral(status);
-    onReward();
-    setStep("printed");
-    void playClip(block.printed.clip);
-    window.setTimeout(() => {
-      setStep("swap");
-    }, 1900);
+    onOral(status, block.record.targetEn.split("{alias}").join(alias), () => {
+      onReward();
+      setStep("printed");
+      void playClip(block.printed.clip);
+      window.setTimeout(() => setStep("swap"), 1900);
+    });
   }
 
   function answer(status: "heard" | "practiced" | "pending") {
-    onOral(status);
-    setStep("answer");
-    void playClip(block.swap.answer.clip);
-    window.setTimeout(onFinish, 2200);
+    onOral(status, block.swap.record.targetEn, () => {
+      setStep("answer");
+      void playClip(block.swap.answer.clip);
+      window.setTimeout(onFinish, 2200);
+    });
   }
 
   return (

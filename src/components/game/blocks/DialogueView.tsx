@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { TurnsView } from "./TurnsView";
 import type { DialogueBlock } from "@/content/missions/types";
+import type { OralHandler } from "../MissionPlayer";
 
 type Props = {
   missionId: string;
   block: DialogueBlock;
   alias: string;
   onHelpUsed: () => void;
-  onOral: (status: "heard" | "practiced" | "pending") => void;
+  onOral: OralHandler;
   onConversationChange: (index: number) => void;
   startIndex?: number;
   onFinish: () => void;

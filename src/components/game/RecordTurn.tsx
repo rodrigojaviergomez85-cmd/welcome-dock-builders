@@ -23,6 +23,7 @@ import { gloss } from "@/content/glossary";
 import { transcribeAttempt } from "@/lib/speech.functions";
 import { matchSpeech, type MatchResult } from "@/lib/speech-match";
 import { useProgress } from "@/lib/useProgress";
+import { pipSizeFor } from "@/lib/progress";
 import { playSuccess, playTryAgain } from "@/lib/feedback-sounds";
 
 type Props = {
@@ -892,7 +893,8 @@ function AskRecordTurn({
             mood="happy"
             color={progress.pip.color}
             accessories={progress.pip.accessories}
-            className="size-12 shrink-0"
+            size={Math.min(60, 44 + (pipSizeFor(progress.pip) - 64) * 0.1)}
+            className="shrink-0"
           />
           <p className="font-display text-lg leading-snug">
             ¡Esa es la respuesta! Ahora te toca preguntar a vos. Escuchá.

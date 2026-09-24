@@ -4,6 +4,7 @@ import { CharacterFigure } from "../CharacterFigure";
 import { BilingualLine } from "../BilingualLine";
 import { TurnsView } from "./TurnsView";
 import type { FinaleBlock } from "@/content/missions/types";
+import type { OralHandler } from "../MissionPlayer";
 
 type Props = {
   missionId: string;
@@ -11,7 +12,7 @@ type Props = {
   alias: string;
   avatarImage: string;
   onHelpUsed: () => void;
-  onOral: (status: "heard" | "practiced" | "pending") => void;
+  onOral: OralHandler;
   onFinish: () => void;
 };
 
