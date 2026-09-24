@@ -8,6 +8,7 @@ import {
   type OralResult,
   PIP_DAYS,
   type PipProgress,
+  addLearned,
 } from "@/lib/progress";
 import { useProgress } from "@/lib/useProgress";
 import { stopClip } from "@/lib/audio";
