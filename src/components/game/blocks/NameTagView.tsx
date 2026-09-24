@@ -28,6 +28,7 @@ export function NameTagView({
   onFinish,
 }: Props) {
   const [step, setStep] = useState<Step>("ask");
+  const swap = block.swap;
   const askClips = block.ask.map((line) => line.clip);
 
   useEffect(() => {
@@ -51,14 +52,15 @@ export function NameTagView({
       onReward();
       setStep("printed");
       void playClip(block.printed.clip);
-      window.setTimeout(() => setStep("swap"), 1900);
+      window.setTimeout(() => (swap ? setStep("swap") : onFinish()), 1900);
     });
   }
 
   function answer(status: "heard" | "practiced" | "pending") {
-    onOral(status, block.swap.record.targetEn, () => {
+    if (!swap) return;
+    onOral(status, swap.record.targetEn, () => {
       setStep("answer");
-      void playClip(block.swap.answer.clip);
+      void playClip(swap.answer.clip);
       window.setTimeout(onFinish, 2200);
     });
   }
@@ -117,27 +119,27 @@ export function NameTagView({
         </div>
       ) : null}
 
-      {step === "swap" ? (
+      {step === "swap" && swap ? (
         <>
           <div className="flex items-end gap-2">
-            <CharacterFigure id={block.swap.answer.speaker} size="md" />
+            <CharacterFigure id={swap.answer.speaker} size="md" />
             <span className="mb-6 rounded-3xl bg-card px-5 py-2 font-display text-3xl text-card-foreground shadow-[var(--shadow-soft)]">
               …
             </span>
           </div>
           <RecordTurn
             missionId={missionId}
-            turnId={block.swap.record.id}
-            {...(block.swap.record.mode ? { mode: block.swap.record.mode } : {})}
-            role={block.swap.record.role}
-            promptEs={block.swap.record.promptEs}
-            targetEn={block.swap.record.targetEn}
+            turnId={swap.record.id}
+            {...(swap.record.mode ? { mode: swap.record.mode } : {})}
+            role={swap.record.role}
+            promptEs={swap.record.promptEs}
+            targetEn={swap.record.targetEn}
             alias={alias}
-            modelClip={block.swap.record.modelClip}
-            promptClip={block.swap.record.promptClip}
-            askSequenceClip={block.swap.record.askSequenceClip}
-            confusedWith={block.swap.record.confusedWith}
-            cheerBy={block.swap.answer.speaker}
+            modelClip={swap.record.modelClip}
+            promptClip={swap.record.promptClip}
+            askSequenceClip={swap.record.askSequenceClip}
+            confusedWith={swap.record.confusedWith}
+            cheerBy={swap.answer.speaker}
             support="reduced"
             onHelpUsed={onHelpUsed}
             onDone={answer}
@@ -145,15 +147,15 @@ export function NameTagView({
         </>
       ) : null}
 
-      {step === "answer" ? (
+      {step === "answer" && swap ? (
         <div className="flex animate-pop flex-col items-center gap-2">
-          <CharacterFigure id={block.swap.answer.speaker} size="md" showName />
+          <CharacterFigure id={swap.answer.speaker} size="md" showName />
           <div className="rounded-3xl bg-card/95 px-6 py-4 text-center text-card-foreground shadow-[var(--shadow-soft)]">
             <p lang="en" className="font-display text-2xl">
-              {block.swap.answer.en}
+              {swap.answer.en}
             </p>
-            <p className="text-muted-foreground">{block.swap.answer.es}</p>
-            <AudioButton clipId={block.swap.answer.clip} label="Escuchar a Mia" className="mt-3" />
+            <p className="text-muted-foreground">{swap.answer.es}</p>
+            <AudioButton clipId={swap.answer.clip} label="Escuchar a Mia" className="mt-3" />
           </div>
         </div>
       ) : null}

@@ -258,7 +258,7 @@ export type NameTagBlock = {
   ask: SpokenLine[];
   record: RecordTurnSpec;
   printed: SpokenLine;
-  swap: {
+  swap?: {
     record: RecordTurnSpec;
     answer: SpokenLine;
   };
