@@ -87,6 +87,8 @@ export function TurnsView({
           targetEn={turn.targetEn.replace("{alias}", alias)}
           alias={alias}
           modelClip={turn.modelClip}
+          promptClip={turn.promptClip}
+          confusedWith={turn.confusedWith}
           support={support}
           onHelpUsed={onHelpUsed}
           onDone={(status) => {
