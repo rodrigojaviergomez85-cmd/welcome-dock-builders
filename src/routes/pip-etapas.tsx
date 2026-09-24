@@ -43,21 +43,56 @@ function PipStagesPreview() {
           const labels = ["Huevo", "Bebé", "Niño", "Grande", "Gigante"];
           return (
             <div key={stage} className="flex shrink-0 flex-col items-center">
-              <Pip mood="happy" color={base.color} stage={stage} feeds={stage === 0 ? 7 : 0} size={Math.min(250, pipSizeFor({ stage }))} />
+              <Pip
+                mood="happy"
+                color={base.color}
+                stage={stage}
+                feeds={stage === 0 ? 7 : 0}
+                size={Math.min(250, pipSizeFor({ stage }))}
+              />
               <p className="font-display text-xl">{labels[stage]}</p>
             </div>
           );
         })}
       </div>
       <div className="mx-auto mt-4 flex max-w-md items-center justify-center gap-8 rounded-2xl bg-card p-5 shadow-[var(--shadow-soft)]">
-        <PipRuler marks={[{ day: "monday", feeds: 8 }, { day: "tuesday", feeds: 3 }]} currentDay="tuesday" feeds={3} height={300} />
+        <PipRuler
+          marks={[
+            { day: "monday", feeds: 8 },
+            { day: "tuesday", feeds: 3 },
+          ]}
+          currentDay="tuesday"
+          feeds={3}
+          height={300}
+        />
         <div className="flex flex-col gap-3">
-          <button type="button" onClick={() => setMoment("grow")} className="tap-target rounded-full bg-primary px-6 font-display text-primary-foreground">Ver rayita</button>
-          <button type="button" onClick={() => setMoment("evolve")} className="tap-target rounded-full bg-accent px-6 font-display text-accent-foreground">Ver evolución</button>
+          <button
+            type="button"
+            onClick={() => setMoment("grow")}
+            className="tap-target rounded-full bg-primary px-6 font-display text-primary-foreground"
+          >
+            Ver rayita
+          </button>
+          <button
+            type="button"
+            onClick={() => setMoment("evolve")}
+            className="tap-target rounded-full bg-accent px-6 font-display text-accent-foreground"
+          >
+            Ver evolución
+          </button>
         </div>
       </div>
       {moment ? (
-        <PipFeedMoment phrase="Hello!" before={before} after={after} feedsToEvolve={8} evolved={moment === "evolve"} day="tuesday" rewardLabel="Pip aprende a preguntar" onClose={() => setMoment(null)} />
+        <PipFeedMoment
+          phrase="Hello!"
+          before={before}
+          after={after}
+          feedsToEvolve={8}
+          evolved={moment === "evolve"}
+          day="tuesday"
+          rewardLabel="Pip aprende a preguntar"
+          onClose={() => setMoment(null)}
+        />
       ) : null}
     </main>
   );
