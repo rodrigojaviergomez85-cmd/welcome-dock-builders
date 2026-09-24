@@ -33,7 +33,9 @@ export function NameTagView({
   onStepChange,
 }: Props) {
   const alreadyPrinted = startIndex >= 1;
-  const [step, setStep] = useState<Step>(alreadyPrinted ? (block.swap ? "swap" : "printed") : "ask");
+  const [step, setStep] = useState<Step>(
+    alreadyPrinted ? (block.swap ? "swap" : "printed") : "ask",
+  );
   const swap = block.swap;
   const askClips = block.ask.map((line) => line.clip);
 

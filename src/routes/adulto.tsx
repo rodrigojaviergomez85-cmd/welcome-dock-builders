@@ -77,7 +77,6 @@ function AdultPanel() {
         </section>
       ) : null}
 
-
       <section className="mt-6 rounded-3xl border-2 border-destructive/40 bg-card p-5 shadow-[var(--shadow-soft)]">
         <h2 className="font-display text-xl">Reiniciar el juego</h2>
         <p className="mt-2 text-sm text-muted-foreground">

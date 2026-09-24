@@ -46,9 +46,7 @@ export function ShowcaseView({
   const [stage, setStage] = useState<"intro" | "step" | "cheer" | "teaser">(
     startIndex > 0 ? "step" : "intro",
   );
-  const [index, setIndex] = useState(
-    Math.min(Math.max(0, startIndex - 1), block.steps.length - 1),
-  );
+  const [index, setIndex] = useState(Math.min(Math.max(0, startIndex - 1), block.steps.length - 1));
   const vars = missionVars(state.profile, alias, block.time);
   const [showSkip, setShowSkip] = useState(false);
 
