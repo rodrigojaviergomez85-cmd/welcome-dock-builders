@@ -62,3 +62,15 @@ export async function deleteAllRecordings(): Promise<void> {
   });
   db.close();
 }
+
+export async function getRecording(key: string): Promise<StoredRecording | null> {
+  const db = await openDb();
+  const item = await new Promise<StoredRecording | null>((resolve, reject) => {
+    const tx = db.transaction(STORE, "readonly");
+    const req = tx.objectStore(STORE).get(key);
+    req.onsuccess = () => resolve((req.result as StoredRecording | undefined) ?? null);
+    req.onerror = () => reject(req.error);
+  });
+  db.close();
+  return item;
+}

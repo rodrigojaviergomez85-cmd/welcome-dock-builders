@@ -8,6 +8,7 @@ import {
   type OralResult,
   PIP_DAYS,
   type PipProgress,
+  addLearned,
 } from "@/lib/progress";
 import { useProgress } from "@/lib/useProgress";
 import { stopClip } from "@/lib/audio";
@@ -37,6 +38,7 @@ import { BlockIntro } from "./BlockIntro";
 import { BLOCK_INTROS } from "@/content/glossary";
 import { DEFAULT_PIP_COLOR, type PipMood } from "./Pip";
 import { PipFeedMoment } from "./PipFeedMoment";
+import { takeLastTake, type PipVoiceSource } from "@/lib/pip-voice";
 
 type Props = {
   mission: Mission;
@@ -51,6 +53,7 @@ type FeedMoment = {
   before: PipProgress;
   after: PipProgress;
   evolved: boolean;
+  voice: PipVoiceSource | null;
   continueAfter?: () => void;
 };
 
@@ -122,8 +125,17 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
   function onOral(status: OralResult, phrase: string, continueAfter?: () => void) {
     const target = mission.pip?.feedsToEvolve ?? 0;
     const shouldFeed = status !== "pending";
+    const take = takeLastTake();
     if (shouldFeed) {
       const before = state.pip;
+      const learned = take
+        ? addLearned(before.learned, {
+            phrase,
+            clip: take.clip,
+            at: new Date().toISOString(),
+            ...(take.blob && take.recordingKey ? { recordingKey: take.recordingKey } : {}),
+          })
+        : before.learned;
       const nextFeeds = target > 0 ? Math.min(before.feeds + 1, target) : before.feeds + 1;
       const earnsReward =
         target > 0 && nextFeeds >= target && !before.accessories.includes(mission.reward.id);
@@ -133,6 +145,7 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
         totalFeeds: before.totalFeeds + 1,
         stage: earnsReward ? Math.min(4, before.stage + 1) : before.stage,
         accessories: earnsReward ? [...before.accessories, mission.reward.id] : before.accessories,
+        learned,
       };
       update((prev) => ({ ...prev, pip: after }));
       setFeedMoment({
@@ -140,6 +153,7 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
         before,
         after,
         evolved: earnsReward,
+        voice: take,
         ...(continueAfter ? { continueAfter } : {}),
       });
     }
@@ -302,6 +316,7 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
           stage: state.pip.stage,
           accessories: state.pip.accessories,
           marks: state.pip.marks,
+          learned: state.pip.learned,
           day: PIP_DAYS.find((candidate) => candidate === mission.id) ?? "monday",
           bounceKey: pipBounceKey,
         }}
@@ -469,6 +484,7 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
           after={feedMoment.after}
           feedsToEvolve={mission.pip?.feedsToEvolve ?? 0}
           evolved={feedMoment.evolved}
+          voice={feedMoment.voice}
           day={PIP_DAYS.find((candidate) => candidate === mission.id) ?? "monday"}
           rewardLabel={mission.pip?.rewardLabel ?? mission.reward.label}
           onClose={closeFeedMoment}

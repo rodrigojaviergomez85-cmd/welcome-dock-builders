@@ -17,6 +17,7 @@ import { Pip } from "./Pip";
 import { micSupported, startRecording } from "@/lib/recorder";
 import { startWavRecording, wavRecordingSupported, blobToBase64 } from "@/lib/wav-recorder";
 import { saveRecording } from "@/lib/recordings";
+import { setLastTake } from "@/lib/pip-voice";
 import { playClip, stopClip } from "@/lib/audio";
 import { setPhraseHelp } from "@/lib/help-context";
 import { gloss } from "@/content/glossary";
@@ -157,6 +158,7 @@ function QuickRecordTurn({
 
   useEffect(() => {
     if (!micSupported() && !wavRecordingSupported()) setState("nomic");
+    setLastTake({ clip: modelClip });
     void playClip(modelClip);
     return () => stopClip();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -209,6 +211,7 @@ function QuickRecordTurn({
     stopperRef.current = null;
     const blob = await stopper.stop();
     lastBlobRef.current = blob;
+    setLastTake({ clip: modelClip, blob, recordingKey: `${missionId}:${turnId}:complete` });
     try {
       const base = { missionId, targetEn, createdAt: new Date().toISOString(), blob };
       await saveRecording({ ...base, key: `${missionId}:${turnId}:complete`, turnId });
@@ -376,6 +379,11 @@ function GuidedRecordTurn({
   };
   const practiceTarget = recordingFull ? targetEn : fragment.en;
 
+  useEffect(() => {
+    setLastTake({ clip: modelClip });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [turnId]);
+
   async function begin(full = false) {
     stopClip();
     setRecordingFull(full);
@@ -396,6 +404,8 @@ function GuidedRecordTurn({
     stopperRef.current = null;
     if (url) URL.revokeObjectURL(url);
     setUrl(URL.createObjectURL(blob));
+    if (recordingFull)
+      setLastTake({ clip: modelClip, blob, recordingKey: `${missionId}:${turnId}:complete` });
 
     try {
       await saveRecording({
@@ -769,6 +779,7 @@ function AskRecordTurn({
 
   useEffect(() => {
     if (!micSupported() && !wavRecordingSupported()) setState("nomic");
+    setLastTake({ clip: modelClip });
     void playAskSequence();
     return () => {
       stopClip();
@@ -832,6 +843,7 @@ function AskRecordTurn({
     stopperRef.current = null;
     const blob = await stopper.stop();
     lastBlobRef.current = blob;
+    setLastTake({ clip: modelClip, blob, recordingKey: `${missionId}:${turnId}:complete` });
     attemptsRef.current += 1;
     try {
       await saveRecording({

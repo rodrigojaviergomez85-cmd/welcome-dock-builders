@@ -41,6 +41,28 @@ export type Profile = {
   age?: number;
 };
 
+export type PipLearned = {
+  phrase: string;
+  recordingKey?: string;
+  clip: string | string[];
+  at: string;
+};
+
+export const PIP_LEARNED_MAX = 200;
+
+export function addLearned(list: PipLearned[], item: PipLearned): PipLearned[] {
+  const key = item.phrase.trim().toLowerCase();
+  const rest = list.filter((entry) => entry.phrase.trim().toLowerCase() !== key);
+  const previous = list.find((entry) => entry.phrase.trim().toLowerCase() === key);
+  const merged: PipLearned = {
+    ...item,
+    ...((item.recordingKey ?? previous?.recordingKey)
+      ? { recordingKey: (item.recordingKey ?? previous?.recordingKey)! }
+      : {}),
+  };
+  return [...rest, merged].slice(-PIP_LEARNED_MAX);
+}
+
 export type ProgressState = {
   version: 1;
   profile: Profile | null;
@@ -53,6 +75,8 @@ export type ProgressState = {
     accessories: string[];
     /** Marcas consolidadas al terminar cada misión de la semana. */
     marks: PipMark[];
+    /** Barriga de palabras: frases que Pip ya comió (sin duplicados, máximo 200). */
+    learned: PipLearned[];
   };
   micAllowed: boolean | null;
   /** Si el juego puede escuchar y responder (transcribir el intento). */
@@ -82,7 +106,15 @@ export const emptyMission = (): MissionProgress => ({
 export const emptyState = (): ProgressState => ({
   version: 1,
   profile: null,
-  pip: { color: "#FF8A3D", feeds: 0, totalFeeds: 0, stage: 0, accessories: [], marks: [] },
+  pip: {
+    color: "#FF8A3D",
+    feeds: 0,
+    totalFeeds: 0,
+    stage: 0,
+    accessories: [],
+    marks: [],
+    learned: [],
+  },
   micAllowed: null,
   listenEnabled: true,
   missions: {},
@@ -111,6 +143,7 @@ export function loadProgress(): ProgressState {
         stage: Math.min(4, Math.max(0, parsed.pip?.stage ?? 0)),
         accessories: parsed.pip?.accessories ?? [],
         marks: parsed.pip?.marks ?? [],
+        learned: parsed.pip?.learned ?? [],
       },
     };
   } catch {

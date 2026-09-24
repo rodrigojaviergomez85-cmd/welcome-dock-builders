@@ -5,6 +5,7 @@ import { type PipDay, pipSizeFor, type PipProgress } from "@/lib/progress";
 import { CharacterFigure } from "./CharacterFigure";
 import { PipRuler } from "./PipRuler";
 import { BACKGROUNDS } from "@/content/backgrounds";
+import { playPipVoice, stopPipVoice, type PipVoiceSource } from "@/lib/pip-voice";
 
 type Props = {
   phrase: string;
@@ -14,6 +15,7 @@ type Props = {
   evolved: boolean;
   day: PipDay;
   rewardLabel: string;
+  voice?: PipVoiceSource | null;
   onClose: () => void;
 };
 
@@ -28,13 +30,18 @@ export function PipFeedMoment({
   evolved,
   day,
   rewardLabel,
+  voice = null,
   onClose,
 }: Props) {
   const [phase, setPhase] = useState<"enter" | "cookie" | "eat" | "grow" | "evolve">("enter");
   const [mouth, setMouth] = useState<PipMood>("happy");
   const [canSkip, setCanSkip] = useState(false);
+  const [speaking, setSpeaking] = useState(false);
 
   useEffect(() => {
+    let voiceDone = false;
+    let minDone = false;
+    let cancelled = false;
     const timers = [
       window.setTimeout(() => setPhase("cookie"), 400),
       window.setTimeout(() => {
@@ -52,6 +59,18 @@ export function PipFeedMoment({
         setPhase("grow");
         playTick();
       }, 1500),
+      window.setTimeout(() => {
+        if (!voice) {
+          voiceDone = true;
+          return;
+        }
+        setSpeaking(true);
+        void playPipVoice(voice).then(() => {
+          setSpeaking(false);
+          voiceDone = true;
+          if (minDone && !evolved && !cancelled) onClose();
+        });
+      }, 1500),
       window.setTimeout(() => setCanSkip(true), 1000),
     ];
     if (evolved) {
@@ -62,10 +81,19 @@ export function PipFeedMoment({
         }, 2200),
       );
     } else {
-      timers.push(window.setTimeout(onClose, 2200));
+      timers.push(
+        window.setTimeout(() => {
+          minDone = true;
+          if (voiceDone) onClose();
+        }, 2200),
+      );
     }
-    return () => timers.forEach(window.clearTimeout);
-  }, [evolved, onClose]);
+    return () => {
+      cancelled = true;
+      timers.forEach(window.clearTimeout);
+      stopPipVoice();
+    };
+  }, [evolved, onClose, voice]);
 
   const shownPip = phase === "evolve" ? after : before;
   const logicalSize = pipSizeFor(shownPip);
@@ -149,6 +177,16 @@ export function PipFeedMoment({
           />
         </div>
       </div>
+
+      {speaking ? (
+        <div
+          lang="en"
+          className="animate-pop mt-3 rounded-3xl bg-card px-5 py-3 font-display text-2xl text-card-foreground shadow-[var(--shadow-soft)]"
+          aria-live="polite"
+        >
+          <span lang="es">Pip:</span> {phrase}
+        </div>
+      ) : null}
 
       {phase === "cookie" ? (
         <div
