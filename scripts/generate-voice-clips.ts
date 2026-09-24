@@ -420,6 +420,11 @@ export const LINES: Line[] = [
     text: "¡Mirá, llegó Mia! Preguntale cómo se llama diciendo:",
   },
   {
+    id: "es-ask-mia-name-full",
+    speaker: "es",
+    text: "¡Mirá, llegó Mia! Preguntale cómo se llama diciendo: What is your name? Ahora repetilo vos.",
+  },
+  {
     id: "es-ask-luna-how",
     speaker: "es",
     text: "Luna está esperando. Saludala y preguntale cómo está diciendo:",

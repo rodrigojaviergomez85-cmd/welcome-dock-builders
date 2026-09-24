@@ -26,6 +26,8 @@ export type RecordTurnSpec = {
   role?: "ask" | "answer" | "repeat";
   /** Clip en español con el motivo; en role "ask" suena al entrar en lugar del modelo. */
   promptClip?: string;
+  /** Clip único con instrucción y modelo, para que móviles no corten la secuencia. */
+  askSequenceClip?: string;
   /** La RESPUESTA que el niño podría decir por error (para detectar y corregir la confusión). */
   confusedWith?: string;
 };

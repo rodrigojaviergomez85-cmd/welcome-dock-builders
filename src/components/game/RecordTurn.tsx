@@ -46,6 +46,8 @@ type Props = {
   mode?: "quick" | "guided" | undefined;
   /** Clip en español con el motivo (solo role "ask"). */
   promptClip?: string | undefined;
+  /** Instrucción y modelo en un solo clip para reproducción confiable en móviles. */
+  askSequenceClip?: string | undefined;
   /** Respuesta que el niño podría decir por error (solo role "ask"). */
   confusedWith?: string | undefined;
 };
@@ -738,6 +740,7 @@ function AskRecordTurn({
   modelClip,
   saveAs,
   promptClip,
+  askSequenceClip,
   confusedWith,
   onDone,
 }: Props) {
@@ -759,6 +762,7 @@ function AskRecordTurn({
 
   function playAskSequence(includePrompt = true) {
     const model = Array.isArray(modelClip) ? modelClip : [modelClip];
+    if (includePrompt && askSequenceClip) return playClip(askSequenceClip);
     const clips = includePrompt && promptClip ? [promptClip, ...model] : model;
     return playClip([...clips, "es-ask-repeat"]);
   }
