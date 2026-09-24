@@ -38,7 +38,10 @@ export function PipMoveScene({ from, to, pip, onContinue }: Props) {
       {phase === "new" ? <div className="pip-evolution-flash" aria-hidden /> : null}
       {showNew
         ? CONFETTI.map((_, index) => (
-            <i key={index} className={`pip-moment-confetti pip-moment-confetti-${(index % 4) + 1}`} />
+            <i
+              key={index}
+              className={`pip-moment-confetti pip-moment-confetti-${(index % 4) + 1}`}
+            />
           ))
         : null}
       <h1 className="font-display text-4xl">¡Pip tiene casa nueva!</h1>
@@ -60,7 +63,14 @@ export function PipMoveScene({ from, to, pip, onContinue }: Props) {
               : "left-[-30%] opacity-100"
           }`}
         >
-          <Pip mood="happy" color={pip.color} stage={pip.stage} feeds={pip.feeds} accessories={pip.accessories} size={120} />
+          <Pip
+            mood="happy"
+            color={pip.color}
+            stage={pip.stage}
+            feeds={pip.feeds}
+            accessories={pip.accessories}
+            size={120}
+          />
         </div>
       </div>
       {phase === "done" ? (
