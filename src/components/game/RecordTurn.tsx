@@ -527,21 +527,22 @@ function GuidedRecordTurn({
     </div>
   );
 
-  const saidIt = cheer && state !== "result" ? (
-    bubble
-  ) : (
-    <button
-      type="button"
-      onClick={() => {
-        stopperRef.current = null;
-        stopClip();
-        celebrate(true, () => onDone("pending"));
-      }}
-      className="tap-target mx-auto mt-4 flex items-center justify-center gap-2 rounded-full bg-primary px-6 font-display text-lg text-primary-foreground shadow-[var(--shadow-pop)] active:translate-y-1 active:shadow-none"
-    >
-      <Check className="size-5" aria-hidden /> Lo dije
-    </button>
-  );
+  const saidIt =
+    cheer && state !== "result" ? (
+      bubble
+    ) : (
+      <button
+        type="button"
+        onClick={() => {
+          stopperRef.current = null;
+          stopClip();
+          celebrate(true, () => onDone("pending"));
+        }}
+        className="tap-target mx-auto mt-4 flex items-center justify-center gap-2 rounded-full bg-primary px-6 font-display text-lg text-primary-foreground shadow-[var(--shadow-pop)] active:translate-y-1 active:shadow-none"
+      >
+        <Check className="size-5" aria-hidden /> Lo dije
+      </button>
+    );
 
   if (state === "intent") {
     return (

@@ -20,7 +20,8 @@ let lastCheer = -1;
 /** Celebración al azar, nunca igual a la anterior. */
 export function pickCheer(): CheerLine {
   let i = Math.floor(Math.random() * CHEERS.length);
-  if (i === lastCheer) i = (i + 1 + Math.floor(Math.random() * (CHEERS.length - 1))) % CHEERS.length;
+  if (i === lastCheer)
+    i = (i + 1 + Math.floor(Math.random() * (CHEERS.length - 1))) % CHEERS.length;
   lastCheer = i;
   return CHEERS[i]!;
 }
