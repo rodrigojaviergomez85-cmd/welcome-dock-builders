@@ -134,7 +134,13 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
         accessories: evolves ? [...before.accessories, mission.reward.id] : before.accessories,
       };
       update((prev) => ({ ...prev, pip: after }));
-      setFeedMoment({ phrase, before, after, evolved: evolves, continueAfter });
+      setFeedMoment({
+        phrase,
+        before,
+        after,
+        evolved: evolves,
+        ...(continueAfter ? { continueAfter } : {}),
+      });
     }
     update((prev) =>
       updateMission(prev, mission.id, (p) => {

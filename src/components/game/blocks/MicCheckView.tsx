@@ -55,7 +55,7 @@ export function MicCheckView({
         color={pipColor}
         accessories={pipAccessories}
         size={Math.min(224, pipSizeFor(progress.pip))}
-        className={done ? "animate-pop" : undefined}
+        {...(done ? { className: "animate-pop" } : {})}
       />
       <div className="flex items-center gap-2 rounded-3xl bg-card/95 px-5 py-3 shadow-[var(--shadow-soft)]">
         <p lang="en" className="font-display text-3xl text-card-foreground">
