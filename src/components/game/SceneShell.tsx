@@ -78,7 +78,7 @@ export function SceneShell({
             <span className="hidden sm:inline">Salir</span>
           </Link>
 
-          <div className="flex h-14 items-center gap-2 rounded-full bg-card/90 px-3 shadow-[var(--shadow-soft)] sm:px-4">
+          <div aria-label={title} className="flex h-14 items-center gap-2 rounded-full bg-card/90 px-3 shadow-[var(--shadow-soft)] sm:px-4">
             {pip ? (
               <div className="relative flex items-center gap-2">
                 <button
