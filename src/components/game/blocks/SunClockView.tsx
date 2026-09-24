@@ -1,5 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-import { Hand, Moon, Sun } from "lucide-react";
+import { Hand, Mic, Moon, Star, Sun } from "lucide-react";
+import dockMorning from "@/assets/dock-morning.jpg";
+import dockAfternoon from "@/assets/dock-afternoon.jpg";
+import dockEvening from "@/assets/dock-evening.jpg";
+import dockNight from "@/assets/dock-night.jpg";
 import type { SunClockBlock, TimeOfDay } from "@/content/missions/types";
 import { TIME_LABEL_ES } from "@/content/backgrounds";
 import { CharacterFigure } from "../CharacterFigure";
@@ -31,6 +35,74 @@ function toBits(list: number[], shift: number) {
 }
 function fromBits(value: number, shift: number, count: number) {
   return Array.from({ length: count }, (_, i) => i).filter((i) => value & (1 << (i + shift)));
+}
+
+/** Mini escena de cada ventanita: recorte del muelle + tinte + astro en su altura. */
+const WINDOW: Record<
+  TimeOfDay,
+  { img: string; tint: string; astro: "sun" | "moon"; top: string; color: string }
+> = {
+  morning: {
+    img: dockMorning,
+    tint: "bg-[#ff9ec4]/35",
+    astro: "sun",
+    top: "62%",
+    color: "text-[#FFB347]",
+  },
+  afternoon: {
+    img: dockAfternoon,
+    tint: "bg-[#5ec8ff]/25",
+    astro: "sun",
+    top: "22%",
+    color: "text-[#FFD166]",
+  },
+  evening: {
+    img: dockEvening,
+    tint: "bg-[#ff7a2f]/35",
+    astro: "sun",
+    top: "66%",
+    color: "text-[#ff6b1a]",
+  },
+  night: {
+    img: dockNight,
+    tint: "bg-[#0b1840]/45",
+    astro: "moon",
+    top: "26%",
+    color: "text-[#fff6c8]",
+  },
+};
+
+/** Sol grande con carita y halo. */
+function SunFace({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 100 100" className={className} aria-hidden>
+      <circle cx="50" cy="50" r="48" fill="#FFD166" opacity="0.35" />
+      {Array.from({ length: 12 }, (_, i) => (
+        <rect
+          key={i}
+          x="47"
+          y="2"
+          width="6"
+          height="14"
+          rx="3"
+          fill="#FFB347"
+          transform={`rotate(${i * 30} 50 50)`}
+        />
+      ))}
+      <circle cx="50" cy="50" r="30" fill="#FFD166" stroke="#F4A300" strokeWidth="3" />
+      <circle cx="40" cy="46" r="3.6" fill="#5a3a00" />
+      <circle cx="60" cy="46" r="3.6" fill="#5a3a00" />
+      <circle cx="34" cy="56" r="4" fill="#ff8a8a" opacity="0.6" />
+      <circle cx="66" cy="56" r="4" fill="#ff8a8a" opacity="0.6" />
+      <path
+        d="M40 58 Q50 67 60 58"
+        stroke="#5a3a00"
+        strokeWidth="3.4"
+        fill="none"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
 }
 
 /** Posición de cada parada sobre el arco, en porcentaje de la caja del cielo. */
@@ -65,6 +137,7 @@ export function SunClockView({
   const [dragT, setDragT] = useState<number | null>(null);
   const [showDemo, setShowDemo] = useState(true);
   const [spin, setSpin] = useState(false);
+  const [hop, setHop] = useState(0);
 
   const stops = block.stops;
   const count = stops.length;
@@ -82,9 +155,7 @@ export function SunClockView({
   // Voz del guía en español + demo de la mano arrastrando el sol.
   useEffect(() => {
     void playClip(phase === "repeat" ? "es-sun-repeat" : block.introClip);
-    const timer = setTimeout(() => setShowDemo(false), 2000);
     return () => {
-      clearTimeout(timer);
       stopClip();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -95,7 +166,9 @@ export function SunClockView({
     if (!stop) return;
     setActive(index);
     setDragT(null);
+    setHop((value) => value + 1);
     onTimeChange(stop.time);
+    stopClip();
     void playClip(stop.line.clip);
     if (!visited.includes(index)) {
       const next = [...visited, index];
@@ -150,7 +223,11 @@ export function SunClockView({
 
   function onPointerMove(event: React.PointerEvent) {
     if (dragT === null) return;
-    setDragT(pointerT(event));
+    const t = pointerT(event);
+    setDragT(t);
+    // Crossfade en vivo del cielo mientras se arrastra.
+    const near = stops[Math.round(t * (count - 1))];
+    if (near) onTimeChange(near.time);
   }
 
   function onPointerUp(event: React.PointerEvent) {
@@ -167,32 +244,36 @@ export function SunClockView({
 
   return (
     <div className="flex w-full max-w-2xl flex-col items-center gap-3">
-      {/* Arco del cielo con el sol arrastrable */}
+      {/* Cielo con riel curvo y sol arrastrable */}
       <div
         ref={arcRef}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
         onPointerLeave={() => setDragT(null)}
-        className="fixed left-1/2 top-[9.5rem] z-10 h-[22vh] w-[min(92vw,42rem)] -translate-x-1/2 touch-none select-none"
+        className="fixed left-1/2 top-[8.5rem] z-10 h-[max(9rem,20vh)] w-[min(86vw,40rem)] -translate-x-1/2 touch-none select-none"
       >
-        {phase === "repeat" ? (
-          <p className="absolute -top-12 left-1/2 z-30 -translate-x-1/2 whitespace-nowrap rounded-full bg-card/95 px-4 py-1 font-display text-base text-card-foreground shadow-[var(--shadow-soft)]">
-            Tocá un cielo y repetí
-          </p>
-        ) : null}
         <svg
           viewBox="0 0 100 100"
           preserveAspectRatio="none"
-          className="absolute inset-0 size-full"
+          className="absolute inset-0 size-full overflow-visible"
         >
-          <polyline
-            points="6.0,86.0 8.2,79.9 10.4,73.8 12.6,67.8 14.8,61.9 17.0,56.2 19.2,50.6 21.4,45.2 23.6,40.2 25.8,35.3 28.0,30.8 30.2,26.7 32.4,22.9 34.6,19.5 36.8,16.5 39.0,13.9 41.2,11.8 43.4,10.2 45.6,9.0 47.8,8.2 50.0,8.0 52.2,8.2 54.4,9.0 56.6,10.2 58.8,11.8 61.0,13.9 63.2,16.5 65.4,19.5 67.6,22.9 69.8,26.7 72.0,30.8 74.2,35.3 76.4,40.2 78.6,45.2 80.8,50.6 83.0,56.2 85.2,61.9 87.4,67.8 89.6,73.8 91.8,79.9 94.0,86.0"
+          <path
+            d="M6 86 Q50 -70 94 86"
             fill="none"
-            stroke="currentColor"
-            strokeWidth="1.2"
-            strokeDasharray="4 4"
+            stroke="white"
+            strokeOpacity="0.35"
+            strokeWidth="26"
+            strokeLinecap="round"
             vectorEffect="non-scaling-stroke"
-            className="text-card/80"
+          />
+          <path
+            d="M6 86 Q50 -70 94 86"
+            fill="none"
+            stroke="white"
+            strokeOpacity="0.6"
+            strokeWidth="3"
+            strokeLinecap="round"
+            vectorEffect="non-scaling-stroke"
           />
         </svg>
 
@@ -200,6 +281,8 @@ export function SunClockView({
           const point = arcPoint(index / (count - 1));
           const isGold = gold.includes(index);
           const isVisited = visited.includes(index);
+          const w = WINDOW[stop.time];
+          const Astro = w.astro === "moon" ? Moon : Sun;
           return (
             <button
               key={stop.time}
@@ -208,29 +291,49 @@ export function SunClockView({
               aria-label={TIME_LABEL_ES[stop.time]}
               style={{ left: `${point.x}%`, top: `${point.y}%` }}
               className={cn(
-                "absolute z-20 -translate-x-1/2 -translate-y-1/2 rounded-full bg-card/95 p-2 shadow-[var(--shadow-soft)] transition-transform active:scale-95",
-                isGold && "ring-4 ring-[#FFD166]",
-                !isGold && isVisited && "ring-2 ring-success",
+                "absolute z-20 size-16 -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-full border-4 border-card shadow-[var(--shadow-pop)] transition-transform active:scale-95 sm:size-[5.5rem]",
+                isGold && "border-[#FFD166] ring-4 ring-[#FFD166]/60",
+                !isGold && isVisited && "border-success",
+                active === index && "scale-110",
                 phase === "repeat" && !isGold && "animate-pulse",
               )}
             >
+              <img
+                src={w.img}
+                alt=""
+                className="absolute inset-0 size-full scale-150 object-cover object-top"
+              />
+              <span className={cn("absolute inset-0", w.tint)} />
               {stop.time === "night" ? (
-                <Moon className="size-9 fill-current text-primary" aria-hidden />
-              ) : (
-                <Sun
-                  className={cn(
-                    stop.time === "evening"
-                      ? "size-9 fill-current text-accent"
-                      : "size-10 fill-current text-sun",
-                  )}
-                  aria-hidden
-                />
-              )}
+                <>
+                  <Star
+                    className="absolute left-[22%] top-[18%] size-2.5 fill-current text-[#fff6c8]"
+                    aria-hidden
+                  />
+                  <Star
+                    className="absolute right-[20%] top-[44%] size-2 fill-current text-[#fff6c8]"
+                    aria-hidden
+                  />
+                </>
+              ) : null}
+              <Astro
+                className={cn(
+                  "absolute left-1/2 size-7 -translate-x-1/2 -translate-y-1/2 fill-current sm:size-8",
+                  w.color,
+                )}
+                style={{ top: w.top }}
+                aria-hidden
+              />
+              {phase === "repeat" && !isGold ? (
+                <span className="absolute bottom-0.5 left-1/2 -translate-x-1/2 rounded-full bg-destructive p-1 text-destructive-foreground">
+                  <Mic className="size-3.5" aria-hidden />
+                </span>
+              ) : null}
             </button>
           );
         })}
 
-        {/* El sol que se arrastra */}
+        {/* El sol que se arrastra (arranca en el horizonte izquierdo) */}
         <div
           onPointerDown={(event) => {
             event.currentTarget.setPointerCapture(event.pointerId);
@@ -243,44 +346,59 @@ export function SunClockView({
           aria-valuemin={1}
           aria-valuemax={count}
           aria-valuenow={(active ?? 0) + 1}
-          style={{ left: `${sunPos.x}%`, top: `${Math.max(4, sunPos.y - 16)}%` }}
+          style={{ left: `${sunPos.x}%`, top: `${sunPos.y}%` }}
           className={cn(
-            "absolute z-10 -translate-x-1/2 -translate-y-1/2 cursor-grab rounded-full bg-[#FFD166] p-3 shadow-[var(--shadow-pop)] transition-[left,top] duration-300",
+            "absolute z-30 size-[4.5rem] -translate-x-1/2 -translate-y-[85%] cursor-grab transition-[left,top] duration-300 sm:size-24",
             dragT !== null && "scale-110 duration-0",
+            showDemo && active === null && "animate-[sun-demo_2.4s_ease-in-out_infinite]",
             spin && "animate-spin",
           )}
         >
-          <Sun className="size-9 text-[#8a5a00]" aria-hidden />
+          <SunFace className="size-full drop-shadow-[0_0_18px_rgba(255,209,102,0.9)]" />
           {showDemo ? (
             <Hand
-              className="absolute -bottom-6 left-6 size-7 animate-bounce text-card"
+              className="absolute -bottom-3 left-1/2 size-9 fill-card text-foreground"
               aria-hidden
             />
           ) : null}
         </div>
       </div>
 
-      <div className="h-[calc(22vh+4rem)]" aria-hidden />
-      <p className="rounded-full bg-card/85 px-4 py-1 text-center text-xs text-muted-foreground">
-        {block.helpEs}
-      </p>
+      <div className="h-[calc(max(9rem,20vh)+3rem)]" aria-hidden />
 
-      {/* Boti saluda en la hora elegida */}
-      {current && recordAt === null ? (
-        <div className="flex w-full flex-col items-center gap-2">
-          <CharacterFigure id={block.guide} size="md" />
-          <div className="flex flex-col items-center gap-2 rounded-3xl bg-card/95 px-5 py-4 text-center text-card-foreground shadow-[var(--shadow-soft)]">
-            <span className="rounded-full bg-secondary px-3 py-0.5 text-xs text-secondary-foreground">
-              {TIME_LABEL_ES[current.time]}
-            </span>
-            <p lang="en" className="font-display text-2xl">
-              {current.line.en}
-            </p>
-            {current.line.es ? (
-              <p className="text-sm text-muted-foreground">{current.line.es}</p>
-            ) : null}
-            <AudioButton clipId={current.line.clip} label="Escuchar" />
+      {phase === "repeat" && recordAt === null ? (
+        <div className="flex items-end gap-2">
+          <CharacterFigure id={block.guide} size="sm" />
+          <p className="mb-6 rounded-3xl bg-card/95 px-5 py-3 font-display text-2xl text-card-foreground shadow-[var(--shadow-soft)]">
+            Tocá un cielo y repetí
+          </p>
+        </div>
+      ) : null}
+
+      {/* Boti en el muelle: salta y saluda al llegar a cada parada */}
+      {phase === "explore" && recordAt === null ? (
+        <div className="flex items-end gap-2">
+          <div key={hop} className={cn(hop > 0 && "animate-[boti-hop_0.7s_ease-out]")}>
+            <CharacterFigure id={block.guide} size="md" />
           </div>
+          {current ? (
+            <div className="mb-10 flex flex-col items-center gap-1 rounded-3xl bg-card/95 px-6 py-4 text-center text-card-foreground shadow-[var(--shadow-soft)]">
+              <span className="rounded-full bg-secondary px-3 py-0.5 text-xs text-secondary-foreground">
+                {TIME_LABEL_ES[current.time]}
+              </span>
+              <p lang="en" className="font-display text-3xl sm:text-4xl">
+                {current.line.en}
+              </p>
+              {current.line.es ? (
+                <p className="text-sm text-muted-foreground">{current.line.es}</p>
+              ) : null}
+              <AudioButton clipId={current.line.clip} label="Escuchar" />
+            </div>
+          ) : (
+            <p className="mb-10 rounded-full bg-card/90 px-4 py-2 text-sm text-card-foreground">
+              {block.helpEs}
+            </p>
+          )}
         </div>
       ) : null}
 
