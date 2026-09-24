@@ -74,6 +74,7 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
   const [pipMood] = useState<PipMood>("happy");
   const [feedMoment, setFeedMoment] = useState<FeedMoment | null>(null);
   const [pipBounceKey, setPipBounceKey] = useState(0);
+  const [resumed, setResumed] = useState(false);
 
   // Recuperar dónde quedó el alumno, una sola vez.
   useEffect(() => {
@@ -81,6 +82,10 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
     const progress = getMissionProgress(state, mission.id);
     setBlockIndex(Math.min(progress.blockIndex, mission.blocks.length - 1));
     setStepIndex(progress.stepIndex);
+    if (!progress.completed && (progress.blockIndex > 0 || progress.stepIndex > 0)) {
+      setResumed(true);
+      window.setTimeout(() => setResumed(false), 3500);
+    }
     setRestored(true);
     setStageAtStart(state.pip.stage);
     update((prev) =>
@@ -324,6 +329,14 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
           bounceKey: pipBounceKey,
         }}
       >
+        {resumed ? (
+          <p
+            role="status"
+            className="animate-pop fixed left-1/2 top-20 z-40 -translate-x-1/2 rounded-full bg-success px-6 py-3 font-display text-xl text-success-foreground shadow-[var(--shadow-soft)]"
+          >
+            ¡Seguís donde te quedaste!
+          </p>
+        ) : null}
         {showingIntro ? (
           <BlockIntro blockId={block.id} onStart={() => setIntroFor(block.id)} />
         ) : null}
