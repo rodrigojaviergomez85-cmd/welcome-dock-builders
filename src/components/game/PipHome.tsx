@@ -15,6 +15,8 @@ import { playSuccess } from "@/lib/feedback-sounds";
 
 /* eslint-disable react-refresh/only-export-components -- PIP_HOMES se reutiliza en el cierre de misión */
 export const PIP_HOMES = [home0, home1, home2, home3, home4] as const;
+/** Centro del jardín de Pip en island-map.jpg (% del mapa). Ajustar aquí si cambia el mapa. */
+const GARDEN = { x: 49.5, y: 49, bottom: 58 };
 const HOME_NAMES = ["Nido", "Caja", "Casita", "Casa del árbol", "Faro"];
 
 type Props = {
@@ -32,8 +34,8 @@ export function PipHome({ pip, day, feedsToEvolve, asleep, missionPath }: Props)
   const [awake, setAwake] = useState(false);
   const stage = Math.min(4, Math.max(0, pip.stage));
   const sleeping = asleep && !awake;
-  const homeWidths = [14, 15.5, 17, 18.5, 20];
-  const pipWidths = [6, 8.5, 11, 13.5, 16];
+  const homeWidths = [16, 17.5, 19, 20.5, 22];
+  const pipWidths = [7, 9.5, 12.5, 15, 18];
 
   function onPip() {
     if (sleeping) {
@@ -56,8 +58,8 @@ export function PipHome({ pip, day, feedsToEvolve, asleep, missionPath }: Props)
         type="button"
         onClick={() => setPanel("homes")}
         aria-label={`Casa de Pip: ${HOME_NAMES[stage]}. Ver todas las casas.`}
-        className="pointer-events-auto absolute bottom-[3.5%] left-[48.5%] max-w-[260px] -translate-x-1/2 rounded-lg focus-visible:outline-4 focus-visible:outline-primary"
-        style={{ width: `${homeWidths[stage]}%` }}
+        className="pointer-events-auto absolute max-w-[300px] -translate-x-1/2 rounded-lg focus-visible:outline-4 focus-visible:outline-primary"
+        style={{ width: `${homeWidths[stage]}%`, left: `${GARDEN.x - 2}%`, bottom: `${100 - GARDEN.bottom}%` }}
       >
         <img
           src={PIP_HOMES[stage]}
@@ -74,8 +76,8 @@ export function PipHome({ pip, day, feedsToEvolve, asleep, missionPath }: Props)
         aria-label={
           sleeping ? "Pip está dormido. Tocalo para despertarlo." : "Ver las frases de Pip"
         }
-        className="pointer-events-auto absolute bottom-[4%] left-[54%] max-w-[190px] rounded-full focus-visible:outline-4 focus-visible:outline-primary"
-        style={{ width: `${pipWidths[stage]}%` }}
+        className="pointer-events-auto absolute max-w-[220px] rounded-full focus-visible:outline-4 focus-visible:outline-primary"
+        style={{ width: `${pipWidths[stage]}%`, left: `${GARDEN.x + homeWidths[stage] / 2 - 4}%`, bottom: `${100 - GARDEN.bottom - 1}%` }}
       >
         <Pip
           mood={sleeping ? "sleepy" : "happy"}
@@ -86,7 +88,8 @@ export function PipHome({ pip, day, feedsToEvolve, asleep, missionPath }: Props)
           className="size-full"
         />
       </button>
-      <div className="absolute bottom-[5%] left-[62%] w-[4%] max-w-[52px] [&>div>svg]:w-full">
+      <div className="absolute w-[4%] max-w-[52px] [&>div>svg]:w-full"
+        style={{ left: "40.5%", bottom: "41%" }}>
         <PipRuler
           marks={pip.marks}
           currentDay={day}
