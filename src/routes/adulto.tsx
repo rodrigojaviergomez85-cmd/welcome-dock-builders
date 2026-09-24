@@ -61,6 +61,31 @@ function AdultPanel() {
         <ShieldCheck className="size-7" aria-hidden /> Panel para adultos
       </h1>
 
+      <section className="mt-6 rounded-3xl border-2 border-destructive/40 bg-card p-5 shadow-[var(--shadow-soft)]">
+        <h2 className="font-display text-xl">Reiniciar el juego</h2>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Borra perfil, Pip, soles, monedas, misiones y grabaciones de este dispositivo para jugar
+          desde cero.
+        </p>
+        <button
+          type="button"
+          onClick={async () => {
+            if (!window.confirm("¿Reiniciar todo el juego desde cero? No se puede deshacer."))
+              return;
+            try {
+              await deleteAllRecordings();
+            } catch {
+              /* sin grabaciones */
+            }
+            reset();
+            window.location.href = "/";
+          }}
+          className="tap-target mt-4 inline-flex items-center gap-2 rounded-full bg-destructive px-6 font-display text-destructive-foreground"
+        >
+          <RotateCcw className="size-5" aria-hidden /> Reiniciar todo el juego
+        </button>
+      </section>
+
       <section className="mt-6 rounded-3xl bg-card p-5 shadow-[var(--shadow-soft)]">
         <h2 className="font-display text-xl">Qué se guarda y dónde</h2>
         <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
