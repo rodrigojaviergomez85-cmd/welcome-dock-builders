@@ -25,7 +25,30 @@ import { transcribeAttempt } from "@/lib/speech.functions";
 import { matchSpeech, type MatchResult } from "@/lib/speech-match";
 import { useProgress } from "@/lib/useProgress";
 import { pipSizeFor } from "@/lib/progress";
-import { playSuccess, playTryAgain } from "@/lib/feedback-sounds";
+import { playSuccess } from "@/lib/feedback-sounds";
+import { ALMOST, CheerBubble, pickCheer, playCheer, type CheerLine } from "./Cheer";
+import type { CharacterId } from "@/content/characters";
+
+function useCheer(by: CharacterId) {
+  const [cheer, setCheer] = useState<CheerLine | null>(null);
+  const aliveRef = useRef(true);
+  useEffect(() => {
+    aliveRef.current = true;
+    return () => {
+      aliveRef.current = false;
+    };
+  }, []);
+  function celebrate(ok: boolean, after: () => void) {
+    const line = ok ? pickCheer() : ALMOST;
+    setCheer(line);
+    if (ok) playSuccess();
+    void playCheer(by, line).then(() => {
+      if (aliveRef.current) after();
+    });
+  }
+  const bubble = cheer ? <CheerBubble by={by} line={cheer} /> : null;
+  return { cheer, celebrate, bubble };
+}
 
 type Props = {
   missionId: string;
@@ -51,6 +74,8 @@ type Props = {
   askSequenceClip?: string | undefined;
   /** Respuesta que el niño podría decir por error (solo role "ask"). */
   confusedWith?: string | undefined;
+  /** Personaje en escena que celebra (Luna si no hay ninguno). */
+  cheerBy?: CharacterId | undefined;
 };
 
 type State =
@@ -127,6 +152,7 @@ export function RecordTurn({ role, ...props }: Props & { role?: RecordRole | und
 }
 
 function QuickRecordTurn({
+  cheerBy = "luna",
   missionId,
   turnId,
   targetEn,
@@ -136,6 +162,7 @@ function QuickRecordTurn({
   meaning,
   onDone,
 }: Props) {
+  const { cheer, celebrate, bubble } = useCheer(cheerBy);
   const { state: progress } = useProgress();
   const [state, setState] = useState<
     "idle" | "starting" | "recording" | "checking" | "result" | "nomic"
@@ -192,9 +219,7 @@ function QuickRecordTurn({
   function showResult(ok: boolean, failCount: number) {
     setHeard(ok);
     setState("result");
-    if (ok) playSuccess();
-    else playTryAgain();
-    setTimeout(() => {
+    celebrate(ok, () => {
       if (ok) {
         markSaved("heard");
         doneRef.current("heard");
@@ -202,7 +227,7 @@ function QuickRecordTurn({
         markSaved("practiced");
         doneRef.current("practiced");
       } else setState("idle");
-    }, 1200);
+    });
   }
 
   async function finish() {
@@ -221,10 +246,9 @@ function QuickRecordTurn({
       /* la práctica sigue contando */
     }
     if (!listenEnabled || blob.type !== "audio/wav") {
-      playSuccess();
       setHeard(true);
       setState("result");
-      setTimeout(() => doneRef.current("practiced"), 1200);
+      celebrate(true, () => doneRef.current("practiced"));
       return;
     }
     setState("checking");
@@ -246,10 +270,9 @@ function QuickRecordTurn({
     } catch {
       /* servicio caído: cuenta como practicado */
     }
-    playSuccess();
     setHeard(true);
     setState("result");
-    setTimeout(() => doneRef.current("practiced"), 1200);
+    celebrate(true, () => doneRef.current("practiced"));
   }
 
   return (
@@ -302,14 +325,7 @@ function QuickRecordTurn({
             <Loader2 className="size-6 animate-spin" aria-hidden /> Te estoy escuchando…
           </p>
         ) : null}
-        {state === "result" ? (
-          <p
-            className={`animate-pop rounded-2xl px-5 py-3 font-display text-2xl ${heard ? "bg-success/15 text-success" : "bg-muted"}`}
-          >
-            <Ear className="mr-2 inline size-6" aria-hidden />
-            {heard ? "¡Te escuché!" : "Probemos otra vez"}
-          </p>
-        ) : null}
+        {state === "result" ? bubble : null}
         {state === "nomic" ? (
           <p className="flex items-center gap-2 font-display text-lg text-muted-foreground">
             <MicOff className="size-5" aria-hidden /> Decilo en voz alta y tocá “Lo dije”
@@ -323,8 +339,12 @@ function QuickRecordTurn({
           onClick={() => {
             stopperRef.current = null;
             stopClip();
-            if (!lastBlobRef.current) markSaved("pending");
-            onDone("pending");
+            setHeard(true);
+            setState("result");
+            celebrate(true, () => {
+              if (!lastBlobRef.current) markSaved("pending");
+              onDone("pending");
+            });
           }}
           className="tap-target mt-2 inline-flex items-center gap-2 rounded-full bg-primary px-6 font-display text-lg text-primary-foreground shadow-[var(--shadow-pop)] active:translate-y-1 active:shadow-none"
         >
@@ -336,6 +356,7 @@ function QuickRecordTurn({
 }
 
 function GuidedRecordTurn({
+  cheerBy = "luna",
   missionId,
   turnId,
   promptEs,
@@ -346,6 +367,7 @@ function GuidedRecordTurn({
   meaning,
   onDone,
 }: Props) {
+  const { cheer, celebrate, bubble } = useCheer(cheerBy);
   const { state: progress } = useProgress();
   const [state, setState] = useState<State>("intent");
   const [spanishPlayed, setSpanishPlayed] = useState(false);
@@ -452,8 +474,7 @@ function GuidedRecordTurn({
     }
     setMatch(finalMatch);
     if (finalMatch) {
-      if (finalMatch.kind === "heard") playSuccess();
-      else playTryAgain();
+      celebrate(finalMatch.kind === "heard", () => undefined);
     }
     setState("result");
   }
@@ -506,19 +527,22 @@ function GuidedRecordTurn({
     </div>
   );
 
-  const saidIt = (
-    <button
-      type="button"
-      onClick={() => {
-        stopperRef.current = null;
-        stopClip();
-        onDone("pending");
-      }}
-      className="tap-target mx-auto mt-4 flex items-center justify-center gap-2 rounded-full bg-primary px-6 font-display text-lg text-primary-foreground shadow-[var(--shadow-pop)] active:translate-y-1 active:shadow-none"
-    >
-      <Check className="size-5" aria-hidden /> Lo dije
-    </button>
-  );
+  const saidIt =
+    cheer && state !== "result" ? (
+      bubble
+    ) : (
+      <button
+        type="button"
+        onClick={() => {
+          stopperRef.current = null;
+          stopClip();
+          celebrate(true, () => onDone("pending"));
+        }}
+        className="tap-target mx-auto mt-4 flex items-center justify-center gap-2 rounded-full bg-primary px-6 font-display text-lg text-primary-foreground shadow-[var(--shadow-pop)] active:translate-y-1 active:shadow-none"
+      >
+        <Check className="size-5" aria-hidden /> Lo dije
+      </button>
+    );
 
   if (state === "intent") {
     return (
@@ -700,13 +724,9 @@ function GuidedRecordTurn({
 
       {state === "result" && match ? (
         <div className={`mt-4 animate-pop rounded-2xl p-4 ${heard ? "bg-success/15" : "bg-muted"}`}>
-          <p className="flex items-center gap-2 font-display text-xl">
-            <Ear className="size-6" aria-hidden />
-            {heard
-              ? "¡Te escuché!"
-              : match.kind === "partial"
-                ? "Te escuché casi todo"
-                : "No te escuché bien"}
+          {bubble}
+          <p lang="en" className="sr-only">
+            {cheer?.en ?? (heard ? "Great job!" : ALMOST.en)}
           </p>
           {match.heardText ? (
             <p lang="en" className="mt-2 font-display text-2xl">
@@ -742,6 +762,7 @@ function GuidedRecordTurn({
  * Si el niño dice la respuesta en vez de la pregunta, Pip lo corrige con cariño.
  */
 function AskRecordTurn({
+  cheerBy = "luna",
   missionId,
   turnId,
   promptEs,
@@ -754,6 +775,7 @@ function AskRecordTurn({
   confusedWith,
   onDone,
 }: Props) {
+  const { cheer, celebrate, bubble } = useCheer(cheerBy);
   const { state: progress } = useProgress();
   const [state, setState] = useState<
     "idle" | "starting" | "recording" | "checking" | "result" | "nomic"
@@ -813,13 +835,12 @@ function AskRecordTurn({
   }
 
   function succeed(status: "heard" | "practiced") {
-    playSuccess();
     setHeard(true);
     setState("result");
-    setTimeout(() => {
+    celebrate(true, () => {
       markSaved(status);
       doneRef.current(status);
-    }, 1200);
+    });
   }
 
   async function fail() {
@@ -828,13 +849,12 @@ function AskRecordTurn({
     setState("checking");
     await playAskSequence(false);
     setState("result");
-    playTryAgain();
-    setTimeout(() => {
+    celebrate(false, () => {
       if (failsRef.current >= 2) {
         markSaved("practiced");
         doneRef.current("practiced");
       } else setState("idle");
-    }, 1200);
+    });
   }
 
   async function finish() {
@@ -957,14 +977,7 @@ function AskRecordTurn({
             <Loader2 className="size-6 animate-spin" aria-hidden /> Te estoy escuchando…
           </p>
         ) : null}
-        {state === "result" ? (
-          <p
-            className={`animate-pop rounded-2xl px-5 py-3 font-display text-2xl ${heard ? "bg-success/15 text-success" : "bg-muted"}`}
-          >
-            <Ear className="mr-2 inline size-6" aria-hidden />
-            {heard ? "¡Te escuché!" : "Probemos otra vez"}
-          </p>
-        ) : null}
+        {state === "result" ? bubble : null}
         {state === "nomic" ? (
           <p className="flex items-center gap-2 font-display text-lg text-muted-foreground">
             <MicOff className="size-5" aria-hidden /> Decilo en voz alta y tocá “Lo dije”
@@ -978,8 +991,12 @@ function AskRecordTurn({
           onClick={() => {
             stopperRef.current = null;
             stopClip();
-            if (!lastBlobRef.current) markSaved("pending");
-            onDone("pending");
+            setHeard(true);
+            setState("result");
+            celebrate(true, () => {
+              if (!lastBlobRef.current) markSaved("pending");
+              onDone("pending");
+            });
           }}
           className="tap-target mt-2 inline-flex items-center gap-2 rounded-full bg-primary px-6 font-display text-lg text-primary-foreground shadow-[var(--shadow-pop)] active:translate-y-1 active:shadow-none"
         >

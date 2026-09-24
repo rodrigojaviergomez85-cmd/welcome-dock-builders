@@ -91,6 +91,7 @@ export function TurnsView({
           promptClip={turn.promptClip}
           askSequenceClip={turn.askSequenceClip}
           confusedWith={turn.confusedWith}
+          cheerBy={partner}
           support={support}
           onHelpUsed={onHelpUsed}
           onDone={(status) => {
