@@ -527,7 +527,9 @@ function GuidedRecordTurn({
     </div>
   );
 
-  const saidIt = (
+  const saidIt = cheer && state !== "result" ? (
+    bubble
+  ) : (
     <button
       type="button"
       onClick={() => {

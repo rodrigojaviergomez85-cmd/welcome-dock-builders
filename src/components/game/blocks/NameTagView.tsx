@@ -100,6 +100,7 @@ export function NameTagView({
             targetEn={block.record.targetEn.split("{alias}").join(alias)}
             alias={alias}
             modelClip={block.record.modelClip}
+            cheerBy="leo"
             support="full"
             onHelpUsed={onHelpUsed}
             onDone={printTag}
@@ -136,6 +137,7 @@ export function NameTagView({
             promptClip={block.swap.record.promptClip}
             askSequenceClip={block.swap.record.askSequenceClip}
             confusedWith={block.swap.record.confusedWith}
+            cheerBy={block.swap.answer.speaker}
             support="reduced"
             onHelpUsed={onHelpUsed}
             onDone={answer}
