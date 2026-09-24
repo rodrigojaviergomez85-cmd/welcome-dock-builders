@@ -302,7 +302,7 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
           stage: state.pip.stage,
           accessories: state.pip.accessories,
           marks: state.pip.marks,
-          day={PIP_DAYS.find((candidate) => candidate === mission.id) ?? "monday"}
+          day: PIP_DAYS.find((candidate) => candidate === mission.id) ?? "monday",
           bounceKey: pipBounceKey,
         }}
       >

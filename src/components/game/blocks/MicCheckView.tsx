@@ -53,6 +53,8 @@ export function MicCheckView({
       <Pip
         mood={mood}
         color={pipColor}
+        stage={progress.pip.stage}
+        feeds={progress.pip.feeds}
         accessories={pipAccessories}
         size={Math.min(224, pipSizeFor(progress.pip))}
         {...(done ? { className: "animate-pop" } : {})}

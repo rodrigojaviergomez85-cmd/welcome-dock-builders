@@ -140,6 +140,8 @@ export function PipHelp({
           <Pip
             mood="happy"
             color={state.pip.color}
+            stage={state.pip.stage}
+            feeds={state.pip.feeds}
             accessories={state.pip.accessories}
             size={Math.min(52, 34 + (pipSizeFor(state.pip) - 64) * 0.12)}
             className="shrink-0"

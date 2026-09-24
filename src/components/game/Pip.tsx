@@ -19,7 +19,7 @@ export const PIP_COLORS = ["#FF8A3D", "#FF5FA2", "#2ECC8E", "#5AA9FF", "#B478FF"
 export const DEFAULT_PIP_COLOR = PIP_COLORS[0];
 
 /** SVG base de Pip, disponible también para usos fuera de React. */
-export function pipSvg(mood: PipMood, color: string, stage = 1, feeds = 0) {
+export function pipSvg(mood: PipMood, color: string, stage = 0, feeds = 0) {
   if (stage <= 0) {
     const cracks = feeds >= 6
       ? '<path d="M50 18l-7 10 8 7-7 10M61 25l-6 8 7 6" stroke="#1B2A49" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>'
@@ -51,7 +51,7 @@ export function pipSvg(mood: PipMood, color: string, stage = 1, feeds = 0) {
     ${eyes}${mouth}</svg>`;
 }
 
-export function Pip({ mood, color, stage = 1, feeds = 0, accessories = [], className, size }: Props) {
+export function Pip({ mood, color, stage = 0, feeds = 0, accessories = [], className, size }: Props) {
   const titleId = useId();
   const sleepy = mood === "sleepy";
   const egg = stage <= 0;

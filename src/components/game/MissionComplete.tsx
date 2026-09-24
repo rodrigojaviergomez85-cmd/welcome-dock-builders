@@ -63,6 +63,8 @@ export function MissionComplete({ mission, progress, alias, avatarImage, onRepla
         <Pip
           mood="happy"
           color={state.pip.color}
+          stage={state.pip.stage}
+          feeds={state.pip.feeds}
           accessories={state.pip.accessories}
           size={Math.min(224, pipSizeFor(state.pip))}
           className="animate-pop"
