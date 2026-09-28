@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useRef, useEffect, useState } from "react";
 import { BACKGROUNDS } from "@/content/backgrounds";
 import type { Mission, TimeOfDay } from "@/content/missions/types";
 import {
