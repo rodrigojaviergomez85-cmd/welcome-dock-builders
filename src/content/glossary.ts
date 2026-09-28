@@ -132,6 +132,26 @@ export const GLOSSARY: Record<string, Gloss> = {
   "Yay! Welcome to Explorer Island!": { es: "¡Bien! ¡Bienvenido a la Isla de los Exploradores!" },
   "Tomorrow I will tell you where I am from!": { es: "¡Mañana te cuento de dónde soy!" },
   "{greeting} My name is {alias}.": { es: "{greeting} Me llamo {alias}.", esClip: "es-my-name-is" },
+
+  // Martes · El barco de banderas
+  "Hello! I am from Mexico.": { es: "¡Hola! Soy de México.", esClip: "es-hello-from-mexico" },
+  "Hello! I am from Brazil.": { es: "¡Hola! Soy de Brasil.", esClip: "es-hello-from-brazil" },
+  "Hello! I am from Colombia.": { es: "¡Hola! Soy de Colombia.", esClip: "es-hello-from-colombia" },
+  "Hello! I am from El Salvador.": {
+    es: "¡Hola! Soy de El Salvador.",
+    esClip: "es-hello-from-el-salvador",
+  },
+  "I am from Mexico.": { es: "Soy de México.", esClip: "es-i-am-from" },
+  "I am from Brazil.": { es: "Soy de Brasil.", esClip: "es-i-am-from" },
+  "I am from Colombia.": { es: "Soy de Colombia.", esClip: "es-i-am-from" },
+  "I am from El Salvador.": { es: "Soy de El Salvador.", esClip: "es-i-am-from" },
+  "I am from Brazil!": { es: "¡Soy de Brasil!", esClip: "es-from-brazil" },
+  "Welcome, explorers!": { es: "¡Bienvenidos, exploradores!", esClip: "es-welcome-explorers" },
+  "Tomorrow: how old are you?": { es: "Mañana: ¿cuántos años tenés?", esClip: "es-teaser-wednesday" },
+  "{greeting} My name is {alias}. I am from {country}.": {
+    es: "{greeting} Me llamo {alias}. Soy de {country}.",
+    esClip: "es-name-and-from",
+  },
 };
 
 /** Clips puente que usa el modo "primero en español". */
@@ -190,18 +210,22 @@ export const BLOCK_INTROS: Record<string, { es: string; clip: string }> = {
     clip: "intro-finale",
   },
 
-  // Martes
-  "tue-flags": {
-    es: "Llegó el barco y las banderas se mezclaron. Escuchá de dónde es cada explorador y tocá su bandera.",
-    clip: "intro-tue-flags",
+  // Martes · El barco de banderas
+  "tue-warmup": {
+    es: "¡Hola de nuevo! Saludá según la hora y contestale a Luna.",
+    clip: "es-warmup-intro",
   },
-  "tue-mine": {
-    es: "Ahora te toca a vos: elegí tu país y aprendé a decirlo en inglés.",
-    clip: "intro-tue-mine",
+  "tue-boat": {
+    es: "¡Llegó un barco! Escuchá de dónde es cada explorador, tocá su bandera y repetí.",
+    clip: "es-boat-intro",
+  },
+  "tue-myflag": {
+    es: "Elegí tu bandera. Leo te pregunta de dónde sos; después preguntale vos a Mia.",
+    clip: "es-myflag-intro",
   },
   "tue-show": {
-    es: "Luna te pregunta de dónde sos. Decí tu nombre y tu país en inglés.",
-    clip: "intro-tue-show",
+    es: "Mirá el cielo: es la hora de verdad. Saludá, decí tu nombre y de dónde sos.",
+    clip: "es-tue-show-intro",
   },
 
   // Miércoles
