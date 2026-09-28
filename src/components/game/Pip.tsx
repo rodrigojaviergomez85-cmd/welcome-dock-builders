@@ -5,6 +5,8 @@ import stage2 from "@/assets/pip-stage-2.png";
 import stage3 from "@/assets/pip-stage-3.png";
 import stage4 from "@/assets/pip-stage-4.png";
 import { cn } from "@/lib/utils";
+import { FLAG_COLORS } from "@/content/vocabulary";
+import { loadProgress } from "@/lib/progress";
 
 /* eslint-disable react-refresh/only-export-components -- el prompt requiere exportar pipSvg junto a Pip */
 
@@ -277,6 +279,16 @@ export function Pip({
   const idx = Math.min(4, Math.max(0, stage));
   const eyes = EYES[idx]!;
   const sleepy = mood === "sleepy";
+  const hasScarf = accessories.includes("flag-sticker");
+  const [scarf, setScarf] = useState<[string, string] | null>(null);
+  useEffect(() => {
+    if (!hasScarf) {
+      setScarf(null);
+      return;
+    }
+    const country = loadProgress().profile?.countryId ?? "c-el-salvador";
+    setScarf(FLAG_COLORS[country] ?? null);
+  }, [hasScarf]);
 
   useEffect(() => {
     if (sleepy) return;
@@ -397,6 +409,37 @@ export function Pip({
               </g>
             ))
           : null}
+        {scarf && idx > 0 ? (
+          <g aria-label="Pañuelo con tu bandera">
+            {(() => {
+              const cx = (eyes.x[0] + eyes.x[1]) * 50;
+              const y = eyes.y * 100 + 16;
+              const half = (eyes.x[1] - eyes.x[0]) * 100 + 10;
+              return (
+                <>
+                  <path
+                    d={`M${cx - half} ${y}Q${cx} ${y + 7} ${cx + half} ${y}L${cx + half} ${y + 4}Q${cx} ${y + 11} ${cx - half} ${y + 4}Z`}
+                    fill={scarf[0]}
+                    stroke="#3A1A08"
+                    strokeWidth="0.6"
+                  />
+                  <path
+                    d={`M${cx - half} ${y + 4}Q${cx} ${y + 11} ${cx + half} ${y + 4}L${cx + half} ${y + 6.5}Q${cx} ${y + 13.5} ${cx - half} ${y + 6.5}Z`}
+                    fill={scarf[1]}
+                    stroke="#3A1A08"
+                    strokeWidth="0.6"
+                  />
+                  <path
+                    d={`M${cx + 2} ${y + 8}l6 10l5 -4z`}
+                    fill={scarf[0]}
+                    stroke="#3A1A08"
+                    strokeWidth="0.6"
+                  />
+                </>
+              );
+            })()}
+          </g>
+        ) : null}
         {accessories.includes("sun-tag") && idx > 0 ? (
           <g
             aria-label="Gorra de explorador"
