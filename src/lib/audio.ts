@@ -73,6 +73,23 @@ export async function playSequence(clips: string[]): Promise<void> {
   }
 }
 
+/** Espera a que no suene ningún clip (tope CLIP_MAX_MS) y luego una pausa extra. */
+export async function waitForSilence(pauseMs = 0): Promise<void> {
+  if (typeof window === "undefined") return;
+  const started = Date.now();
+  while (isPlaying() && Date.now() - started < CLIP_MAX_MS) {
+    await new Promise((r) => setTimeout(r, 120));
+  }
+  if (pauseMs > 0) await new Promise((r) => setTimeout(r, pauseMs));
+}
+
+/** Espera silencio, reproduce el clip completo y deja una pausa antes de seguir. */
+export async function playThenPause(clipId: string | string[], pauseMs = 600): Promise<void> {
+  await waitForSilence();
+  await playClip(clipId);
+  await waitForSilence(pauseMs);
+}
+
 /**
  * Audio automático encadenado: espera a que termine lo que esté sonando y recién
  * entonces reproduce. Se cancela si alguien llama stopClip() antes de empezar.

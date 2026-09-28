@@ -8,7 +8,7 @@ import { useProgress } from "@/lib/useProgress";
 import { missionVars, fillText, resolveClip } from "@/lib/mission-vars";
 import { gloss } from "@/content/glossary";
 import { playFanfare } from "@/lib/feedback-sounds";
-import { playClip, stopClip } from "@/lib/audio";
+import { playClip, playThenPause, stopClip } from "@/lib/audio";
 import type { OralHandler } from "../MissionPlayer";
 
 type Props = {
@@ -98,11 +98,11 @@ export function ShowcaseView({
     // No se cancela al pasar a "teaser": solo al salir del bloque (ver unmountedRef).
     void (async () => {
       playFanfare();
-      await playClip(block.cheer.clip);
+      await playThenPause(block.cheer.clip, 400);
       if (unmountedRef.current) return;
       if (block.teaser) {
         setStage("teaser");
-        await playClip(block.teaser.clip);
+        await playThenPause(block.teaser.clip, 600);
       }
       if (!unmountedRef.current) finishRef.current();
     })();

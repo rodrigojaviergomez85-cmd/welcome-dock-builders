@@ -3,7 +3,7 @@ import type { NameTagBlock } from "@/content/missions/types";
 import { AudioButton } from "../AudioButton";
 import { CharacterFigure } from "../CharacterFigure";
 import { RecordTurn } from "../RecordTurn";
-import { playClip, stopClip } from "@/lib/audio";
+import { playClip, playThenPause, stopClip } from "@/lib/audio";
 import type { OralHandler } from "../MissionPlayer";
 
 type Props = {
@@ -65,8 +65,11 @@ export function NameTagView({
       onReward();
       onStepChange?.(1);
       setStep("printed");
-      void playClip(block.printed.clip);
-      window.setTimeout(() => (swap ? setStep("swap") : onFinish()), 1900);
+      void (async () => {
+        await playThenPause(block.printed.clip, 600);
+        if (swap) setStep("swap");
+        else onFinish();
+      })();
     });
   }
 
@@ -74,8 +77,10 @@ export function NameTagView({
     if (!swap) return;
     onOral(status, swap.record.targetEn, () => {
       setStep("answer");
-      void playClip(swap.answer.clip);
-      window.setTimeout(onFinish, 2200);
+      void (async () => {
+        await playThenPause(swap.answer.clip, 600);
+        onFinish();
+      })();
     });
   }
 
