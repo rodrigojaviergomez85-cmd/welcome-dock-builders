@@ -186,7 +186,9 @@ export function ShowcaseView({
             </p>
           ))}
           <p lang="en" className="mt-1 rounded-xl bg-sun/50 px-2 font-display text-xl">
-            {fillText(step.targetEn, vars).replace(fillText(block.previousLines.at(-1) ?? "", vars), "").trim()}
+            {fillText(step.targetEn, vars)
+              .replace(fillText(block.previousLines.at(-1) ?? "", vars), "")
+              .trim()}
           </p>
         </div>
       ) : (

@@ -147,7 +147,10 @@ export const GLOSSARY: Record<string, Gloss> = {
   "I am from El Salvador.": { es: "Soy de El Salvador.", esClip: "es-i-am-from" },
   "I am from Brazil!": { es: "¡Soy de Brasil!", esClip: "es-from-brazil" },
   "Welcome, explorers!": { es: "¡Bienvenidos, exploradores!", esClip: "es-welcome-explorers" },
-  "Tomorrow: how old are you?": { es: "Mañana: ¿cuántos años tenés?", esClip: "es-teaser-wednesday" },
+  "Tomorrow: how old are you?": {
+    es: "Mañana: ¿cuántos años tenés?",
+    esClip: "es-teaser-wednesday",
+  },
   "{greeting} My name is {alias}. I am from {country}.": {
     es: "{greeting} Me llamo {alias}. Soy de {country}.",
     esClip: "es-name-and-from",

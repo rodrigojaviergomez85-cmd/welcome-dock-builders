@@ -60,7 +60,12 @@ export const tuesdayMission: Mission = {
           },
         },
         {
-          line: { speaker: "luna", clip: "luna-how-are-you", en: "How are you?", es: "¿Cómo estás?" },
+          line: {
+            speaker: "luna",
+            clip: "luna-how-are-you",
+            en: "How are you?",
+            es: "¿Cómo estás?",
+          },
           record: {
             id: "w2",
             role: "answer",
@@ -85,7 +90,12 @@ export const tuesdayMission: Mission = {
         {
           speaker: "leo",
           country: "c-mexico",
-          line: { speaker: "leo", clip: "leo-from-mexico", en: "Hello! I am from Mexico.", es: "¡Hola! Soy de México." },
+          line: {
+            speaker: "leo",
+            clip: "leo-from-mexico",
+            en: "Hello! I am from Mexico.",
+            es: "¡Hola! Soy de México.",
+          },
           repeat: {
             id: "b1",
             role: "repeat",
@@ -97,7 +107,12 @@ export const tuesdayMission: Mission = {
         {
           speaker: "mia",
           country: "c-brazil",
-          line: { speaker: "mia", clip: "mia-from-brazil", en: "Hello! I am from Brazil.", es: "¡Hola! Soy de Brasil." },
+          line: {
+            speaker: "mia",
+            clip: "mia-from-brazil",
+            en: "Hello! I am from Brazil.",
+            es: "¡Hola! Soy de Brasil.",
+          },
           repeat: {
             id: "b2",
             role: "repeat",
@@ -141,7 +156,12 @@ export const tuesdayMission: Mission = {
           },
         },
       ],
-      done: { speaker: "boti", clip: "boti-boat-done", en: "Welcome, explorers!", es: "¡Bienvenidos, exploradores!" },
+      done: {
+        speaker: "boti",
+        clip: "boti-boat-done",
+        en: "Welcome, explorers!",
+        es: "¡Bienvenidos, exploradores!",
+      },
     },
 
     /* ───────────── 3. MI BANDERA (4 min) · 2 turnos ───────────── */
@@ -165,7 +185,12 @@ export const tuesdayMission: Mission = {
         "c-united-states",
       ],
       asker: "leo",
-      ask: { speaker: "leo", clip: "leo-where-from", en: "Where are you from?", es: "¿De dónde sos?" },
+      ask: {
+        speaker: "leo",
+        clip: "leo-where-from",
+        en: "Where are you from?",
+        es: "¿De dónde sos?",
+      },
       say: {
         id: "t1",
         mode: "guided",
@@ -185,7 +210,12 @@ export const tuesdayMission: Mission = {
           targetEn: "Where are you from?",
           modelClip: "p-where-from",
         },
-        answer: { speaker: "mia", clip: "mia-from-brazil-short", en: "I am from Brazil!", es: "¡Soy de Brasil!" },
+        answer: {
+          speaker: "mia",
+          clip: "mia-from-brazil-short",
+          en: "I am from Brazil!",
+          es: "¡Soy de Brasil!",
+        },
       },
     },
 
@@ -198,7 +228,12 @@ export const tuesdayMission: Mission = {
       time: "auto",
       introClip: "es-tue-show-intro",
       audience: ["luna", "leo", "mia", "boti"],
-      intro: { speaker: "luna", clip: "luna-tell-me", en: "Tell me about yourself!", es: "¡Contame de vos!" },
+      intro: {
+        speaker: "luna",
+        clip: "luna-tell-me",
+        en: "Tell me about yourself!",
+        es: "¡Contame de vos!",
+      },
       previousLines: ["{greeting} My name is {alias}."],
       steps: [
         {

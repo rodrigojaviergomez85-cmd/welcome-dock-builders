@@ -482,7 +482,8 @@
 }
 
 @keyframes pip-before-fade {
-  0%, 65% {
+  0%,
+  65% {
     opacity: 0.4;
   }
   100% {
@@ -636,38 +637,129 @@
   }
 }
 
-@keyframes pip-breathe { 0%,100% { transform: scale(1); } 50% { transform: scale(1.03); } }
-@keyframes pip-happy { 0%,100% { transform: translateY(0); } 25%,75% { transform: translateY(-10%); } 50% { transform: translateY(0); } }
-@keyframes pip-munch { 0%,100% { transform: scale(1) rotate(0); } 25%,75% { transform: scale(1.08) rotate(-4deg); } 50% { transform: scale(1) rotate(0); } }
-@keyframes pip-zzz { 0% { opacity: 0; transform: translate(0,0); } 30% { opacity: 1; } 100% { opacity: 0; transform: translate(10px,-18px); } }
-@utility animate-pip-breathe { animation: pip-breathe 2.4s ease-in-out infinite; transform-origin: bottom center; }
-@utility animate-pip-happy { animation: pip-happy 0.9s ease-out 1; transform-origin: bottom center; }
-@utility animate-pip-munch { animation: pip-munch 0.4s ease-in-out 2; transform-origin: bottom center; }
-.pip-zzz { animation: pip-zzz 2s ease-in-out infinite; }
+@keyframes pip-breathe {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.03);
+  }
+}
+@keyframes pip-happy {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  25%,
+  75% {
+    transform: translateY(-10%);
+  }
+  50% {
+    transform: translateY(0);
+  }
+}
+@keyframes pip-munch {
+  0%,
+  100% {
+    transform: scale(1) rotate(0);
+  }
+  25%,
+  75% {
+    transform: scale(1.08) rotate(-4deg);
+  }
+  50% {
+    transform: scale(1) rotate(0);
+  }
+}
+@keyframes pip-zzz {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0);
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(10px, -18px);
+  }
+}
+@utility animate-pip-breathe {
+  animation: pip-breathe 2.4s ease-in-out infinite;
+  transform-origin: bottom center;
+}
+@utility animate-pip-happy {
+  animation: pip-happy 0.9s ease-out 1;
+  transform-origin: bottom center;
+}
+@utility animate-pip-munch {
+  animation: pip-munch 0.4s ease-in-out 2;
+  transform-origin: bottom center;
+}
+.pip-zzz {
+  animation: pip-zzz 2s ease-in-out infinite;
+}
 
 @keyframes sun-demo {
-  0%, 15% { translate: 0 0; }
-  60%, 80% { translate: 3.5rem -2.5rem; }
-  100% { translate: 0 0; }
+  0%,
+  15% {
+    translate: 0 0;
+  }
+  60%,
+  80% {
+    translate: 3.5rem -2.5rem;
+  }
+  100% {
+    translate: 0 0;
+  }
 }
 @keyframes boti-hop {
-  0% { transform: translateY(0); }
-  35% { transform: translateY(-28px) rotate(-4deg); }
-  70% { transform: translateY(0) rotate(3deg); }
-  100% { transform: none; }
+  0% {
+    transform: translateY(0);
+  }
+  35% {
+    transform: translateY(-28px) rotate(-4deg);
+  }
+  70% {
+    transform: translateY(0) rotate(3deg);
+  }
+  100% {
+    transform: none;
+  }
 }
 
 @keyframes boat-arrive {
-  0% { transform: translateX(-120%); }
-  80% { transform: translateX(4%); }
-  100% { transform: translateX(0); }
+  0% {
+    transform: translateX(-120%);
+  }
+  80% {
+    transform: translateX(4%);
+  }
+  100% {
+    transform: translateX(0);
+  }
 }
 @keyframes sticker-slap {
-  0% { transform: translate(-60px, -80px) scale(2) rotate(-30deg); opacity: 0; }
-  60% { transform: translate(0, 0) scale(0.9) rotate(8deg); opacity: 1; }
-  100% { transform: translate(0, 0) scale(1) rotate(-6deg); }
+  0% {
+    transform: translate(-60px, -80px) scale(2) rotate(-30deg);
+    opacity: 0;
+  }
+  60% {
+    transform: translate(0, 0) scale(0.9) rotate(8deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(0, 0) scale(1) rotate(-6deg);
+  }
 }
 @keyframes flag-raise {
-  0% { transform: translateY(20px) scale(0.6); opacity: 0; }
-  100% { transform: translateY(0) scale(1); opacity: 1; }
+  0% {
+    transform: translateY(20px) scale(0.6);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
 }

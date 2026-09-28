@@ -235,7 +235,9 @@ export function PickProfileView({
           modelClip={resolveClip(swap.record.modelClip, vars)}
           promptClip={swap.record.promptClip}
           askSequenceClip={swap.record.askSequenceClip}
-          confusedWith={swap.record.confusedWith ? fillText(swap.record.confusedWith, vars) : undefined}
+          confusedWith={
+            swap.record.confusedWith ? fillText(swap.record.confusedWith, vars) : undefined
+          }
           cheerBy={swap.answer.speaker}
           support="reduced"
           onHelpUsed={onHelpUsed}

@@ -90,7 +90,9 @@ export function WarmupView({
               <p lang="en" className="font-display text-3xl">
                 {step.line.en}
               </p>
-              {step.line.es ? <p className="text-sm text-muted-foreground">{step.line.es}</p> : null}
+              {step.line.es ? (
+                <p className="text-sm text-muted-foreground">{step.line.es}</p>
+              ) : null}
               <AudioButton clipId={step.line.clip} label="Escuchar" className="mt-2" />
             </div>
           </div>
