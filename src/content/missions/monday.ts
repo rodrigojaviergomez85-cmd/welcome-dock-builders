@@ -281,7 +281,6 @@ export const mondayMission: Mission = {
               role: "ask",
               promptEs: "Luna está esperando. Saludala y preguntale cómo está diciendo:",
               promptClip: "es-ask-luna-how",
-              askSequenceClip: "es-ask-luna-how-full-v2",
               confusedWith: "I am fine, thank you.",
               targetEn: "Hello! How are you?",
               modelClip: "model-hello-how-are-you",

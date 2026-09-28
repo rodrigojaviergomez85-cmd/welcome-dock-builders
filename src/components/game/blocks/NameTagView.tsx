@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { NameTagBlock } from "@/content/missions/types";
 import { AudioButton } from "../AudioButton";
 import { CharacterFigure } from "../CharacterFigure";
@@ -38,6 +38,7 @@ export function NameTagView({
   );
   const swap = block.swap;
   const askClips = block.ask.map((line) => line.clip);
+  const printedNowRef = useRef(false);
 
   useEffect(() => {
     if (alreadyPrinted) {
@@ -60,16 +61,28 @@ export function NameTagView({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    if (step !== "printed" || !printedNowRef.current) return;
+    printedNowRef.current = false;
+    let active = true;
+    void (async () => {
+      // RecordTurn ya se desmontó: su limpieza no puede cortar la voz de Boti.
+      await playThenPause(block.printed.clip, 600);
+      if (!active) return;
+      if (swap) setStep("swap");
+      else onFinish();
+    })();
+    return () => {
+      active = false;
+    };
+  }, [block.printed.clip, onFinish, step, swap]);
+
   function printTag(status: "heard" | "practiced" | "pending") {
     onOral(status, block.record.targetEn.split("{alias}").join(alias), () => {
       onReward();
       onStepChange?.(1);
+      printedNowRef.current = true;
       setStep("printed");
-      void (async () => {
-        await playThenPause(block.printed.clip, 600);
-        if (swap) setStep("swap");
-        else onFinish();
-      })();
     });
   }
 
