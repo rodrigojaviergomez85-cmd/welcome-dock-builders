@@ -124,10 +124,18 @@ export function SunClockView({
 }: Props) {
   const arcRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState<number | null>(null);
-  const [visited, setVisited] = useState<number[]>(() =>
-    fromBits(startIndex, 0, block.stops.length),
-  );
-  const [gold, setGold] = useState<number[]>(() => fromBits(startIndex, 4, block.stops.length));
+  // Fuente única: los bits guardados. Se resincroniza si startIndex cambia.
+  const [bits, setBits] = useState(startIndex);
+  useEffect(() => {
+    setBits(startIndex);
+  }, [startIndex]);
+  const visited = fromBits(bits, 0, block.stops.length);
+  const gold = fromBits(bits, 4, block.stops.length);
+  function commit(nextVisited: number[], nextGold: number[]) {
+    const value = toBits(nextVisited, 0) | toBits(nextGold, 4);
+    setBits(value);
+    onStepChange?.(value);
+  }
   const [phase, setPhase] = useState<"explore" | "repeat" | "done">(() =>
     fromBits(startIndex, 0, block.stops.length).length === block.stops.length
       ? "repeat"
@@ -143,12 +151,12 @@ export function SunClockView({
   const count = stops.length;
 
   useEffect(() => {
-    onStepChange?.(toBits(visited, 0) | toBits(gold, 4));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [visited, gold]);
-
-  useEffect(() => {
     if (gold.length > 0) onGoldChange(gold.length);
+    // Si se remonta con los cuatro soles ya ganados, pasar al siguiente bloque.
+    if (gold.length === count) {
+      setPhase("done");
+      setTimeout(onFinish, 600);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -177,7 +185,7 @@ export function SunClockView({
     void playClip(stop.line.clip);
     if (!visited.includes(index)) {
       const next = [...visited, index];
-      setVisited(next);
+      commit(next, gold);
       playSuccess();
       if (next.length === count && phase === "explore") {
         setTimeout(() => {
@@ -203,13 +211,13 @@ export function SunClockView({
 
   function winSun(index: number, status: "heard" | "practiced" | "pending") {
     const spoken = stops[index]?.repeat.targetEn ?? "";
+    // Marcar dorado YA, antes del momento Pip, para que no se pierda si la vista se remonta.
+    const nextGold = gold.includes(index) ? gold : [...gold, index];
+    commit(visited, nextGold);
+    onGoldChange(nextGold.length);
     onOral(status, spoken, () => {
       setRecordAt(null);
-      if (gold.includes(index)) return;
-      const next = [...gold, index];
-      setGold(next);
-      onGoldChange(next.length);
-      if (next.length === count) {
+      if (nextGold.length === count) {
         setPhase("done");
         setSpin(true);
         playFanfare();
