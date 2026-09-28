@@ -37,6 +37,8 @@ import {
 import { MissionComplete } from "./MissionComplete";
 import { BlockIntro } from "./BlockIntro";
 import { BLOCK_INTROS } from "@/content/glossary";
+import { WarmupView } from "./blocks/WarmupView";
+import { FlagBoatView } from "./blocks/FlagBoatView";
 import { DEFAULT_PIP_COLOR, Pip, type PipMood } from "./Pip";
 import { DIALOGUE_STEP } from "./blocks/DialogueView";
 import { PipFeedMoment } from "./PipFeedMoment";
@@ -320,7 +322,8 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
     block.kind === "nameTag"
   )
     time = block.time;
-  if (block.kind === "showcase") time = resolveTime(block.time);
+  if (block.kind === "showcase" || block.kind === "warmup") time = resolveTime(block.time);
+  if (block.kind === "flagBoat") time = block.time;
   if (block.kind === "sunClock") time = sunTime ?? block.stops[0]?.time ?? "morning";
   if (block.kind === "tapPick" && block.style === "sky") time = skyTime ?? block.time;
 
@@ -426,6 +429,42 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
             alias={alias}
             onHelpUsed={onHelpUsed}
             onOral={onOral}
+            onReward={() =>
+              update((prev) =>
+                updateMission(prev, mission.id, (missionProgress) =>
+                  addReward(missionProgress, mission.reward.id),
+                ),
+              )
+            }
+            startIndex={stepIndex}
+            onStepChange={goToStep}
+            onFinish={nextBlock}
+          />
+        ) : null}
+
+        {!showingIntro && block.kind === "warmup" ? (
+          <WarmupView
+            missionId={mission.id}
+            block={block}
+            alias={alias}
+            onHelpUsed={onHelpUsed}
+            onOral={onOral}
+            startIndex={stepIndex}
+            onStepChange={goToStep}
+            onFinish={nextBlock}
+          />
+        ) : null}
+
+        {!showingIntro && block.kind === "flagBoat" ? (
+          <FlagBoatView
+            missionId={mission.id}
+            block={block}
+            alias={alias}
+            onHelpUsed={onHelpUsed}
+            onOral={onOral}
+            onComprehension={onComprehension}
+            startIndex={stepIndex}
+            onStepChange={goToStep}
             onFinish={nextBlock}
           />
         ) : null}
@@ -542,6 +581,9 @@ const BLOCK_LABEL: Record<string, string> = {
   nameTag: "Etiqueta",
   dialogue: "Charla",
   showcase: "Presentación",
+  warmup: "Calentamiento",
+  flagBoat: "Barco",
+  pickProfile: "Mi bandera",
 };
 
 function ResumeScreen({
