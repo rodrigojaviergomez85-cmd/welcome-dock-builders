@@ -43,6 +43,11 @@ export function WarmupView({
 
   // Intro del guía solo al entrar por primera vez.
   useEffect(() => {
+    if (startIndex >= block.steps.length) {
+      // Todo ya dicho (cerró durante el festejo): no se vuelve a pedir.
+      finishRef.current();
+      return;
+    }
     if (startIndex === 0) void playClip(block.introClip);
     return () => stopClip();
     // eslint-disable-next-line react-hooks/exhaustive-deps
