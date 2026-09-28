@@ -81,7 +81,7 @@ export function ShowcaseView({
     if (startIndex > 0) return;
     let active = true;
     void (async () => {
-      await playClip("es-dock-intro");
+      await playClip(block.introClip ?? "es-dock-intro");
       if (!active) return;
       await playClip(block.intro.clip);
       if (active) setStage("step");
@@ -177,9 +177,25 @@ export function ShowcaseView({
 
   return (
     <div className="flex w-full max-w-2xl flex-col items-center gap-3">
-      <p className="rounded-full bg-card/90 px-4 py-1 text-sm text-muted-foreground">
-        Parte {index + 1} de {block.steps.length}
-      </p>
+      {block.previousLines?.length ? (
+        <div className="w-full max-w-md rounded-3xl border-4 border-dashed border-accent bg-card/95 px-5 py-3 text-left text-card-foreground shadow-[var(--shadow-soft)]">
+          <p className="text-xs text-muted-foreground">Tu presentación crece</p>
+          {block.previousLines.map((line) => (
+            <p key={line} lang="en" className="font-display text-lg text-muted-foreground">
+              {fillText(line, vars)}
+            </p>
+          ))}
+          <p lang="en" className="mt-1 rounded-xl bg-sun/50 px-2 font-display text-xl">
+            {fillText(step.targetEn, vars)
+              .replace(fillText(block.previousLines.at(-1) ?? "", vars), "")
+              .trim()}
+          </p>
+        </div>
+      ) : (
+        <p className="rounded-full bg-card/90 px-4 py-1 text-sm text-muted-foreground">
+          Parte {index + 1} de {block.steps.length}
+        </p>
+      )}
       <RecordTurn
         key={step.id}
         missionId={missionId}

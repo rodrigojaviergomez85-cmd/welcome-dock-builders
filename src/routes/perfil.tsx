@@ -1,3 +1,4 @@
+import { FlagIcon } from "@/components/game/FlagIcon";
 import { useEffect, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { ArrowLeft, Check } from "lucide-react";
@@ -47,6 +48,9 @@ function ProfilePage() {
   const cleanAlias = alias.trim().slice(0, 12);
   const valid = cleanAlias.length >= 2;
   const hasNameTag = getMissionProgress(state, "monday").rewards.includes("sun-tag");
+  const flagSticker = getMissionProgress(state, "tuesday").rewards.includes("flag-sticker")
+    ? (state.profile?.countryId ?? "c-el-salvador")
+    : null;
 
   return (
     <div className="mx-auto max-w-3xl p-4 pb-16">
@@ -87,6 +91,14 @@ function ProfilePage() {
                   <span className="absolute inset-x-1 top-6 truncate rounded bg-card px-1 text-center font-display text-[9px] text-card-foreground">
                     {cleanAlias}
                   </span>
+                  {flagSticker ? (
+                    <span
+                      className="absolute -right-1 bottom-0 -rotate-6 rounded bg-card p-0.5"
+                      aria-label="Tu bandera en la mochila"
+                    >
+                      <FlagIcon id={flagSticker} className="w-6" />
+                    </span>
+                  ) : null}
                 </div>
               ) : null}
             </div>

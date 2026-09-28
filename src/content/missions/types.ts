@@ -160,7 +160,23 @@ export type PickProfileBlock = {
   /** Ids de vocabulario entre los que elegir. */
   options: string[];
   /** Frase que dice después de elegir, con {value}. */
-  say: { targetEn: string; promptEs: string; modelClip: string | string[] };
+  say: {
+    id?: string;
+    targetEn: string;
+    promptEs: string;
+    modelClip: string | string[];
+    mode?: "quick" | "guided";
+    role?: "ask" | "answer" | "repeat";
+  };
+  /** Instrucción del guía en español al entrar. */
+  introClip?: string;
+  /** Personaje que pregunta antes de que el niño responda. */
+  asker?: CharacterId;
+  ask?: SpokenLine;
+  /** Muestra la bandera elegida pegándose como sticker en la mochila. */
+  sticker?: boolean;
+  /** Cambio de rol: el niño pregunta y otro personaje responde. */
+  swap?: { record: RecordTurnSpec; answer: SpokenLine };
 };
 
 /** Deletrear una palabra tocando letras en orden. */
@@ -200,6 +216,40 @@ export type ShowcaseBlock = {
   saveAs?: string;
   /** NUEVO: gancho para el día siguiente, se reproduce al terminar. */
   teaser?: SpokenLine;
+  /** Instrucción del guía al entrar (por defecto es-dock-intro). */
+  introClip?: string;
+  /** "La presentación que crece": líneas de días anteriores ya escritas. */
+  previousLines?: string[];
+};
+
+/** Calentamiento: repaso corto de lo de ayer, turno por turno. */
+export type WarmupBlock = {
+  kind: "warmup";
+  id: string;
+  estimatedMinutes: number;
+  helpEs: string;
+  time: TimeOfDay | "auto";
+  introClip: string;
+  steps: { line?: SpokenLine; record: RecordTurnSpec }[];
+};
+
+/** Barco de banderas: cada explorador dice su país, el niño toca la bandera y repite. */
+export type FlagBoatBlock = {
+  kind: "flagBoat";
+  id: string;
+  estimatedMinutes: number;
+  helpEs: string;
+  time: TimeOfDay;
+  introClip: string;
+  /** Banderas que se muestran abajo (ids de vocabulario). */
+  flags: string[];
+  explorers: {
+    speaker: CharacterId;
+    country: string;
+    line: SpokenLine;
+    repeat: RecordTurnSpec;
+  }[];
+  done: SpokenLine;
 };
 
 /* ───────────────────────── NUEVOS BLOQUES ───────────────────────── */
@@ -276,7 +326,9 @@ export type MissionBlock =
   | ShowcaseBlock
   | MicCheckBlock
   | SunClockBlock
-  | NameTagBlock;
+  | NameTagBlock
+  | WarmupBlock
+  | FlagBoatBlock;
 
 export type MissionStatus = "available" | "locked";
 

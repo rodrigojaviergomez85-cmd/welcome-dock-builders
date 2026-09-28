@@ -1,5 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { emptyState, loadProgress, saveProgress, type ProgressState } from "./progress";
+import {
+  PROGRESS_KEY,
+  emptyState,
+  loadProgress,
+  saveProgress,
+  type ProgressState,
+} from "./progress";
+
+const PROGRESS_EVENT = "kids-progress-changed";
 
 /** Lee el progreso después de hidratar, para no romper el render del servidor. */
 export function useProgress() {
@@ -27,13 +35,32 @@ export function useProgress() {
     };
   }, []);
 
+  // Varias pantallas usan este hook a la vez: todas parten de lo guardado y se avisan
+  // entre sí, para que ninguna pise lo que otra acaba de guardar (Pip, país, etc.).
+  useEffect(() => {
+    const onChange = () => {
+      const loaded = loadProgress();
+      latest.current = loaded;
+      setState(loaded);
+    };
+    window.addEventListener(PROGRESS_EVENT, onChange);
+    return () => window.removeEventListener(PROGRESS_EVENT, onChange);
+  }, []);
+
   const update = useCallback((next: ProgressState | ((prev: ProgressState) => ProgressState)) => {
-    setState((prev) => {
-      const value = typeof next === "function" ? next(prev) : next;
-      latest.current = value;
-      saveProgress(value);
-      return value;
-    });
+    let hasSaved = false;
+    try {
+      hasSaved = window.localStorage.getItem(PROGRESS_KEY) !== null;
+    } catch {
+      hasSaved = false;
+    }
+    // Si el navegador no guarda, se sigue con lo que hay en memoria.
+    const base = hasSaved ? loadProgress() : (latest.current ?? emptyState());
+    const value = typeof next === "function" ? next(base) : next;
+    latest.current = value;
+    saveProgress(value);
+    setState(value);
+    window.dispatchEvent(new Event(PROGRESS_EVENT));
   }, []);
 
   const reset = useCallback(() => {
@@ -41,6 +68,7 @@ export function useProgress() {
     latest.current = fresh;
     saveProgress(fresh);
     setState(fresh);
+    window.dispatchEvent(new Event(PROGRESS_EVENT));
   }, []);
 
   return { state, ready, update, reset };

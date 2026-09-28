@@ -1,3 +1,4 @@
+import { FlagIcon } from "./FlagIcon";
 import { useEffect, useState } from "react";
 import { Pip } from "./Pip";
 import { PipMoveScene } from "./PipMoveScene";
@@ -39,11 +40,12 @@ export function MissionComplete({
   const [presentationUrl, setPresentationUrl] = useState<string | null>(null);
 
   useEffect(() => {
-    if (mission.id !== "monday") return;
+    const key = CLOSING[mission.id]?.presentation;
+    if (!key) return;
     let url: string | null = null;
     void listRecordings()
       .then((all) => {
-        const rec = all.find((r) => r.key === "presentation-day1");
+        const rec = all.find((r) => r.key === key);
         if (rec && rec.blob.size > 0) {
           url = URL.createObjectURL(rec.blob);
           setPresentationUrl(url);
@@ -77,7 +79,10 @@ export function MissionComplete({
     );
   }
 
-  if (mission.id === "monday") {
+  const closing = CLOSING[mission.id];
+  if (closing) {
+    const flag =
+      mission.id === "tuesday" && state.profile?.countryId ? state.profile.countryId : null;
     const said = progress.oral.said ?? progress.oral.recordings;
     return (
       <div className="mx-auto flex min-h-screen max-w-md flex-col items-center gap-5 p-6 text-center">
@@ -91,7 +96,15 @@ export function MissionComplete({
           size={Math.min(224, pipSizeFor(state.pip))}
           className="animate-pop"
         />
-        <div className="w-full rounded-2xl border-4 border-dashed border-accent bg-card px-5 py-4">
+        <div className="relative w-full rounded-2xl border-4 border-dashed border-accent bg-card px-5 py-4">
+          {flag ? (
+            <span
+              className="absolute -right-3 -top-4 -rotate-6 rounded-lg bg-card p-1 shadow-[var(--shadow-soft)]"
+              aria-label="Tu bandera en la mochila"
+            >
+              <FlagIcon id={flag} className="w-14" />
+            </span>
+          ) : null}
           <p lang="en" className="font-display text-3xl">
             {alias}
           </p>
@@ -116,20 +129,26 @@ export function MissionComplete({
           </p>
           <div className="mt-3 flex justify-center gap-6 font-display text-2xl">
             <span className="flex items-center gap-1">
-              <Sun className="size-7 fill-current text-accent" aria-hidden /> 4
+              {closing.icon === "sun" ? (
+                <Sun className="size-7 fill-current text-accent" aria-hidden />
+              ) : (
+                <FlagIcon id={flag ?? "c-el-salvador"} className="w-9" />
+              )}{" "}
+              4
             </span>
             <span className="flex items-center gap-1">
               <Mic className="size-7" aria-hidden /> {said}
             </span>
           </div>
-          <p className="sr-only">4 soles ganados, {said} oraciones dichas.</p>
+          <p className="sr-only">
+            4 {closing.icon === "sun" ? "soles ganados" : "banderas"}, {said} oraciones dichas.
+          </p>
           <p lang="en" className="mt-4 rounded-2xl bg-card px-4 py-3 font-display text-2xl">
-            Tomorrow: Where is Leo from?
+            {closing.ticket}
           </p>
         </div>
         <p className="text-sm text-muted-foreground">
-          Hoy tu hijo aprendió los cuatro saludos y a decir su nombre. Preguntale:{" "}
-          <span lang="en">What is your name?</span>
+          {closing.adult} <span lang="en">{closing.ask}</span>
         </p>
         <div className="flex flex-wrap justify-center gap-3">
           <Link
@@ -277,3 +296,24 @@ export function MissionComplete({
     </div>
   );
 }
+
+/** Cierre por día: presentación guardada, ticket para la clase y línea para el adulto. */
+const CLOSING: Record<
+  string,
+  { presentation: string; icon: "sun" | "flag"; ticket: string; adult: string; ask: string }
+> = {
+  monday: {
+    presentation: "presentation-day1",
+    icon: "sun",
+    ticket: "Tomorrow: Where is Leo from?",
+    adult: "Hoy tu hijo aprendió los cuatro saludos y a decir su nombre. Preguntale:",
+    ask: "What is your name?",
+  },
+  tuesday: {
+    presentation: "presentation-day2",
+    icon: "flag",
+    ticket: "Tomorrow: How old are you?",
+    adult: "Hoy tu hijo aprendió a decir de dónde es y a preguntarlo. Preguntale:",
+    ask: "Where are you from?",
+  },
+};

@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { FlagIcon } from "./FlagIcon";
+import { useEffect, useState } from "react";
+import { loadProgress } from "@/lib/progress";
 import { useNavigate } from "@tanstack/react-router";
 import { Lock, X } from "lucide-react";
 import home0 from "@/assets/pip-home-0.png";
@@ -36,6 +38,13 @@ export function PipHome({ pip, day, feedsToEvolve, asleep, missionPath }: Props)
   const sleeping = asleep && !awake;
   const homeWidths = [16, 17.5, 19, 20.5, 22];
   const pipWidths = [7, 9.5, 12.5, 15, 18];
+  const hasFlag = pip.accessories.includes("flag-sticker");
+  const [flag, setFlag] = useState<string | null>(null);
+  useEffect(() => {
+    if (!hasFlag) return;
+    const id = loadProgress().profile?.countryId;
+    setFlag(id ?? null);
+  }, [hasFlag]);
 
   function onPip() {
     if (sleeping) {
@@ -108,6 +117,16 @@ export function PipHome({ pip, day, feedsToEvolve, asleep, missionPath }: Props)
           height="auto"
         />
       </div>
+
+      {flag ? (
+        <span
+          className="absolute w-[4%] max-w-[48px] drop-shadow"
+          style={{ left: `${GARDEN.x - 12}%`, bottom: `${100 - GARDEN.bottom + 12}%` }}
+          aria-label="Tu bandera en la casa de Pip"
+        >
+          <FlagIcon id={flag} wave className="w-full" />
+        </span>
+      ) : null}
 
       {panel ? (
         <div
