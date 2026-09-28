@@ -369,12 +369,7 @@ export const LINES: Line[] = [
   {
     id: "es-sun-intro",
     speaker: "es",
-    text: "El reloj del sol se rompió. Arrastrá el sol por el cielo y escuchá cómo saluda Boti a cada hora.",
-  },
-  {
-    id: "es-sun-repeat",
-    speaker: "es",
-    text: "Ahora vos. Tocá un cielo y repetí el saludo para que Pip coma.",
+    text: "Llevá el sol a cada cielo, escuchá a Boti y repetí.",
   },
   {
     id: "es-radar-intro",

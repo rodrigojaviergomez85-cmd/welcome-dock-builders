@@ -136,12 +136,10 @@ export function SunClockView({
     setBits(value);
     onStepChange?.(value);
   }
-  const [phase, setPhase] = useState<"explore" | "repeat" | "done">(() =>
-    fromBits(startIndex, 0, block.stops.length).length === block.stops.length
-      ? "repeat"
-      : "explore",
-  );
+  const [phase, setPhase] = useState<"explore" | "done">("explore");
   const [recordAt, setRecordAt] = useState<number | null>(null);
+  // Boti está saludando en la parada pendiente: el sol queda quieto.
+  const [waiting, setWaiting] = useState(false);
   const visitToken = useRef(0);
   const [dragT, setDragT] = useState<number | null>(null);
   const [showDemo, setShowDemo] = useState(true);
@@ -150,34 +148,41 @@ export function SunClockView({
 
   const stops = block.stops;
   const count = stops.length;
+  /** Primera parada no dorada, en orden fijo. */
+  const pending = (() => {
+    for (let i = 0; i < count; i++) if (!gold.includes(i)) return i;
+    return count;
+  })();
+  const locked = recordAt !== null || waiting || phase === "done";
 
   useEffect(() => {
     if (gold.length > 0) onGoldChange(gold.length);
-    // Si se remonta con los cuatro soles ya ganados, pasar al siguiente bloque.
     if (gold.length === count) {
       setPhase("done");
       setTimeout(onFinish, 600);
+      return;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // Voz del guía en español + demo de la mano arrastrando el sol.
-  // Al retomar a mitad no se repite la introducción.
-  useEffect(() => {
-    const resuming = startIndex > 0;
-    if (resuming) setShowDemo(false);
-    if (resuming && phase === "explore") return;
-    if (resuming && gold.length > 0) return;
-    void playClip(phase === "repeat" ? "es-sun-repeat" : block.introClip);
+    if (startIndex > 0) {
+      // Retomar: el sol aparece en la primera parada no dorada y Boti repite ESE saludo.
+      setShowDemo(false);
+      visit(pending);
+      return () => {
+        visitToken.current++;
+        stopClip();
+      };
+    }
+    void playClip(block.introClip);
     return () => {
+      visitToken.current++;
       stopClip();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  /** Solo la parada pendiente abre el turno de hablar, después del clip de Boti. */
   function visit(index: number) {
     const stop = stops[index];
-    if (!stop) return;
+    if (!stop || index !== pending || locked) return;
     setActive(index);
     setDragT(null);
     setHop((value) => value + 1);
@@ -188,37 +193,39 @@ export function SunClockView({
       commit([...visited, index], gold);
       playSuccess();
     }
-    // Una sola pasada: Boti saluda y enseguida el niño repite ESA parada.
-    if (!gold.includes(index)) {
-      const token = ++visitToken.current;
-      const started = Date.now();
-      const wait = () => {
-        if (visitToken.current !== token) return;
-        if (Date.now() - started < 600 || isPlaying()) {
-          setTimeout(wait, 200);
-          return;
-        }
-        setRecordAt(index);
-      };
-      setTimeout(wait, 200);
-    }
+    setWaiting(true);
+    const token = ++visitToken.current;
+    const started = Date.now();
+    const wait = () => {
+      if (visitToken.current !== token) return;
+      if (Date.now() - started < 600 || isPlaying()) {
+        setTimeout(wait, 200);
+        return;
+      }
+      setWaiting(false);
+      setRecordAt(index);
+    };
+    setTimeout(wait, 200);
+  }
+
+  /** Parada dorada: solo repite el saludo de Boti. */
+  function replayGold(index: number) {
+    const stop = stops[index];
+    if (!stop || locked) return;
+    setActive(index);
+    onTimeChange(stop.time);
+    stopClip();
+    void playClip(stop.line.clip);
   }
 
   function tapStop(index: number) {
-    if (phase === "repeat") {
-      const stop = stops[index];
-      if (!stop || gold.includes(index)) return;
-      setActive(index);
-      onTimeChange(stop.time);
-      setRecordAt(index);
-      return;
-    }
-    visit(index);
+    if (locked) return;
+    if (gold.includes(index)) replayGold(index);
+    else if (index === pending) visit(index);
   }
 
   function winSun(index: number, status: "heard" | "practiced" | "pending") {
     const spoken = stops[index]?.repeat.targetEn ?? "";
-    // Marcar dorado YA, antes del momento Pip, para que no se pierda si la vista se remonta.
     const nextGold = gold.includes(index) ? gold : [...gold, index];
     commit(visited, nextGold);
     onGoldChange(nextGold.length);
@@ -234,18 +241,18 @@ export function SunClockView({
     });
   }
 
-  /** Arrastre del sol: convierte la posición del dedo en un punto del arco. */
+  /** Arrastre: el sol no pasa de la parada pendiente. */
+  const maxT = count > 1 ? Math.min(pending, count - 1) / (count - 1) : 0;
   function pointerT(event: React.PointerEvent) {
     const box = arcRef.current?.getBoundingClientRect();
     if (!box) return 0;
-    return Math.min(1, Math.max(0, (event.clientX - box.left) / box.width));
+    return Math.min(maxT, Math.max(0, (event.clientX - box.left) / box.width));
   }
 
   function onPointerMove(event: React.PointerEvent) {
-    if (dragT === null) return;
+    if (dragT === null || locked) return;
     const t = pointerT(event);
     setDragT(t);
-    // Crossfade en vivo del cielo mientras se arrastra.
     const near = stops[Math.round(t * (count - 1))];
     if (near) onTimeChange(near.time);
   }
@@ -253,9 +260,11 @@ export function SunClockView({
   function onPointerUp(event: React.PointerEvent) {
     if (dragT === null) return;
     const t = pointerT(event);
-    const index = Math.round(t * (count - 1));
     setDragT(null);
-    tapStop(index);
+    if (locked) return;
+    const index = Math.round(t * (count - 1));
+    if (index >= pending) visit(pending);
+    else replayGold(index);
   }
 
   const sunT = dragT ?? (active !== null ? active / (count - 1) : 0);
@@ -315,7 +324,8 @@ export function SunClockView({
                 isGold && "border-[#FFD166] ring-4 ring-[#FFD166]/60",
                 !isGold && isVisited && "border-success",
                 active === index && "scale-110",
-                phase === "repeat" && !isGold && "animate-pulse",
+                index > pending && "opacity-60",
+                index === pending && !locked && "animate-pulse",
               )}
             >
               <img
@@ -344,7 +354,7 @@ export function SunClockView({
                 style={{ top: w.top }}
                 aria-hidden
               />
-              {phase === "repeat" && !isGold ? (
+              {index === pending && recordAt === index ? (
                 <span className="absolute bottom-0.5 left-1/2 -translate-x-1/2 rounded-full bg-destructive p-1 text-destructive-foreground">
                   <Mic className="size-3.5" aria-hidden />
                 </span>
@@ -356,6 +366,7 @@ export function SunClockView({
         {/* El sol que se arrastra (arranca en el horizonte izquierdo) */}
         <div
           onPointerDown={(event) => {
+            if (locked) return;
             event.currentTarget.setPointerCapture(event.pointerId);
             setDragT(sunT);
             setShowDemo(false);
@@ -368,7 +379,8 @@ export function SunClockView({
           aria-valuenow={(active ?? 0) + 1}
           style={{ left: `${sunPos.x}%`, top: `${sunPos.y}%` }}
           className={cn(
-            "absolute z-30 size-[4.5rem] -translate-x-1/2 -translate-y-[85%] cursor-grab transition-[left,top] duration-300 sm:size-24",
+            "absolute z-30 size-[4.5rem] -translate-x-1/2 -translate-y-[85%] transition-[left,top] duration-300 sm:size-24",
+            locked ? "cursor-not-allowed" : "cursor-grab",
             dragT !== null && "scale-110 duration-0",
             showDemo && active === null && "animate-[sun-demo_2.4s_ease-in-out_infinite]",
             spin && "animate-spin",
@@ -385,15 +397,6 @@ export function SunClockView({
       </div>
 
       <div className="h-[calc(max(9rem,20vh)+3rem)]" aria-hidden />
-
-      {phase === "repeat" && recordAt === null ? (
-        <div className="flex items-end gap-2">
-          <CharacterFigure id={block.guide} size="sm" />
-          <p className="mb-6 rounded-3xl bg-card/95 px-5 py-3 font-display text-2xl text-card-foreground shadow-[var(--shadow-soft)]">
-            Tocá un cielo y repetí
-          </p>
-        </div>
-      ) : null}
 
       {/* Boti en el muelle: salta y saluda al llegar a cada parada */}
       {phase === "explore" && recordAt === null ? (
