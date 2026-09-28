@@ -1,5 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { emptyState, loadProgress, saveProgress, type ProgressState } from "./progress";
+import {
+  PROGRESS_KEY,
+  emptyState,
+  loadProgress,
+  saveProgress,
+  type ProgressState,
+} from "./progress";
 
 const PROGRESS_EVENT = "kids-progress-changed";
 
@@ -42,7 +48,14 @@ export function useProgress() {
   }, []);
 
   const update = useCallback((next: ProgressState | ((prev: ProgressState) => ProgressState)) => {
-    const base = loadProgress();
+    let hasSaved = false;
+    try {
+      hasSaved = window.localStorage.getItem(PROGRESS_KEY) !== null;
+    } catch {
+      hasSaved = false;
+    }
+    // Si el navegador no guarda, se sigue con lo que hay en memoria.
+    const base = hasSaved ? loadProgress() : (latest.current ?? emptyState());
     const value = typeof next === "function" ? next(base) : next;
     latest.current = value;
     saveProgress(value);
