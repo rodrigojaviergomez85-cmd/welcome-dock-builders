@@ -80,7 +80,7 @@ export const mondayMission: Mission = {
       id: "sun",
       estimatedMinutes: 3,
       helpEs:
-        "Arrastrá el sol por el cielo. Boti saluda según la hora. Después repetí cada saludo.",
+        "Arrastrá el sol por el cielo. Boti saluda según la hora y vos repetís ese saludo.",
       introClip: "es-sun-intro",
       guide: "boti",
       stops: [

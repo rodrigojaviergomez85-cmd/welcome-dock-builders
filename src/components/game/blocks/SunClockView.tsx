@@ -9,7 +9,7 @@ import { TIME_LABEL_ES } from "@/content/backgrounds";
 import { CharacterFigure } from "../CharacterFigure";
 import { AudioButton } from "../AudioButton";
 import { RecordTurn } from "../RecordTurn";
-import { playClip, stopClip } from "@/lib/audio";
+import { isPlaying, playClip, stopClip } from "@/lib/audio";
 import { playFanfare, playSuccess } from "@/lib/feedback-sounds";
 import { cn } from "@/lib/utils";
 import type { OralHandler } from "../MissionPlayer";
@@ -142,6 +142,7 @@ export function SunClockView({
       : "explore",
   );
   const [recordAt, setRecordAt] = useState<number | null>(null);
+  const visitToken = useRef(0);
   const [dragT, setDragT] = useState<number | null>(null);
   const [showDemo, setShowDemo] = useState(true);
   const [spin, setSpin] = useState(false);
@@ -184,16 +185,22 @@ export function SunClockView({
     stopClip();
     void playClip(stop.line.clip);
     if (!visited.includes(index)) {
-      const next = [...visited, index];
-      commit(next, gold);
+      commit([...visited, index], gold);
       playSuccess();
-      if (next.length === count && phase === "explore") {
-        setTimeout(() => {
-          void playClip("es-sun-repeat");
-          setPhase("repeat");
-          setActive(null);
-        }, 1400);
-      }
+    }
+    // Una sola pasada: Boti saluda y enseguida el niño repite ESA parada.
+    if (!gold.includes(index)) {
+      const token = ++visitToken.current;
+      const started = Date.now();
+      const wait = () => {
+        if (visitToken.current !== token) return;
+        if (Date.now() - started < 600 || isPlaying()) {
+          setTimeout(wait, 200);
+          return;
+        }
+        setRecordAt(index);
+      };
+      setTimeout(wait, 200);
     }
   }
 
