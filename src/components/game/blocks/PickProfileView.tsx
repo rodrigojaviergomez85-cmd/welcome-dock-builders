@@ -47,6 +47,7 @@ export function PickProfileView({
   const finishRef = useRef(onFinish);
   finishRef.current = onFinish;
   const mountedRef = useRef(true);
+  const resumedAt = useRef(startIndex).current;
 
   useEffect(() => {
     mountedRef.current = true;
@@ -77,13 +78,13 @@ export function PickProfileView({
 
   // Sticker: la bandera se pega en la mochila y después cambia el rol.
   useEffect(() => {
-    if (step !== "sticker" || startIndex >= 2) return;
+    if (step !== "sticker") return;
     const t = window.setTimeout(() => {
       if (block.swap) setStep("swap");
       else finishRef.current();
     }, 1600);
     return () => window.clearTimeout(t);
-  }, [step, block.swap, startIndex]);
+  }, [step, block.swap]);
 
   function choose(id: string) {
     playSuccess();
@@ -148,7 +149,7 @@ export function PickProfileView({
         <span
           className={cn(
             "absolute -right-2 bottom-2 rounded-lg bg-card px-1 text-3xl shadow-[var(--shadow-soft)]",
-            step === "sticker" && startIndex < 2 && "animate-[sticker-slap_0.8s_ease-out_both]",
+            step === "sticker" && resumedAt < 2 && "animate-[sticker-slap_0.8s_ease-out_both]",
           )}
           aria-label="Tu bandera en la mochila"
         >
