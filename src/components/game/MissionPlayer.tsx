@@ -198,9 +198,18 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
     );
   }
 
+  // Si un bloque termina mientras Pip festeja, se espera a que el niño cierre el festejo.
+  const feedOpenRef = useRef(false);
+  feedOpenRef.current = feedMoment !== null;
+  const pendingNextRef = useRef<(() => void) | null>(null);
   const closeFeedMoment = useCallback(() => {
     setFeedMoment((current) => {
-      window.setTimeout(() => current?.continueAfter?.(), 0);
+      window.setTimeout(() => {
+        current?.continueAfter?.();
+        const pending = pendingNextRef.current;
+        pendingNextRef.current = null;
+        pending?.();
+      }, 0);
       return null;
     });
     setPipBounceKey((value) => value + 1);
@@ -212,6 +221,10 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
   }
 
   function nextBlock() {
+    if (feedOpenRef.current) {
+      pendingNextRef.current = nextBlock;
+      return;
+    }
     stopClip();
     if (blockIndex + 1 >= mission.blocks.length) {
       completeMission();
