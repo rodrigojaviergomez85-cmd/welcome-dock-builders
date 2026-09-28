@@ -9,7 +9,7 @@ import { TIME_LABEL_ES } from "@/content/backgrounds";
 import { CharacterFigure } from "../CharacterFigure";
 import { AudioButton } from "../AudioButton";
 import { RecordTurn } from "../RecordTurn";
-import { isPlaying, playClip, stopClip } from "@/lib/audio";
+import { isPlaying, playClip, playThenPause, stopClip } from "@/lib/audio";
 import { playFanfare, playSuccess } from "@/lib/feedback-sounds";
 import { cn } from "@/lib/utils";
 import type { OralHandler } from "../MissionPlayer";
@@ -235,8 +235,7 @@ export function SunClockView({
         setPhase("done");
         setSpin(true);
         playFanfare();
-        void playClip(block.done.clip);
-        setTimeout(onFinish, 3200);
+        void playThenPause(block.done.clip, 600).then(() => onFinish());
       }
     });
   }

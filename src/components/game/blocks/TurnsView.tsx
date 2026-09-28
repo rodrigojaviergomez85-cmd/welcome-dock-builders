@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { playClip, isPlaying } from "@/lib/audio";
+import { playClip, isPlaying, waitForSilence } from "@/lib/audio";
 import { CharacterFigure } from "../CharacterFigure";
 import { SpeechBubble } from "../SpeechBubble";
 import { BilingualLine } from "../BilingualLine";
@@ -49,6 +49,8 @@ export function TurnsView({
     if (turn.type !== "character") return;
     let active = true;
     void (async () => {
+      await waitForSilence();
+      if (!active) return;
       await playClip(turn.clip);
       await new Promise((r) => setTimeout(r, 400));
       while (active && isPlaying()) await new Promise((r) => setTimeout(r, 250));
