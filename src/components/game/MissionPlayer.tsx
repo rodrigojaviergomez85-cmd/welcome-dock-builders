@@ -97,7 +97,11 @@ export function MissionPlayer({ mission, alias, avatarImage }: Props) {
     update((prev) =>
       registerPlayDay({
         ...updateMission(prev, mission.id, (p) => ({ ...p, started: true })),
-        pip: progress.completed && progress.blockIndex === 0 ? { ...prev.pip, feeds: 0 } : prev.pip,
+        // Día nuevo o repetido desde el principio: Pip empieza a comer de cero.
+        pip:
+          progress.blockIndex === 0 && progress.stepIndex === 0
+            ? { ...prev.pip, feeds: 0 }
+            : prev.pip,
       }),
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
