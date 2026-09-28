@@ -763,3 +763,12 @@
     opacity: 1;
   }
 }
+@keyframes flag-wave {
+  0%,
+  100% {
+    transform: skewY(0deg) rotate(0deg);
+  }
+  50% {
+    transform: skewY(-4deg) rotate(-2deg);
+  }
+}

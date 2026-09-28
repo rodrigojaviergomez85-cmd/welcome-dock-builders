@@ -1,6 +1,6 @@
+import { FlagIcon } from "./FlagIcon";
 import { useEffect, useState } from "react";
 import { loadProgress } from "@/lib/progress";
-import { vocab } from "@/content/vocabulary";
 import { useNavigate } from "@tanstack/react-router";
 import { Lock, X } from "lucide-react";
 import home0 from "@/assets/pip-home-0.png";
@@ -43,7 +43,7 @@ export function PipHome({ pip, day, feedsToEvolve, asleep, missionPath }: Props)
   useEffect(() => {
     if (!hasFlag) return;
     const id = loadProgress().profile?.countryId;
-    setFlag(id ? (vocab(id).symbol ?? null) : null);
+    setFlag(id ?? null);
   }, [hasFlag]);
 
   function onPip() {
@@ -120,11 +120,11 @@ export function PipHome({ pip, day, feedsToEvolve, asleep, missionPath }: Props)
 
       {flag ? (
         <span
-          className="absolute text-[clamp(1rem,3vw,2.2rem)] leading-none drop-shadow"
+          className="absolute w-[4%] max-w-[48px] drop-shadow"
           style={{ left: `${GARDEN.x - 12}%`, bottom: `${100 - GARDEN.bottom + 12}%` }}
           aria-label="Tu bandera en la casa de Pip"
         >
-          {flag}
+          <FlagIcon id={flag} wave className="w-full" />
         </span>
       ) : null}
 

@@ -1,3 +1,4 @@
+import { FlagIcon } from "../FlagIcon";
 import { useEffect, useRef, useState } from "react";
 import { Check } from "lucide-react";
 import type { PickProfileBlock } from "@/content/missions/types";
@@ -103,7 +104,7 @@ export function PickProfileView({
 
   const vars = missionVars(state.profile, alias);
   const chosenId = block.field === "country" ? state.profile?.countryId : undefined;
-  const flag = chosenId ? vocab(chosenId).symbol : null;
+  const flag = chosenId ? <FlagIcon id={chosenId} className="w-10" /> : null;
   const asker = block.asker ?? block.ask?.speaker;
 
   if (step === "pick") {
@@ -127,9 +128,13 @@ export function PickProfileView({
                 onClick={() => choose(id)}
                 className="tap-target flex min-h-24 flex-col items-center justify-center gap-1 rounded-3xl bg-card/95 p-3 text-card-foreground shadow-[var(--shadow-soft)] active:translate-y-1"
               >
-                <span className="font-display text-5xl" aria-hidden>
-                  {item.symbol}
-                </span>
+                {block.field === "country" ? (
+                  <FlagIcon id={id} className="w-20" />
+                ) : (
+                  <span className="font-display text-5xl" aria-hidden>
+                    {item.symbol}
+                  </span>
+                )}
                 <span className="text-sm text-muted-foreground">{item.es}</span>
               </button>
             );
@@ -148,7 +153,7 @@ export function PickProfileView({
       {step !== "ask" && step !== "say" && flag ? (
         <span
           className={cn(
-            "absolute -right-2 bottom-2 rounded-lg bg-card px-1 text-3xl shadow-[var(--shadow-soft)]",
+            "absolute -right-3 bottom-2 rounded-lg bg-card p-1 shadow-[var(--shadow-soft)]",
             step === "sticker" && resumedAt < 2 && "animate-[sticker-slap_0.8s_ease-out_both]",
           )}
           aria-label="Tu bandera en la mochila"

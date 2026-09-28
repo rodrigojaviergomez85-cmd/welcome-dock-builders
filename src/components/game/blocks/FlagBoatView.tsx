@@ -1,3 +1,4 @@
+import { FlagIcon } from "../FlagIcon";
 import { useEffect, useRef, useState } from "react";
 import boat from "@/assets/boat.png";
 import type { FlagBoatBlock } from "@/content/missions/types";
@@ -127,11 +128,8 @@ export function FlagBoatView({
             return (
               <div key={ex.speaker} className="relative flex flex-col items-center">
                 {(i < index || done || (current && picked)) && (
-                  <span
-                    className="absolute -top-8 z-10 text-3xl animate-[flag-raise_0.5s_ease-out_both] sm:text-4xl"
-                    aria-hidden
-                  >
-                    {vocab(ex.country).symbol}
+                  <span className="absolute -top-8 z-10 animate-[flag-raise_0.5s_ease-out_both]">
+                    <FlagIcon id={ex.country} wave className="w-10 sm:w-12" />
                   </span>
                 )}
                 <div className={cn(current ? "animate-pop" : "scale-75 opacity-90")}>
@@ -168,12 +166,12 @@ export function FlagBoatView({
                   onClick={() => tapFlag(id)}
                   aria-label={`Bandera de ${vocab(id).es}`}
                   className={cn(
-                    "tap-target flex aspect-square items-center justify-center rounded-3xl bg-card/95 text-5xl shadow-[var(--shadow-soft)] transition-transform active:scale-95 sm:text-6xl",
+                    "tap-target flex aspect-square items-center justify-center rounded-3xl bg-card/95 p-3 shadow-[var(--shadow-soft)] transition-transform active:scale-95",
                     wrong === id && "animate-nudge ring-4 ring-destructive/50",
                     listening && "opacity-80",
                   )}
                 >
-                  <span aria-hidden>{vocab(id).symbol}</span>
+                  <FlagIcon id={id} wave className="w-full" />
                 </button>
               ))}
             </div>

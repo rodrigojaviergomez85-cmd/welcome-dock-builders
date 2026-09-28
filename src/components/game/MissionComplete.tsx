@@ -1,3 +1,4 @@
+import { FlagIcon } from "./FlagIcon";
 import { useEffect, useState } from "react";
 import { Pip } from "./Pip";
 import { PipMoveScene } from "./PipMoveScene";
@@ -12,7 +13,6 @@ import { REVIEW_PHRASES, gloss } from "@/content/glossary";
 import { playClip } from "@/lib/audio";
 import { useProgress } from "@/lib/useProgress";
 import { missionVars, fillText } from "@/lib/mission-vars";
-import { vocab } from "@/content/vocabulary";
 import { Coins, Flame } from "lucide-react";
 
 type Props = {
@@ -82,9 +82,7 @@ export function MissionComplete({
   const closing = CLOSING[mission.id];
   if (closing) {
     const flag =
-      mission.id === "tuesday" && state.profile?.countryId
-        ? vocab(state.profile.countryId).symbol
-        : null;
+      mission.id === "tuesday" && state.profile?.countryId ? state.profile.countryId : null;
     const said = progress.oral.said ?? progress.oral.recordings;
     return (
       <div className="mx-auto flex min-h-screen max-w-md flex-col items-center gap-5 p-6 text-center">
@@ -101,10 +99,10 @@ export function MissionComplete({
         <div className="relative w-full rounded-2xl border-4 border-dashed border-accent bg-card px-5 py-4">
           {flag ? (
             <span
-              className="absolute -right-3 -top-4 -rotate-6 rounded-lg bg-card px-1 text-4xl shadow-[var(--shadow-soft)]"
+              className="absolute -right-3 -top-4 -rotate-6 rounded-lg bg-card p-1 shadow-[var(--shadow-soft)]"
               aria-label="Tu bandera en la mochila"
             >
-              {flag}
+              <FlagIcon id={flag} className="w-14" />
             </span>
           ) : null}
           <p lang="en" className="font-display text-3xl">
@@ -134,7 +132,7 @@ export function MissionComplete({
               {closing.icon === "sun" ? (
                 <Sun className="size-7 fill-current text-accent" aria-hidden />
               ) : (
-                <span aria-hidden>{flag ?? "🚩"}</span>
+                <FlagIcon id={flag ?? "c-el-salvador"} className="w-9" />
               )}{" "}
               4
             </span>

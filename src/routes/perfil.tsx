@@ -1,9 +1,9 @@
+import { FlagIcon } from "@/components/game/FlagIcon";
 import { useEffect, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { ArrowLeft, Check } from "lucide-react";
 import { AVATARS } from "@/content/characters";
 import { BAGS } from "@/content/characters";
-import { vocab } from "@/content/vocabulary";
 import { DEFAULT_PIP_COLOR, Pip, PIP_COLORS } from "@/components/game/Pip";
 import { useProgress } from "@/lib/useProgress";
 import { pipSizeFor } from "@/lib/progress";
@@ -49,7 +49,7 @@ function ProfilePage() {
   const valid = cleanAlias.length >= 2;
   const hasNameTag = getMissionProgress(state, "monday").rewards.includes("sun-tag");
   const flagSticker = getMissionProgress(state, "tuesday").rewards.includes("flag-sticker")
-    ? vocab(state.profile?.countryId ?? "c-el-salvador").symbol
+    ? (state.profile?.countryId ?? "c-el-salvador")
     : null;
 
   return (
@@ -93,10 +93,10 @@ function ProfilePage() {
                   </span>
                   {flagSticker ? (
                     <span
-                      className="absolute -right-1 bottom-0 -rotate-6 rounded bg-card px-0.5 text-lg"
+                      className="absolute -right-1 bottom-0 -rotate-6 rounded bg-card p-0.5"
                       aria-label="Tu bandera en la mochila"
                     >
-                      {flagSticker}
+                      <FlagIcon id={flagSticker} className="w-6" />
                     </span>
                   ) : null}
                 </div>
