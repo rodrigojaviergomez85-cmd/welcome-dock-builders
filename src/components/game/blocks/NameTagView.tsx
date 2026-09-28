@@ -39,6 +39,8 @@ export function NameTagView({
   const swap = block.swap;
   const askClips = block.ask.map((line) => line.clip);
   const printedNowRef = useRef(false);
+  const finishRef = useRef(onFinish);
+  finishRef.current = onFinish;
 
   useEffect(() => {
     if (alreadyPrinted) {
@@ -70,12 +72,12 @@ export function NameTagView({
       await playThenPause(block.printed.clip, 600);
       if (!active) return;
       if (swap) setStep("swap");
-      else onFinish();
+      else finishRef.current();
     })();
     return () => {
       active = false;
     };
-  }, [block.printed.clip, onFinish, step, swap]);
+  }, [block.printed.clip, step, swap]);
 
   function printTag(status: "heard" | "practiced" | "pending") {
     onOral(status, block.record.targetEn.split("{alias}").join(alias), () => {
