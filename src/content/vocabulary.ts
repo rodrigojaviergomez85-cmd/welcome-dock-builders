@@ -93,3 +93,15 @@ export function letterClip(letter: string): string | null {
 export function numberWord(value: number): string {
   return NUMBER_WORDS[value - 1] ?? String(value);
 }
+
+/** Dos colores principales de cada bandera (para el pañuelo de Pip). */
+export const FLAG_COLORS: Record<string, [string, string]> = {
+  "c-el-salvador": ["#0F47AF", "#FFFFFF"],
+  "c-mexico": ["#006847", "#CE1126"],
+  "c-guatemala": ["#4997D0", "#FFFFFF"],
+  "c-colombia": ["#FCD116", "#003893"],
+  "c-peru": ["#D91023", "#FFFFFF"],
+  "c-argentina": ["#74ACDF", "#FFFFFF"],
+  "c-brazil": ["#009C3B", "#FFDF00"],
+  "c-united-states": ["#B22234", "#3C3B6E"],
+};
