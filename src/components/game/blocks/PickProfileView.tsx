@@ -42,8 +42,18 @@ export function PickProfileView({
   onStepChange,
 }: Props) {
   const { state, update } = useProgress();
+  // Al retomar después de elegir, Leo vuelve a preguntar: el niño necesita
+  // oír la pregunta para responderla (el turno todavía no se habló).
   const initial: Step =
-    startIndex >= 2 ? (block.swap ? "swap" : "sticker") : startIndex === 1 ? "say" : "pick";
+    startIndex >= 2
+      ? block.swap
+        ? "swap"
+        : "sticker"
+      : startIndex === 1
+        ? block.ask
+          ? "ask"
+          : "say"
+        : "pick";
   const [step, setStep] = useState<Step>(initial);
   const finishRef = useRef(onFinish);
   finishRef.current = onFinish;
