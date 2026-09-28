@@ -435,7 +435,7 @@ export const LINES: Line[] = [
   {
     id: "es-ask-luna-how-full-v2",
     speaker: "es",
-    text: "Luna está esperando, saludala y preguntale cómo está diciendo: Hello! How are you? Ahora repetilo vos.",
+    text: "Luna está esperando. Saludala y preguntale cómo está: Hello! How are you? Ahora repetilo vos.",
   },
   {
     id: "es-ask-luna-name-full-v2",
