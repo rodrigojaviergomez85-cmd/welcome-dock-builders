@@ -79,8 +79,7 @@ export const mondayMission: Mission = {
       kind: "sunClock",
       id: "sun",
       estimatedMinutes: 3,
-      helpEs:
-        "Arrastrá el sol por el cielo. Boti saluda según la hora y vos repetís ese saludo.",
+      helpEs: "Llevá el sol a cada cielo, escuchá a Boti y repetí",
       introClip: "es-sun-intro",
       guide: "boti",
       stops: [
